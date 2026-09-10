@@ -1,0 +1,82 @@
+name: Build and deploy ShimoDocs
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: shimodocs-production
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  DEPLOY_PATH: /var/www/shimodocs
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Package static files
+        run: tar -czf shimodocs-dist.tgz -C dist .
+
+      - name: Configure SSH
+        env:
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          DEPLOY_PORT: ${{ secrets.DEPLOY_PORT || 22 }}
+          DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+          DEPLOY_KNOWN_HOSTS: ${{ secrets.DEPLOY_KNOWN_HOSTS }}
+        run: |
+          test -n "$DEPLOY_HOST"
+          test -n "$DEPLOY_SSH_KEY"
+          test -n "$DEPLOY_KNOWN_HOSTS"
+          install -m 700 -d "$HOME/.ssh"
+          printf '%s\n' "$DEPLOY_SSH_KEY" > "$HOME/.ssh/id_ed25519"
+          chmod 600 "$HOME/.ssh/id_ed25519"
+          printf '%s\n' "$DEPLOY_KNOWN_HOSTS" > "$HOME/.ssh/known_hosts"
+
+      - name: Upload and activate release
+        env:
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          DEPLOY_PORT: ${{ secrets.DEPLOY_PORT || 22 }}
+          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+          RELEASE_ID: ${{ github.sha }}
+        run: |
+          test -n "$DEPLOY_USER"
+          scp -P "$DEPLOY_PORT" shimodocs-dist.tgz "$DEPLOY_USER@$DEPLOY_HOST:/tmp/shimodocs-$RELEASE_ID.tgz"
+          ssh -p "$DEPLOY_PORT" "$DEPLOY_USER@$DEPLOY_HOST" "RELEASE_ID='$RELEASE_ID' DEPLOY_USER='$DEPLOY_USER' DEPLOY_PATH='$DEPLOY_PATH' bash -s" <<'REMOTE'
+          set -euo pipefail
+          sudo mkdir -p "$DEPLOY_PATH/releases"
+          sudo chown -R "$DEPLOY_USER":"$DEPLOY_USER" "$DEPLOY_PATH"
+          release_dir="$DEPLOY_PATH/releases/$RELEASE_ID"
+          mkdir -p "$release_dir"
+          tar -xzf "/tmp/shimodocs-$RELEASE_ID.tgz" -C "$release_dir"
+          ln -sfn "$release_dir" "$DEPLOY_PATH/current"
+          rm -f "/tmp/shimodocs-$RELEASE_ID.tgz"
+          find "$DEPLOY_PATH/releases" -mindepth 1 -maxdepth 1 -type d -printf '%T@ %p\n' \
+            | sort -nr | tail -n +6 | cut -d' ' -f2- | xargs -r rm -rf
+          REMOTE
+
+      - name: Verify deployed entrypoint
+        env:
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          DEPLOY_PORT: ${{ secrets.DEPLOY_PORT || 22 }}
+        run: |
+          curl --fail --silent --show-error --max-time 15 "http://$DEPLOY_HOST/" | grep -q 'id="root"'
