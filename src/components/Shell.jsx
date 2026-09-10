@@ -1,5 +1,5 @@
 import { Link, NavLink } from 'react-router-dom'
-import { DOWNLOADS } from '../downloads'
+import { DOWNLOADS, LICENSE_EMAIL, LICENSE_REQUEST_URL } from '../downloads'
 import { NAV_LINKS } from '../routes'
 import { GITHUB_URL } from '../seo'
 
@@ -12,6 +12,7 @@ const FOOTER_SECTIONS = [
     links: [
       ['/ai-workspace', 'AI Workspace for documents'],
       [DOWNLOADS.latest, 'Download the self-hosted installer'],
+      [LICENSE_REQUEST_URL, 'Request a free 5-user license'],
       ['/pricing', 'Pricing and plans'],
       ['/contact-sales', 'Request a private cloud demo'],
     ],
@@ -70,22 +71,39 @@ export default function Shell({ children }) {
             Shimo<span>Docs</span>
           </span>
           <p>Self-hosted document collaboration with AI agents, in your private cloud.</p>
+          <p className="footer-contact">
+            Free for up to 5 users · License requests &amp; support:{' '}
+            <a href={LICENSE_REQUEST_URL}>{LICENSE_EMAIL}</a>
+          </p>
         </div>
         <nav className="footer-nav" aria-label="Footer navigation">
           {FOOTER_SECTIONS.map(section => (
             <div key={section.heading}>
               <h2>{section.heading}</h2>
-              {section.links.map(([to, label]) =>
-                to.startsWith('http') ? (
-                  <a key={to} href={to} target="_blank" rel="noreferrer">
-                    {label}
-                  </a>
-                ) : (
+              {section.links.map(([to, label]) => {
+                // mailto: must stay a plain anchor. Treating it as an internal
+                // path would hand it to the router and the link would do
+                // nothing.
+                if (to.startsWith('mailto:')) {
+                  return (
+                    <a key={to} href={to}>
+                      {label}
+                    </a>
+                  )
+                }
+                if (to.startsWith('http')) {
+                  return (
+                    <a key={to} href={to} target="_blank" rel="noreferrer">
+                      {label}
+                    </a>
+                  )
+                }
+                return (
                   <Link key={to} to={to}>
                     {label}
                   </Link>
-                ),
-              )}
+                )
+              })}
             </div>
           ))}
         </nav>

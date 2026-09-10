@@ -153,6 +153,16 @@ for (const routePath of ROUTE_PATHS) {
   }
 }
 
+// The home hero carries the two ways to get the product: the installer and
+// the free licence request. Both must survive a refactor.
+const homeHtml = readFileSync(join(distDir, 'index.html'), 'utf8')
+if (!/releases\/latest\/download\/mdp-installer-amd64/.test(homeHtml)) {
+  problems.push('home: installer download link is missing')
+}
+if (!/mailto:support\.global@shimo\.im/.test(homeHtml)) {
+  problems.push('home: free licence request link is missing')
+}
+
 const robots = readFileSync(join(distDir, 'robots.txt'), 'utf8')
 if (!robots.includes(`Sitemap: ${SITE_URL}/sitemap.xml`)) problems.push('robots.txt is missing the sitemap directive')
 const sitemap = readFileSync(join(distDir, 'sitemap.xml'), 'utf8')

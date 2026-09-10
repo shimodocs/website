@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Eyebrow } from '../components/Section'
-import { DOWNLOADS } from '../downloads'
+import { DOWNLOADS, LICENSE_REQUEST_URL } from '../downloads'
 import { FAQS } from '../seo'
 
 const words = ['Docs', 'Teams', 'AI']
@@ -80,12 +80,29 @@ export default function Home() {
               </svg>
               Download for Linux · amd64
             </a>
+            <a className="button outline license-cta" href={LICENSE_REQUEST_URL}>
+              <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false">
+                <path
+                  d="M10 2.4 4.2 4.5v5c0 3.3 2.3 6.3 5.8 7.6 3.5-1.3 5.8-4.3 5.8-7.6v-5L10 2.4Z"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.6"
+                  strokeLinejoin="round"
+                />
+                <path
+                  d="m7.7 9.9 1.6 1.6 3-3"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.6"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+              Get free 5-user license
+            </a>
             <Link className="text-link" to="/ai-workspace">
               Explore AI Workspace ↗
             </Link>
-            <a className="text-link" href="#scenes">
-              See what teams do ↓
-            </a>
           </div>
           <div className="download-meta">
             Self-hosted installer · {DOWNLOADS.amd64.size} ·{' '}

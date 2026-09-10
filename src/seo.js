@@ -150,6 +150,11 @@ export const FAQS = [
     answer:
       'ShimoDocs is free for teams of up to five people. Teams above five pay $5 per user per month, with annual billing saving 20%. Server and infrastructure costs are managed separately by your team.',
   },
+  {
+    question: 'How do I get a license?',
+    answer:
+      'Email support.global@shimo.im to request the free-forever 5-user license. No credit card is required. Larger teams can ask for a quote based on team size, and the license is activated from the operations platform after the suite is deployed.',
+  },
 ]
 
 export function breadcrumbFor(pathname) {

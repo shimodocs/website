@@ -28,3 +28,29 @@ export const DOWNLOADS = {
   amd64: installer('amd64', '357 MB'),
   arm64: installer('arm64', '325 MB'),
 }
+
+// Licence requests. The repository README documents this address as the
+// official channel for the global build: "Request free by emailing
+// support.global@shimo.im", free forever for five users with no credit card.
+export const LICENSE_EMAIL = 'support.global@shimo.im'
+
+const LICENSE_SUBJECT = 'Free 5-user ShimoDocs license request'
+
+// A prefilled body turns a bare mailto into a usable request form and saves a
+// round trip, because the details we need are already in the message.
+const LICENSE_BODY = [
+  'Hi ShimoDocs team,',
+  '',
+  'We would like to request the free 5-user ShimoDocs license.',
+  '',
+  'Company:',
+  'Team size:',
+  'Deployment environment (cloud / data centre / on-premise):',
+  '',
+  'Thanks',
+].join('\n')
+
+export const LICENSE_REQUEST_URL = `mailto:${LICENSE_EMAIL}?subject=${encodeURIComponent(
+  LICENSE_SUBJECT,
+)}&body=${encodeURIComponent(LICENSE_BODY)}`
+
