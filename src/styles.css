@@ -99,3 +99,16 @@
   .footer-nav{margin-top:30px;gap:20px}
   .footer-legal{flex-direction:column;gap:8px}
 }
+
+/* Homepage download call to action */
+.download-cta{gap:9px}
+.download-cta svg{width:16px;height:16px;flex:0 0 auto}
+.download-meta{margin-top:18px;color:#8b85a3;font-size:12.5px;line-height:1.7}
+.download-meta a{color:#b9ddff;text-decoration:none;border-bottom:1px solid #b9ddff3d}
+.download-meta a:hover{color:#fff;border-bottom-color:#fff}
+@media(max-width:700px){
+  /* The hero copy is centred on small screens, so the actions and the
+     download meta line follow it instead of sitting flush left. */
+  .hero-actions{align-items:center}
+  .download-meta{text-align:center}
+}

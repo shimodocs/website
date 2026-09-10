@@ -4,6 +4,7 @@
 // It is consumed by the client runtime (head synchronisation), by the
 // build-time prerenderer, and by the sitemap/robots generators. Keeping one
 // table means a route can never drift between the router and the crawler.
+import { DOWNLOADS } from './downloads'
 
 const FALLBACK_SITE_URL = 'http://43.172.115.22'
 
@@ -251,6 +252,8 @@ export function jsonLdFor(pathname) {
       applicationSubCategory: 'Document Collaboration',
       operatingSystem: 'Web, self-hosted (Kubernetes)',
       url: canonicalFor('/'),
+      downloadUrl: DOWNLOADS.amd64.url,
+      softwareVersion: DOWNLOADS.version,
       description:
         'Self-hosted document collaboration platform with real-time docs, sheets, slides, forms, tables and configurable AI agents for private cloud deployments.',
       featureList: [

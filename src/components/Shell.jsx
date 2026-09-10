@@ -1,4 +1,5 @@
 import { Link, NavLink } from 'react-router-dom'
+import { DOWNLOADS } from '../downloads'
 import { NAV_LINKS } from '../routes'
 import { GITHUB_URL } from '../seo'
 
@@ -10,6 +11,7 @@ const FOOTER_SECTIONS = [
     heading: 'Product',
     links: [
       ['/ai-workspace', 'AI Workspace for documents'],
+      [DOWNLOADS.latest, 'Download the self-hosted installer'],
       ['/pricing', 'Pricing and plans'],
       ['/contact-sales', 'Request a private cloud demo'],
     ],

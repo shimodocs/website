@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Eyebrow } from '../components/Section'
+import { DOWNLOADS } from '../downloads'
 import { FAQS } from '../seo'
 
 const words = ['Docs', 'Teams', 'AI']
@@ -66,11 +67,31 @@ export default function Home() {
             forms and tables, with AI agents that work alongside your team — all inside your own private cloud.
           </p>
           <div className="hero-actions">
-            <Link className="button" to="/ai-workspace">
-              Explore AI Workspace
+            <a className="button download-cta" href={DOWNLOADS.amd64.url}>
+              <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false">
+                <path
+                  d="M10 2.5v9m0 0-3.6-3.6M10 11.5l3.6-3.6M3.5 16.5h13"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.7"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+              Download for Linux · amd64
+            </a>
+            <Link className="text-link" to="/ai-workspace">
+              Explore AI Workspace ↗
             </Link>
             <a className="text-link" href="#scenes">
-              See what teams do ↗
+              See what teams do ↓
+            </a>
+          </div>
+          <div className="download-meta">
+            Self-hosted installer · {DOWNLOADS.amd64.size} ·{' '}
+            <a href={DOWNLOADS.arm64.url}>arm64 build ↗</a> ·{' '}
+            <a href={DOWNLOADS.latest} target="_blank" rel="noreferrer">
+              All releases ↗
             </a>
           </div>
         </div>

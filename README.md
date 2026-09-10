@@ -73,6 +73,24 @@ npm run assets
 `scripts/make-assets.py` measures its own layout and refuses to write an Open
 Graph card where text would overflow or collide with the screenshot.
 
+## Download call to action
+
+The home hero links the self-hosted installer from `src/downloads.js`. The
+primary button downloads the `amd64` build, with `arm64` and an "All releases"
+fallback beside it. The footer links the releases page as well.
+
+`shimodocs.com` has no working download surface — its `/download` page renders
+"Coming Soon", no page on that site links to an installer and no download
+hostname exists — so the artifacts come from the
+[shimodocs/shimodocs releases](https://github.com/shimodocs/shimodocs/releases).
+The Chinese enterprise download centre at `shimo.net` serves the `-cn` build and
+the k3s release tarball instead.
+
+The asset file name embeds the installer version, so a new installer build means
+bumping `INSTALLER_VERSION` in `src/downloads.js`. The deploy workflow resolves
+both links with a ranged request and fails the release if either stops working,
+which catches a renamed asset before users hit a dead button.
+
 ## Publishing
 
 The canonical repository is [shimodocs/website](https://github.com/shimodocs/website).

@@ -168,5 +168,23 @@ jobs:
           const missing = await get('/not-a-real-shimodocs-page');
           assert.equal(missing.status, 404, 'unknown paths must 404 instead of serving the app shell');
 
-          console.log(`Verified ${routes.length} prerendered routes, unique titles, robots.txt, sitemap.xml and a real 404.`);
+          // The homepage download CTA points at a release asset whose file name
+          // embeds the installer version. If a future release renames that
+          // asset the button breaks silently, so resolve it here. A ranged
+          // request avoids pulling the full installer.
+          const home = await get('/');
+          const installerLinks = [
+            ...home.body.matchAll(/href="(https:\/\/github\.com\/shimodocs\/shimodocs\/releases\/latest\/download\/[^"]+)"/g),
+          ].map(match => match[1]);
+          assert.ok(installerLinks.length >= 2, `homepage exposes ${installerLinks.length} installer links, expected at least 2`);
+          for (const link of installerLinks) {
+            const response = await fetch(link, { headers: { Range: 'bytes=0-0' }, redirect: 'follow' });
+            assert.ok(
+              response.ok || response.status === 206,
+              `installer link does not resolve: ${link} (${response.status})`,
+            );
+            console.log(`Download OK: ${link.split('/').pop()}`);
+          }
+
+          console.log(`Verified ${routes.length} prerendered routes, unique titles, robots.txt, sitemap.xml, a real 404 and ${installerLinks.length} installer links.`);
           NODE
