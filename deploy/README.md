@@ -33,7 +33,7 @@ sudo systemctl reload nginx
 
 The default config serves the site at `http://43.172.115.22/`. Replace `server_name _;` with the real domain when DNS is ready, then add HTTPS separately.
 
-The configuration routes `/robots.txt`, `/sitemap.xml` and the brand images to real files with `try_files $uri =404`, and uses `try_files $uri $uri/ =404` for everything else. Because every route is prerendered to its own directory, an unknown path returns the `404.html` document with a `404` status instead of the home page with a `200`.
+The configuration routes `/robots.txt`, `/sitemap.xml` and the brand images to real files with `try_files $uri =404`. Routes match `$uri/index.html` before `$uri`, so `/ai-workspace` returns `200` instead of a `301` to the trailing-slash form, and `/ai-workspace/` redirects back to the canonical `/ai-workspace`. Because every route is prerendered to its own directory, an unknown path returns the `404.html` document with a `404` status instead of the home page with a `200`.
 
 ## GitHub repository settings
 
