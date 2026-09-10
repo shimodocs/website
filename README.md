@@ -100,6 +100,56 @@ either the installer link or the licence link, and the deploy workflow resolves
 both installer URLs with a ranged request and fails the release if either stops
 working.
 
+## Blog
+
+Articles are Markdown files in `content/blog/`. Adding a file is all that is
+required: the build picks it up, prerenders it, links it from the archive and
+adds it to the sitemap.
+
+```bash
+npm run content   # regenerate src/generated/blog-posts.js only
+npm run build     # full build, includes the content step
+```
+
+### Authoring
+
+Frontmatter is validated at build time. A post that would ship a bad title, a
+duplicate description or a broken internal link fails the build rather than
+going live.
+
+```yaml
+---
+title: "What Is Private Cloud Document Collaboration?"     # the H1, written for a reader
+seoTitle: "What Is Private Cloud..."                        # the search result, max 62 chars
+description: "..."                                           # 110-160 chars, unique site-wide
+category: self-hosting                                       # one of the ids in scripts/blog-content.mjs
+date: 2026-01-12
+updated: 2026-02-01                                          # optional
+tags: [private cloud, self-hosted]
+keywords: "..."                                              # optional, falls back to tags
+featured: true                                               # optional, pins to the top of the archive
+---
+```
+
+`seoTitle` is optional when `title` plus `" | ShimoDocs"` fits in 62 characters.
+
+### How articles are rendered
+
+Article pages are rendered to HTML at build time with the body already inlined,
+and the client bundle is then removed from them. A 1,500-word article therefore
+costs the browser no JavaScript at all, and because nothing hydrates an article
+there is no possibility of a hydration mismatch. The blog index stays a React
+page and hydrates normally.
+
+### What the build guarantees for every article
+
+- A unique search title, a unique description and a self-referencing canonical.
+- `BlogPosting` and `BreadcrumbList` structured data.
+- A table of contents generated from the H2 and H3 headings.
+- At least five internal blog links, plus related articles and older/newer paging.
+- Presence in `sitemap.xml` and a link from the `/blog` archive.
+- A word count floor, so a stub cannot ship as an article.
+
 ## Publishing
 
 The canonical repository is [shimodocs/website](https://github.com/shimodocs/website).

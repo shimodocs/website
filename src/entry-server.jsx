@@ -6,6 +6,8 @@
 import { renderToString } from 'react-dom/server'
 import { StaticRouter } from 'react-router'
 import App from './App'
+import Shell from './components/Shell'
+import BlogPost from './pages/BlogPost'
 
 export function renderRoute(url) {
   return renderToString(
@@ -15,5 +17,30 @@ export function renderRoute(url) {
   )
 }
 
+// Article pages are build-time only and never hydrated, so the body arrives as
+// a prop instead of from a client bundle.
+export function renderBlogPost(post, related = [], previous = null, next = null) {
+  return renderToString(
+    <StaticRouter location={`/blog/${post.slug}`}>
+      <Shell>
+        <BlogPost post={post} related={related} previous={previous} next={next} />
+      </Shell>
+    </StaticRouter>,
+  )
+}
+
 export { ROUTES } from './routes'
-export { ROUTE_PATHS, ROUTE_SEO, headFor, jsonLdFor, robotsTxt, sitemapXml, SITE_URL, resolveSeo } from './seo'
+export {
+  ROUTE_PATHS,
+  ROUTE_SEO,
+  headFor,
+  jsonLdFor,
+  robotsTxt,
+  sitemapXml,
+  SITE_URL,
+  resolveSeo,
+  blogPostHead,
+  blogPostJsonLd,
+  blogIndexJsonLd,
+  absoluteUrl,
+} from './seo'

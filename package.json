@@ -5,9 +5,11 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build && vite build --ssr src/entry-server.jsx --outDir dist-ssr && node scripts/prerender.mjs",
+    "predev": "node scripts/build-content.mjs",
+    "build": "node scripts/build-content.mjs && vite build && vite build --ssr src/entry-server.jsx --outDir dist-ssr && node scripts/prerender.mjs",
     "build:client": "vite build",
-    "build:seo": "vite build --ssr src/entry-server.jsx --outDir dist-ssr && node scripts/prerender.mjs",
+    "build:seo": "node scripts/build-content.mjs && vite build --ssr src/entry-server.jsx --outDir dist-ssr && node scripts/prerender.mjs",
+    "content": "node scripts/build-content.mjs",
     "assets": "python3 scripts/make-assets.py",
     "preview": "vite preview --port 4173"
   },
@@ -19,5 +21,8 @@
     "react-router-dom": "latest",
     "vite": "latest"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "gray-matter": "^4.0.3",
+    "markdown-it": "^15.0.1"
+  }
 }
