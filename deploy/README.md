@@ -33,9 +33,11 @@ sudo systemctl reload nginx
 
 The default config serves the site at `http://43.172.115.22/`. Replace `server_name _;` with the real domain when DNS is ready, then add HTTPS separately.
 
-## GitHub repository secrets
+The configuration routes `/robots.txt`, `/sitemap.xml` and the brand images to real files with `try_files $uri =404`, and uses `try_files $uri $uri/ =404` for everything else. Because every route is prerendered to its own directory, an unknown path returns the `404.html` document with a `404` status instead of the home page with a `200`.
 
-In the **shimodocs/website GitHub page → Settings → Secrets and variables → Actions → New repository secret**, add:
+## GitHub repository settings
+
+In the **shimodocs/website GitHub page → Settings → Secrets and variables → Actions**, add five secrets:
 
 | Name | Value |
 | --- | --- |
@@ -53,19 +55,32 @@ The dedicated deployment private key lives at `~/.ssh/shimodocs_actions` on the 
 ssh-keygen -F 43.172.115.22 -f ~/.ssh/known_hosts | sed '/^#/d'
 ```
 
+Then add one optional **variable** (Settings → Secrets and variables → Actions → Variables):
+
+| Name | Value |
+| --- | --- |
+| `SITE_URL` | The production origin, for example `https://shimodocs.com` |
+
+`SITE_URL` feeds `VITE_SITE_URL` during the build, which is where every canonical
+URL, the sitemap and the social image URLs come from. It defaults to
+`http://43.172.115.22`, so leaving it unset is safe until the domain is live.
+Changing it only requires tagging the next release.
+
 ## Release flow
 
 Use the **Mac terminal**, in the project directory:
 
 ```bash
 git push origin main
-git tag -a v1.0.1 -m "Release v1.0.1"
-git push origin v1.0.1
+git tag -a v1.0.2 -m "Release v1.0.2"
+git push origin v1.0.2
 ```
 
 Replace the example with a new version each time. Pushing `main` runs build checks only. The **GitHub Actions → Deploy tagged ShimoDocs release** workflow runs when a `v*` tag is pushed. There is no branch-triggered or manual deployment entrypoint.
 
-Each run creates a unique release directory, leaving previous versions available. `/release.json` records the tag, commit, repository and release ID. The workflow verifies that metadata matches the run and checks all six page routes. In-progress deployments are not cancelled by newer tags.
+Each run creates a unique release directory, leaving previous versions available. The upload step refuses to activate a release that is missing `index.html`, `release.json`, `robots.txt`, `sitemap.xml`, `404.html` or any of the five prerendered subroutes. `/release.json` records the tag, commit, repository and release ID.
+
+After activating the release, the workflow verifies against the live host that every route returns `200` with prerendered markup, an `<h1>`, a canonical link and structured data; that all six titles are distinct; that `robots.txt` is served as `text/plain` with a `Sitemap:` directive; that `sitemap.xml` is served as XML and lists every route; and that an unknown path returns `404`. In-progress deployments are not cancelled by newer tags.
 
 After migrating, disable `deploy.yml` in `liwo-yuandian/shimodocs` so the old repository cannot publish over the tag-based releases. Its code and history can remain as a backup.
 

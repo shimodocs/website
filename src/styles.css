@@ -55,3 +55,47 @@
 @keyframes assistantprogress{0%{transform:translateX(-115%)}55%{transform:translateX(50%)}100%{transform:translateX(220%)}}
 @keyframes livepulse{50%{opacity:.35;transform:scale(.7)}}
 @media(max-width:700px){.workbench{padding:11px}.workbench-body{height:245px;grid-template-columns:24% 47% 29%}.workspace-nav{padding:12px 8px;gap:8px}.workspace-doc{padding:17px 12px}.workspace-doc h3{font-size:16px}.assistant-panel{padding:12px 9px}.assistant-panel>p{font-size:9px;margin-top:16px}}
+
+/* ------------------------------------------------------------------
+   SEO pass: crawlable footer link graph, positioning copy, FAQ, a11y.
+   Appended so these rules win over the earlier minified block.
+   ------------------------------------------------------------------ */
+.skip-link{position:absolute;left:-9999px;top:0;z-index:100;background:#fff;color:#090713;padding:12px 18px;border-radius:0 0 8px 0;font:600 14px 'DM Sans';text-decoration:none}
+.skip-link:focus{left:0}
+
+.site-footer{display:grid;grid-template-columns:minmax(220px,1fr) minmax(0,1.5fr);gap:40px 56px;align-items:start;max-width:1220px;margin:auto;padding:46px 28px 34px;border-top:1px solid var(--line);color:#8b85a3;font-size:13px}
+.footer-brand .footer-logo{font:700 22px 'Space Grotesk';letter-spacing:-.06em;color:var(--ink)}
+.footer-brand .footer-logo span{color:var(--cyan)}
+.footer-brand p{margin:12px 0 0;line-height:1.6;max-width:330px;color:var(--muted)}
+.footer-nav{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:26px}
+.footer-nav h2{font:600 11px 'DM Sans';letter-spacing:.13em;text-transform:uppercase;color:#6f6a86;margin:0 0 12px}
+.footer-nav a{display:block;color:var(--muted);text-decoration:none;padding:6px 0;line-height:1.45}
+.footer-nav a:hover{color:#fff}
+.footer-legal{grid-column:1/-1;display:flex;justify-content:space-between;gap:12px;padding-top:22px;border-top:1px solid var(--line);color:#77718f;font-size:12px}
+
+.value-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-top:38px}
+.value-card{padding:26px 24px;border:1px solid var(--line);border-radius:18px;background:linear-gradient(150deg,#ffffff0f,#ffffff05)}
+.value-card h3{font:600 19px 'Space Grotesk';margin:0 0 12px;color:var(--ink)}
+.value-card p{margin:0;color:var(--muted);font-size:13px;line-height:1.65}
+
+.faq-section{max-width:900px}
+.faq-list{margin-top:34px;border-top:1px solid var(--line)}
+.faq-list details{border-bottom:1px solid var(--line)}
+.faq-list summary{cursor:pointer;list-style:none;display:flex;align-items:center;justify-content:space-between;gap:20px;padding:20px 0;font:500 17px 'DM Sans';color:var(--ink)}
+.faq-list summary::-webkit-details-marker{display:none}
+.faq-list summary:after{content:'+';color:var(--cyan);font-size:22px;line-height:1;flex:0 0 auto}
+.faq-list details[open] summary:after{content:'\2013'}
+.faq-list p{margin:0 0 22px;color:var(--muted);font-size:14px;line-height:1.7;max-width:760px}
+
+.not-found{min-height:52vh}
+.not-found a{color:var(--cyan)}
+
+@media(max-width:980px){
+  .value-grid{grid-template-columns:1fr}
+  .site-footer{grid-template-columns:1fr}
+}
+@media(max-width:700px){
+  .site-footer{display:block;padding-left:20px;padding-right:20px}
+  .footer-nav{margin-top:30px;gap:20px}
+  .footer-legal{flex-direction:column;gap:8px}
+}
