@@ -1,13 +1,12 @@
-name: Build and deploy ShimoDocs
+name: Deploy tagged ShimoDocs release
 
 on:
   push:
-    branches: [main]
-  workflow_dispatch:
+    tags: ['v*']
 
 concurrency:
   group: shimodocs-production
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 permissions:
   contents: read
@@ -17,7 +16,9 @@ env:
 
 jobs:
   build-and-deploy:
+    if: github.repository == 'shimodocs/website' && startsWith(github.ref, 'refs/tags/v')
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -33,6 +34,23 @@ jobs:
 
       - name: Build
         run: npm run build
+
+      - name: Record release version
+        env:
+          RELEASE_TAG: ${{ github.ref_name }}
+          RELEASE_SHA: ${{ github.sha }}
+          RELEASE_REPOSITORY: ${{ github.repository }}
+          RELEASE_ID: ${{ github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
+        run: |
+          node --input-type=module <<'NODE'
+          import { writeFileSync } from 'node:fs';
+          writeFileSync('dist/release.json', JSON.stringify({
+            tag: process.env.RELEASE_TAG,
+            commit: process.env.RELEASE_SHA,
+            repository: process.env.RELEASE_REPOSITORY,
+            release: process.env.RELEASE_ID
+          }) + '\n');
+          NODE
 
       - name: Package static files
         run: tar -czf shimodocs-dist.tgz -C dist .
@@ -57,26 +75,43 @@ jobs:
           DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
           DEPLOY_PORT: ${{ secrets.DEPLOY_PORT || 22 }}
           DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
-          RELEASE_ID: ${{ github.sha }}
+          RELEASE_ID: ${{ github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
         run: |
           test -n "$DEPLOY_USER"
-          scp -P "$DEPLOY_PORT" shimodocs-dist.tgz "$DEPLOY_USER@$DEPLOY_HOST:/tmp/shimodocs-$RELEASE_ID.tgz"
-          ssh -p "$DEPLOY_PORT" "$DEPLOY_USER@$DEPLOY_HOST" "RELEASE_ID='$RELEASE_ID' DEPLOY_USER='$DEPLOY_USER' DEPLOY_PATH='$DEPLOY_PATH' bash -s" <<'REMOTE'
+          ssh_options=(-o BatchMode=yes -o StrictHostKeyChecking=yes -o IdentitiesOnly=yes -o ConnectTimeout=10)
+          scp "${ssh_options[@]}" -P "$DEPLOY_PORT" shimodocs-dist.tgz "$DEPLOY_USER@$DEPLOY_HOST:/tmp/shimodocs-$RELEASE_ID.tgz"
+          ssh "${ssh_options[@]}" -p "$DEPLOY_PORT" "$DEPLOY_USER@$DEPLOY_HOST" "RELEASE_ID='$RELEASE_ID' DEPLOY_PATH='$DEPLOY_PATH' bash -s" <<'REMOTE'
           set -euo pipefail
-          sudo mkdir -p "$DEPLOY_PATH/releases"
-          sudo chown -R "$DEPLOY_USER":"$DEPLOY_USER" "$DEPLOY_PATH"
+          test -w "$DEPLOY_PATH/releases"
           release_dir="$DEPLOY_PATH/releases/$RELEASE_ID"
-          mkdir -p "$release_dir"
+          mkdir "$release_dir"
           tar -xzf "/tmp/shimodocs-$RELEASE_ID.tgz" -C "$release_dir"
-          ln -sfn "$release_dir" "$DEPLOY_PATH/current"
-          rm -f "/tmp/shimodocs-$RELEASE_ID.tgz"
-          find "$DEPLOY_PATH/releases" -mindepth 1 -maxdepth 1 -type d -printf '%T@ %p\n' \
-            | sort -nr | tail -n +6 | cut -d' ' -f2- | xargs -r rm -rf
+          test -s "$release_dir/index.html"
+          test -s "$release_dir/release.json"
+          ln -s "$release_dir" "$DEPLOY_PATH/.current-$RELEASE_ID"
+          mv -Tf "$DEPLOY_PATH/.current-$RELEASE_ID" "$DEPLOY_PATH/current"
+          unlink "/tmp/shimodocs-$RELEASE_ID.tgz"
           REMOTE
 
-      - name: Verify deployed entrypoint
+      - name: Verify deployed version and routes
         env:
           DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
-          DEPLOY_PORT: ${{ secrets.DEPLOY_PORT || 22 }}
+          RELEASE_TAG: ${{ github.ref_name }}
+          RELEASE_SHA: ${{ github.sha }}
+          RELEASE_REPOSITORY: ${{ github.repository }}
+          RELEASE_ID: ${{ github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
         run: |
-          curl --fail --silent --show-error --max-time 15 "http://$DEPLOY_HOST/" | grep -q 'id="root"'
+          curl --fail --silent --show-error --max-time 15 "http://$DEPLOY_HOST/release.json" -o live-release.json
+          node --input-type=module <<'NODE'
+          import assert from 'node:assert/strict';
+          import { readFileSync } from 'node:fs';
+          const release = JSON.parse(readFileSync('live-release.json', 'utf8'));
+          assert.equal(release.tag, process.env.RELEASE_TAG);
+          assert.equal(release.commit, process.env.RELEASE_SHA);
+          assert.equal(release.repository, process.env.RELEASE_REPOSITORY);
+          assert.equal(release.release, process.env.RELEASE_ID);
+          console.log(`Verified ${release.repository} ${release.tag} (${release.commit})`);
+          NODE
+          for route in / /ai-workspace /blog /help-center /pricing /contact-sales; do
+            curl --fail --silent --show-error --max-time 15 "http://$DEPLOY_HOST$route" | grep -q 'id="root"'
+          done
