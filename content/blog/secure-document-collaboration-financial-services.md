@@ -2,6 +2,7 @@
 title: "Secure Document Collaboration for Financial Services"
 seoTitle: "Document Collaboration for Financial Services | ShimoDocs"
 description: "Why financial firms are moving document collaboration in-house, what examiners ask for, and the controls that actually satisfy them."
+layout: feature
 category: industry
 date: 2026-02-02
 tags: [financial services, compliance, security, audit]
@@ -23,6 +24,14 @@ What makes financial services distinctive is not that the data is sensitive in t
 **Cross-border handling.** Client data and trading information attract transfer restrictions that vary by jurisdiction.
 
 **AI adoption.** The strongest pressure right now. Analysts want an assistant; the compliance function needs to know where inference happens and what is retained.
+
+```figure
+type: layers
+title: What an examiner asks for, layer by layer
+items: Access evidence | Retention and legal hold | Communication supervision | Change history | AI governance
+detail: Who could read a specific document on a specific date, produced from systems you operate | Holds that survive user deletion and normal retention expiry, tested | Comment threads and review notes are business communications | Who changed what, when, and what it looked like before | Where inference happens, what is retained, whether retrieval respects permissions
+caption: Figure 1. Each layer converts a contractual assurance into technical evidence. That conversion is the whole argument for self-hosting in this sector.
+```
 
 ## Why the cloud suite conversation gets difficult
 
@@ -86,6 +95,14 @@ The defensible configuration is disabled by default, enabled per workspace with 
 Newer, and now commonly examined. The questions are the ones in our [AI agents security checklist](/blog/ai-agents-in-documents-security): where inference happens, what is retained, whether retrieval respects permissions, and whether AI edits are attributable.
 
 A [data sovereignty](/blog/data-sovereignty-document-collaboration) position that covers storage but not inference is incomplete in this sector, because the inference path is where client content moves.
+
+```figure
+type: flow
+title: An assessment sequence that produces findings
+items: Classify repositories | Map tiers to controls | Trace every copy | Test the evidence | Decide the AI position
+detail: Deal files, client correspondence, research, internal policy | Retention, access, supervision and cross-border handling per tier | Storage, backups, indexes, caches, exports, AI retrieval | Ask an admin to produce one access log for one month, and time it | Before a pilot, and definitely before an examiner asks
+caption: Figure 2. Step four is the one that fails most often, because the policy exists and the evidence takes three days to assemble.
+```
 
 ## A practical assessment sequence
 

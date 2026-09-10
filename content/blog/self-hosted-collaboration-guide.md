@@ -2,6 +2,7 @@
 title: "A Practical Guide to Self-Hosted Collaboration"
 seoTitle: "Self-Hosted Collaboration: A Practical Guide | ShimoDocs"
 description: "What self-hosted collaboration actually involves, the five questions IT teams should answer first, and where the real costs sit."
+layout: standard
 category: self-hosting
 date: 2026-01-14
 tags: [self-hosted, operations, kubernetes, infrastructure]
@@ -26,6 +27,16 @@ There is a spectrum, and vendors are loose with the term.
 **You operate everything including the model.** The AI endpoint is also yours. Rare, expensive, and occasionally the only defensible position.
 
 Decide which one you are actually buying before you compare prices, because they answer different questions.
+
+```figure
+type: matrix
+title: Where the operational effort actually goes
+items: Steady state | Upgrade events | Backup and restore | AI capacity
+detail: Monitoring, user administration and search tuning. The largest recurring cost and the hardest to estimate in advance. | Windows, rollback plans and evidence for validated environments. Predictable in timing, expensive in process. | Relational data, object storage and configuration must be restored together. An untested restore is not a backup. | Token or GPU capacity with no relationship to user count. Watch it if agents are enabled broadly.
+xAxis: LOW EFFORT
+xAxisEnd: HIGH EFFORT
+caption: Figure 1. Teams usually budget for the install and discover the top half of this grid in month three.
+```
 
 ## The five questions to answer first
 
@@ -54,6 +65,14 @@ Rank the dependency. If the suite holds the company's operating procedures and t
 ### 5. Which integrations are load-bearing?
 
 Pull the list of what the current suite is wired into — chat, issue trackers, CI, calendar, e-signature — and mark which ones people would notice within a day. Then verify the replacement supports them. Integrations are the most common reason a technically successful migration gets rolled back.
+
+```figure
+type: layers
+title: A reference deployment
+items: Ingress with TLS | Application nodes | Kubernetes | MySQL 8 | Object storage
+detail: Certificate automation is unglamorous and a total-outage risk | Stateless; scale horizontally and roll without downtime | Scheduling, secrets and rolling upgrades | Metadata, permissions and comments: the real source of truth | Document bodies and attachments, S3-compatible
+caption: Figure 2. The stateful components sit outside the cluster, so the cluster does what it is good at and your existing database tooling keeps working.
+```
 
 ## A reference architecture
 

@@ -2,6 +2,7 @@
 title: "Deploying Self-Hosted Collaboration on Kubernetes"
 seoTitle: "Kubernetes Deployment for Collaboration Software | ShimoDocs"
 description: "Sizing, prerequisites and the difference between single-node and high-availability Kubernetes for a self-hosted collaboration suite."
+layout: briefing
 category: self-hosting
 date: 2026-01-30
 tags: [kubernetes, deployment, sizing, high availability]
@@ -41,6 +42,14 @@ Running MySQL inside the cluster is possible and occasionally correct, but it mo
 
 Do keep the stateless application tier in the cluster. That is what Kubernetes is good at.
 
+```figure
+type: layers
+title: State belongs outside the cluster
+items: Application tier | Ingress and TLS | MySQL 8 | Redis | Object storage
+detail: In the cluster: stateless, horizontally scalable, rolls without downtime | In the cluster: certificate automation you trust, or a total-outage risk | External: point-in-time recovery is a solved problem elsewhere | External: losing it should degrade, not destroy | External: capacity grows without bound, lifecycle policy matters
+caption: Figure 1. Everything that holds state sits outside. That single decision determines how much of the operational burden Kubernetes carries for you.
+```
+
 ## Prerequisites checklist
 
 Before you run an installer, confirm:
@@ -54,6 +63,14 @@ Before you run an installer, confirm:
 - **A container registry** the cluster can pull from, or an offline image bundle.
 
 Two of these are the usual schedule killers: an undecided domain name and object storage that has never been used by anything before.
+
+```figure
+type: bars
+title: What drives sizing, in order
+items: Concurrent editors | Coordination service memory | Document size | Search index | AI retrieval path
+value: 90 | 84 | 62 | 47 | 38
+caption: Figure 2. Relative weight of each factor. Concurrent editors and coordination memory dominate; total registered users is a poor proxy and frequently misleads capacity planning.
+```
 
 ## Sizing
 

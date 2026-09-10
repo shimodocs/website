@@ -2,6 +2,7 @@
 title: "AI Agents Inside Your Documents: What to Secure"
 seoTitle: "AI Agents in Documents: Security Checklist | ShimoDocs"
 description: "Where document AI leaks data, what to configure before enabling agents, and how to keep an auditable trail of every AI edit."
+layout: feature
 category: ai
 date: 2026-01-28
 tags: [ai agents, security, data flow, governance]
@@ -12,6 +13,14 @@ featured: true
 An AI assistant that reads your documents is a data pipeline. It has an input, a processing step and an output, and every one of those stages is a place where content leaves a boundary or a permission is quietly widened.
 
 Most organisations enable the feature and audit the pipeline later, if at all. This is the checklist to run before enabling it.
+
+```figure
+type: flow
+title: The four egress points
+items: Retrieval | Prompt payload | Provider retention | The output
+detail: Does the search respect document permissions, or the service account's? | Document text packaged and sent to a model endpoint | Requests kept for abuse monitoring, evaluation or training | Generated text cached, logged or written back with new access rules
+caption: Figure 1. If you cannot draw all four arrows on a diagram, you do not yet know where your content goes.
+```
 
 ## The four places document AI actually leaks
 
@@ -81,6 +90,16 @@ Every AI action should carry:
 - **A reviewer.** Who accepted, changed or reverted it, and when.
 
 If AI edits do not appear in version history, your audit cannot distinguish machine changes from human ones. That is an uncomfortable position to explain to an auditor.
+
+```figure
+type: matrix
+title: Controls in order of effectiveness
+items: Limit capability | Require acceptance | Treat content as data | Filter instructions
+detail: An agent that can only draft cannot be tricked into deleting records. This is the control that actually works. | Draft rather than apply, so every write passes a human. Cheap and effective. | A vendor-side property. Ask how retrieved content is delimited from instructions. | Text filtering is incomplete by construction. Treat it as defence in depth, never as the control.
+xAxis: WEAKER CONTROL
+xAxisEnd: STRONGER CONTROL
+caption: Figure 2. No prompt-level defence is complete. What works is limiting what the agent is allowed to do.
+```
 
 ## Prompt injection is a document problem
 

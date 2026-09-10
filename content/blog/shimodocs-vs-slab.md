@@ -2,6 +2,7 @@
 title: "ShimoDocs vs Slab: Knowledge Base or Workspace?"
 seoTitle: "ShimoDocs vs Slab | ShimoDocs"
 description: "Slab is a hosted knowledge base built for team posts. ShimoDocs is a self-hosted document suite. Where each one fits and how to choose."
+layout: briefing
 category: comparisons
 date: 2026-02-11
 tags: [comparison, slab, knowledge base, wiki]
@@ -27,6 +28,16 @@ The distinction is the same one that separates a wiki from a document suite, and
 **A clean, focused editor.** Little to configure, quick to use, low training burden.
 
 If your need is an internal knowledge base that people actually read, Slab is a credible answer and a focused one.
+
+```figure
+type: compare
+title: Reference material against work in progress
+left: Belongs in a knowledge base
+right: Belongs in a document suite
+leftItems: How we do things and who owns what | The current policy, in one place | Onboarding material read by everyone | Anything that should be published
+rightItems: The brief, the model, the deck, the contract | Content that gets versioned and reviewed | Files exchanged with clients and partners | Anything with a retention obligation
+caption: Figure 1. The first column benefits from publishing discipline. The second benefits from format fidelity and access control. Few products are good at both.
+```
 
 ## Where the fit breaks down
 
@@ -86,6 +97,14 @@ That difference produces measurably better internal documentation over time, and
 The counter-argument is that publishing discipline is a practice, not a product. Organisations do run well-maintained document workspaces, using conventions — a dated archive folder, an owner column, a policy that superseded documents move rather than linger. It requires more discipline than a tool that enforces publishing states, and it is achievable.
 
 If you are choosing a document suite and you have a real knowledge-management problem, the honest recommendation is to pair it with explicit conventions from day one: a naming standard, a defined archive location, and a rule about who marks something as current. Without those, a file workspace decays into a folder nobody trusts, and the tool gets blamed for a process failure.
+
+```figure
+type: flow
+title: Where content crosses the boundary
+items: Drafted internally | Reviewed | Shared externally | Retained
+detail: Knowledge base content usually stops here | Comments and suggestions resolve in the tool | The point where hosted knowledge tools strain | Records rules decide how long it stays
+caption: Figure 2. If most of your content stops at step one, an internal knowledge base is a smaller and simpler tool. If a meaningful share reaches step three, the requirements change.
+```
 
 ## What "internal" versus "external" changes
 

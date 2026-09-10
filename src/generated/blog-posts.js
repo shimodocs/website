@@ -8,6 +8,8 @@ export const BLOG_POSTS = [
     "description": "Enterprise evaluation of Google Workspace alternatives, covering data residency, AI governance, administration and migration risk.",
     "category": "comparisons",
     "categoryLabel": "Comparisons",
+    "layout": "feature",
+    "figures": 2,
     "date": "2026-02-25",
     "updated": null,
     "tags": [
@@ -26,6 +28,8 @@ export const BLOG_POSTS = [
     "description": "What open source document collaboration actually gives you, where the total cost hides, and how to evaluate it without the ideology.",
     "category": "comparisons",
     "categoryLabel": "Comparisons",
+    "layout": "magazine",
+    "figures": 2,
     "date": "2026-02-23",
     "updated": null,
     "tags": [
@@ -44,6 +48,8 @@ export const BLOG_POSTS = [
     "description": "How to evaluate self-hosted document collaboration tools, the deployment models involved, and the requirements that decide projects.",
     "category": "comparisons",
     "categoryLabel": "Comparisons",
+    "layout": "magazine",
+    "figures": 2,
     "date": "2026-02-20",
     "updated": null,
     "tags": [
@@ -62,6 +68,8 @@ export const BLOG_POSTS = [
     "description": "A shortlist of Google Docs alternatives organised by what actually drives the decision: control, cost, capability or collaboration depth.",
     "category": "comparisons",
     "categoryLabel": "Comparisons",
+    "layout": "feature",
+    "figures": 2,
     "date": "2026-02-18",
     "updated": null,
     "tags": [
@@ -80,6 +88,8 @@ export const BLOG_POSTS = [
     "description": "A framework for comparing self-hosted office and document collaboration suites, covering deployment, file fidelity, identity and AI.",
     "category": "comparisons",
     "categoryLabel": "Comparisons",
+    "layout": "magazine",
+    "figures": 2,
     "date": "2026-02-16",
     "updated": null,
     "tags": [
@@ -98,6 +108,8 @@ export const BLOG_POSTS = [
     "description": "Coda blends documents with tables and automation. ShimoDocs is a self-hosted office suite. How to decide which model suits your team.",
     "category": "comparisons",
     "categoryLabel": "Comparisons",
+    "layout": "magazine",
+    "figures": 2,
     "date": "2026-02-13",
     "updated": null,
     "tags": [
@@ -116,6 +128,8 @@ export const BLOG_POSTS = [
     "description": "Slab is a hosted knowledge base built for team posts. ShimoDocs is a self-hosted document suite. Where each one fits and how to choose.",
     "category": "comparisons",
     "categoryLabel": "Comparisons",
+    "layout": "briefing",
+    "figures": 2,
     "date": "2026-02-11",
     "updated": null,
     "tags": [
@@ -134,6 +148,8 @@ export const BLOG_POSTS = [
     "description": "A suite-level comparison of Microsoft 365 and ShimoDocs, covering deployment, AI data flow, administration and where each makes sense.",
     "category": "comparisons",
     "categoryLabel": "Comparisons",
+    "layout": "briefing",
+    "figures": 2,
     "date": "2026-02-09",
     "updated": null,
     "tags": [
@@ -152,6 +168,8 @@ export const BLOG_POSTS = [
     "description": "SharePoint is a broad Microsoft platform; ShimoDocs is a focused self-hosted suite. Where each fits and how to decide between them.",
     "category": "comparisons",
     "categoryLabel": "Comparisons",
+    "layout": "briefing",
+    "figures": 2,
     "date": "2026-02-06",
     "updated": null,
     "tags": [
@@ -170,6 +188,8 @@ export const BLOG_POSTS = [
     "description": "Confluence is a hosted wiki tied to Jira. ShimoDocs is a self-hosted document suite. How to tell which one your team actually needs.",
     "category": "comparisons",
     "categoryLabel": "Comparisons",
+    "layout": "briefing",
+    "figures": 2,
     "date": "2026-02-04",
     "updated": null,
     "tags": [
@@ -188,6 +208,8 @@ export const BLOG_POSTS = [
     "description": "Why financial firms are moving document collaboration in-house, what examiners ask for, and the controls that actually satisfy them.",
     "category": "industry",
     "categoryLabel": "Industry",
+    "layout": "feature",
+    "figures": 2,
     "date": "2026-02-02",
     "updated": null,
     "tags": [
@@ -206,6 +228,8 @@ export const BLOG_POSTS = [
     "description": "Sizing, prerequisites and the difference between single-node and high-availability Kubernetes for a self-hosted collaboration suite.",
     "category": "self-hosting",
     "categoryLabel": "Self-hosting",
+    "layout": "briefing",
+    "figures": 2,
     "date": "2026-01-30",
     "updated": null,
     "tags": [
@@ -224,6 +248,8 @@ export const BLOG_POSTS = [
     "description": "Where document AI leaks data, what to configure before enabling agents, and how to keep an auditable trail of every AI edit.",
     "category": "ai",
     "categoryLabel": "AI at work",
+    "layout": "feature",
+    "figures": 2,
     "date": "2026-01-28",
     "updated": null,
     "tags": [
@@ -242,6 +268,8 @@ export const BLOG_POSTS = [
     "description": "A staged migration plan for moving documents out of Google Workspace, including export formats, permissions, cutover and rollback.",
     "category": "guides",
     "categoryLabel": "Guides & workflows",
+    "layout": "feature",
+    "figures": 2,
     "date": "2026-01-26",
     "updated": null,
     "tags": [
@@ -260,6 +288,8 @@ export const BLOG_POSTS = [
     "description": "Notion is a hosted workspace; ShimoDocs is a self-hosted suite. How they differ on data control, structure, collaboration and cost.",
     "category": "comparisons",
     "categoryLabel": "Comparisons",
+    "layout": "magazine",
+    "figures": 2,
     "date": "2026-01-23",
     "updated": null,
     "tags": [
@@ -278,6 +308,8 @@ export const BLOG_POSTS = [
     "description": "A feature-by-feature comparison of ShimoDocs and Google Docs, covering deployment, collaboration, AI, administration and total cost.",
     "category": "comparisons",
     "categoryLabel": "Comparisons",
+    "layout": "standard",
+    "figures": 2,
     "date": "2026-01-21",
     "updated": null,
     "tags": [
@@ -296,6 +328,8 @@ export const BLOG_POSTS = [
     "description": "What to look for in a private cloud Google Docs alternative, how real-time collaboration holds up, and the questions to ask before migrating.",
     "category": "comparisons",
     "categoryLabel": "Comparisons",
+    "layout": "standard",
+    "figures": 2,
     "date": "2026-01-19",
     "updated": null,
     "tags": [
@@ -314,6 +348,8 @@ export const BLOG_POSTS = [
     "description": "Data sovereignty is not the same as data residency. What the distinction means for document collaboration, audits and cross-border access.",
     "category": "security",
     "categoryLabel": "Security & compliance",
+    "layout": "standard",
+    "figures": 2,
     "date": "2026-01-16",
     "updated": null,
     "tags": [
@@ -332,6 +368,8 @@ export const BLOG_POSTS = [
     "description": "What self-hosted collaboration actually involves, the five questions IT teams should answer first, and where the real costs sit.",
     "category": "self-hosting",
     "categoryLabel": "Self-hosting",
+    "layout": "standard",
+    "figures": 2,
     "date": "2026-01-14",
     "updated": null,
     "tags": [
@@ -350,6 +388,8 @@ export const BLOG_POSTS = [
     "description": "Private cloud document collaboration keeps real-time editing, comments and AI inside infrastructure you control. Here is how it works and when it fits.",
     "category": "self-hosting",
     "categoryLabel": "Self-hosting",
+    "layout": "standard",
+    "figures": 2,
     "date": "2026-01-12",
     "updated": null,
     "tags": [

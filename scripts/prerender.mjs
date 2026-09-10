@@ -177,7 +177,23 @@ function prerenderedMarkup(html) {
   return html.slice(start, end)
 }
 
+const LAYOUTS_WITH_TOC = ['standard', 'briefing']
+const ALL_LAYOUTS = ['standard', 'feature', 'briefing', 'magazine']
+
 const problems = []
+
+// Articles must not all share one template. Enforced rather than trusted.
+const layoutCounts = new Map()
+for (const post of posts) layoutCounts.set(post.layout, (layoutCounts.get(post.layout) || 0) + 1)
+if (posts.length >= 4) {
+  for (const layout of ALL_LAYOUTS) {
+    const count = layoutCounts.get(layout) || 0
+    if (count === 0) problems.push(`layout "${layout}" is never used`)
+    if (count / posts.length > 0.4) {
+      problems.push(`layout "${layout}" is used by ${count}/${posts.length} articles, above the 40% ceiling`)
+    }
+  }
+}
 
 for (const routePath of ROUTE_PATHS) {
   const file = routePath === '/' ? 'index.html' : `${routePath.slice(1)}/index.html`
@@ -226,8 +242,18 @@ for (const { post, file } of articles) {
   }
   if (!html.includes('"BlogPosting"')) problems.push(`${post.slug}: no BlogPosting structured data`)
   if (!html.includes('"BreadcrumbList"')) problems.push(`${post.slug}: no breadcrumb structured data`)
-  if (post.headings.length >= 3 && !html.includes(`href="#${post.headings[0].id}"`)) {
-    problems.push(`${post.slug}: table of contents is missing`)
+  // Only the layouts that ship a table of contents are expected to link their
+  // headings. Feature and magazine deliberately have none, which is the point
+  // of having more than one layout.
+  const firstH2 = post.headings.find(heading => heading.level === 2)
+  if (LAYOUTS_WITH_TOC.includes(post.layout) && firstH2 && !html.includes(`href="#${firstH2.id}"`)) {
+    problems.push(`${post.slug}: ${post.layout} layout is missing its table of contents`)
+  }
+  if (!html.includes(`data-layout="${post.layout}"`)) {
+    problems.push(`${post.slug}: rendered markup is not tagged with layout "${post.layout}"`)
+  }
+  if (!/<figure class="fig\b/.test(html)) {
+    problems.push(`${post.slug}: no figure rendered`)
   }
   // The body must be real HTML in the document, not deferred to the client.
   // Checked via the heading anchor id rather than its text, because the
@@ -283,13 +309,44 @@ if (generatedRecords.length !== posts.length) {
   problems.push('src/generated/blog-posts.js is stale; run the content generator')
 }
 
+// Layouts must produce structurally different documents, not the same markup
+// with different class names. Compared by the set of classes each layout emits.
+function structureSignature(html) {
+  const markup = prerenderedMarkup(html)
+  const classes = new Set()
+  for (const match of markup.matchAll(/class="([^"]+)"/g)) {
+    for (const name of match[1].split(/\s+/)) if (name) classes.add(name)
+  }
+  return [...classes].sort().join('|')
+}
+
+const signatures = new Map()
+for (const { post, file } of articles) {
+  const html = readFileSync(join(distDir, file), 'utf8')
+  const signature = structureSignature(html)
+  const existing = signatures.get(post.layout)
+  if (!existing) signatures.set(post.layout, { signature, slug: post.slug })
+}
+const seenLayouts = [...signatures.entries()]
+for (let i = 0; i < seenLayouts.length; i += 1) {
+  for (let j = i + 1; j < seenLayouts.length; j += 1) {
+    const [layoutA, a] = seenLayouts[i]
+    const [layoutB, b] = seenLayouts[j]
+    if (a.signature === b.signature) {
+      problems.push(`layouts "${layoutA}" and "${layoutB}" render identical structure (${a.slug} vs ${b.slug})`)
+    }
+  }
+}
+
 if (problems.length) {
   console.error('Prerender verification failed:')
   for (const problem of problems) console.error(`  - ${problem}`)
   process.exit(1)
 }
 
+const layoutSummary = [...layoutCounts.entries()].map(([layout, count]) => `${layout} ${count}`).join(', ')
 console.log(
   `Prerender verification passed: ${ROUTE_PATHS.length} routes and ${posts.length} articles, ` +
-    'unique titles, canonical links, structured data, internal links and no client bundle on articles.',
+    `unique titles, canonical links, structured data, no client bundle on articles. ` +
+    `Layouts: ${layoutSummary}. Distinct structures: ${signatures.size}.`,
 )

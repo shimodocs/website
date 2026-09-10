@@ -2,6 +2,7 @@
 title: "Google Workspace Alternatives for Enterprise Teams"
 seoTitle: "Google Workspace Alternatives for Enterprise | ShimoDocs"
 description: "Enterprise evaluation of Google Workspace alternatives, covering data residency, AI governance, administration and migration risk."
+layout: feature
 category: comparisons
 date: 2026-02-25
 tags: [google workspace, enterprise, comparison, migration]
@@ -26,6 +27,14 @@ That framing matters, because it changes the deliverable. The goal is not a bett
 
 Notice that none of these is "Google Workspace is bad at documents". Enterprise migrations driven by preference tend to fail. Migrations driven by a documented constraint tend to succeed, because there is a clear definition of done.
 
+```figure
+type: bars
+title: Where the constrained content actually sits
+items: Public and general | Internal collaboration | Confidential client material | Restricted regulated records
+value: 100 | 62 | 18 | 7
+caption: Figure 1. Indicative share of document volume by tier in the organisations that run this evaluation. The last two rows are the entire reason for the project, and they are a small fraction of the tenant.
+```
+
 ## Why full replacement is the wrong goal
 
 A wholesale Workspace migration is a multi-month programme touching mail, calendar, meetings, chat, drive, documents and identity, with productivity loss that is difficult to quantify and easy to underestimate.
@@ -46,6 +55,14 @@ The practical move is to identify that tier and give it a different home.
 The value of writing this table down is that it converts a platform debate into a classification exercise, and classification is a task with an end.
 
 It also produces a much smaller migration. In most organisations the confidential and restricted tiers are a fraction of total document volume, which means the project is reachable in a quarter rather than a year.
+
+```figure
+type: layers
+title: Enterprise requirements for the controlled tier
+items: Identity lifecycle | Access evidence | Retention and legal hold | Backup and restore | AI governance
+detail: Group-to-role mapping and deprovisioning on leave, tested end to end | Who could read a specific document on a specific date, from your own systems | Holds that survive user deletion, verified rather than assumed | Proven by an actual restore, including object storage | Where inference happens, what is retained, whether retrieval respects permissions
+caption: Figure 2. Every row converts a vendor assurance into evidence you produce. If a row is missing, the tier is not actually controlled.
+```
 
 ## What the controlled tier requires
 

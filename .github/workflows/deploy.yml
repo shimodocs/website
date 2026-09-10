@@ -208,6 +208,8 @@ jobs:
           }
 
           const articleTitles = new Set();
+          const articleLayouts = new Set();
+          const LAYOUTS = ['standard', 'feature', 'briefing', 'magazine'];
           const failures = [];
           const queue = [...articleUrls];
           const worker = async () => {
@@ -227,10 +229,25 @@ jobs:
               if (!title) failures.push(`${label}: no <title>`);
               else if (articleTitles.has(title[1])) failures.push(`${label}: duplicate title "${title[1]}"`);
               else articleTitles.add(title[1]);
+
+              const layout = res.body.match(/data-layout="([a-z]+)"/);
+              if (!layout) failures.push(`${label}: no layout marker`);
+              else if (!LAYOUTS.includes(layout[1])) failures.push(`${label}: unknown layout "${layout[1]}"`);
+              else articleLayouts.add(layout[1]);
+
+              if (!/<figure class="fig/.test(res.body)) failures.push(`${label}: no figure rendered`);
             }
           };
           await Promise.all(Array.from({ length: 8 }, worker));
           assert.deepEqual(failures, [], `article checks failed:\n  ${failures.join('\n  ')}`);
+          assert.ok(
+            articleLayouts.size >= 3,
+            `only ${articleLayouts.size} distinct article layouts are live (${[...articleLayouts].join(', ')}); expected at least 3`,
+          );
 
-          console.log(`Verified ${routes.length} prerendered routes, ${articleUrls.length} articles, unique titles, robots.txt, sitemap.xml, a real 404 and ${installerLinks.length} installer links.`);
+          console.log(
+            `Verified ${routes.length} prerendered routes, ${articleUrls.length} articles across ` +
+              `${articleLayouts.size} layouts (${[...articleLayouts].sort().join(', ')}), unique titles, ` +
+              `robots.txt, sitemap.xml, a real 404 and ${installerLinks.length} installer links.`,
+          );
           NODE

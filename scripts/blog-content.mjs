@@ -12,6 +12,7 @@ import { dirname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import matter from 'gray-matter'
 import MarkdownIt from 'markdown-it'
+import { BLOCK_TYPES, renderCallout, renderFigure, renderKeyPoints, renderPullQuote } from './figures.mjs'
 
 const rootDir = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 export const CONTENT_DIR = join(rootDir, 'content', 'blog')
@@ -52,6 +53,13 @@ export const CATEGORIES = [
 ]
 
 const CATEGORY_IDS = new Set(CATEGORIES.map(category => category.id))
+
+// Article layouts. Each renders a genuinely different document structure, not
+// just a different stylesheet, so the archive does not look like one template
+// repeated a hundred times.
+export const LAYOUTS = ['standard', 'feature', 'briefing', 'magazine']
+
+export const DEFAULT_LAYOUT = 'standard'
 
 export function categoryById(id) {
   return CATEGORIES.find(category => category.id === id) || null
@@ -111,6 +119,51 @@ function externalLinksPlugin(md) {
   }
 }
 
+// Fenced blocks let an article carry diagrams and aside components without
+// hand-written HTML. The first paragraph of key/value lines is the spec; what
+// follows a blank line is markdown body content.
+export function parseBlock(content) {
+  const raw = String(content).split('\n')
+  const spec = {}
+  let index = 0
+  for (; index < raw.length; index += 1) {
+    const line = raw[index]
+    if (!line.trim()) {
+      index += 1
+      break
+    }
+    const match = line.match(/^([A-Za-z][A-Za-z0-9_]*)\s*:\s*(.*)$/)
+    if (!match) break
+    spec[match[1]] = match[2].trim()
+  }
+  return { spec, body: raw.slice(index).join('\n').trim() }
+}
+
+function blockPlugin(md) {
+  const defaultFence =
+    md.renderer.rules.fence || ((tokens, index, options, env, self) => self.renderToken(tokens, index, options))
+
+  md.renderer.rules.fence = (tokens, index, options, env, self) => {
+    const token = tokens[index]
+    const language = (token.info || '').trim().split(/\s+/)[0]
+    if (!BLOCK_TYPES.includes(language)) return defaultFence(tokens, index, options, env, self)
+
+    const { spec, body } = parseBlock(token.content)
+    switch (language) {
+      case 'figure':
+        return renderFigure(spec)
+      case 'callout':
+        return renderCallout(spec, body ? md.render(body) : '')
+      case 'keypoints':
+        return renderKeyPoints(spec, body ? md.render(body) : '')
+      case 'pullquote':
+        return renderPullQuote(spec, body ? md.renderInline(body) : '')
+      default:
+        return defaultFence(tokens, index, options, env, self)
+    }
+  }
+}
+
 // A plain, predictable renderer: no raw HTML from authors, tables and
 // typographic replacement on, linkification for bare URLs.
 const md = new MarkdownIt({
@@ -119,6 +172,7 @@ const md = new MarkdownIt({
   typographer: true,
   breaks: false,
 })
+  .use(blockPlugin)
   .use(headingAnchorsPlugin)
   .use(externalLinksPlugin)
 
@@ -177,8 +231,17 @@ function loadPost(fileName) {
     throw new Error(`${fileName}: title is ${title.length} chars, too long for a search result`)
   }
 
+  const layout = String(data.layout || DEFAULT_LAYOUT).trim()
+  if (!LAYOUTS.includes(layout)) {
+    throw new Error(`${fileName}: unknown layout "${layout}". Expected one of ${LAYOUTS.join(', ')}`)
+  }
+
   const { html, headings } = renderMarkdown(content)
   const words = countWords(content)
+  const figures = (html.match(/class="fig\b/g) || []).length
+  if (figures < 1) {
+    throw new Error(`${fileName}: every article needs at least one figure block`)
+  }
 
   // The H1 is written for a reader; the search result title is written for a
   // query. When the H1 is already short enough the brand suffix is appended
@@ -204,6 +267,8 @@ function loadPost(fileName) {
     keywords: typeof data.keywords === 'string' ? data.keywords : '',
     author: typeof data.author === 'string' ? data.author : 'ShimoDocs Team',
     featured: data.featured === true,
+    layout,
+    figures,
     words,
     readingTime: Math.max(1, Math.round(words / 220)),
     headings,
@@ -254,16 +319,17 @@ export function loadPosts() {
 // every article an outbound set of contextual internal links, which the
 // previous site's articles had none of.
 export function relatedPosts(post, posts, limit = 4) {
-  const scored = posts
-    .filter(candidate => candidate.slug !== post.slug)
+  const candidates = posts.filter(candidate => candidate.slug !== post.slug)
+  const scored = candidates
     .map(candidate => {
       const sharedTags = candidate.tags.filter(tag => post.tags.includes(tag)).length
       const sameCategory = candidate.category === post.category ? 1 : 0
       return { candidate, score: sameCategory * 10 + sharedTags }
     })
-    .filter(entry => entry.score > 0)
     .sort((a, b) => (b.score - a.score) || (a.candidate.date < b.candidate.date ? 1 : -1))
 
+  // Fall back to recency so a post with no tag overlap still links out to a
+  // full set of related reading. An orphan article helps nobody.
   return scored.slice(0, limit).map(entry => entry.candidate)
 }
 
@@ -276,6 +342,8 @@ export function toClientRecord(post) {
     description: post.description,
     category: post.category,
     categoryLabel: post.categoryLabel,
+    layout: post.layout,
+    figures: post.figures,
     date: post.date,
     updated: post.updated,
     tags: post.tags,

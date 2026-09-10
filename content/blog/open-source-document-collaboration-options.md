@@ -2,6 +2,7 @@
 title: "Open Source Document Collaboration: An Honest Assessment"
 seoTitle: "Open Source Document Collaboration Options | ShimoDocs"
 description: "What open source document collaboration actually gives you, where the total cost hides, and how to evaluate it without the ideology."
+layout: magazine
 category: comparisons
 date: 2026-02-23
 tags: [open source, comparison, licensing, evaluation]
@@ -36,6 +37,16 @@ Plenty of open source document tools are excellent. Plenty are abandoned. The li
 
 **Lower total cost.** Frequently the opposite, once operations, integration and risk are counted.
 
+```figure
+type: compare
+title: What each licence family means for a commercial deployment
+left: Lower friction
+right: Higher obligation
+leftItems: Permissive licences: embed and modify freely | Internal use of almost any open licence | Copyleft, when you never distribute | Open core, if the paid tier is not needed
+rightItems: Copyleft, if you ship a modified version | Source-available terms that restrict commercial use | Dual-licensed capability behind the commercial edition | Anything you fork, permanently
+caption: Figure 1. The practical question is narrow: if you modify and deploy internally, what are your obligations? Most permissive and copyleft licences are unproblematic there.
+```
+
 ## The licence question, practically
 
 Open source licences differ in ways that matter for a commercial deployment, and the categories are worth understanding before you commit.
@@ -68,6 +79,14 @@ The practical question is specific: if you modify the software and deploy it int
 **When the total cost is the motivation.** Infrastructure plus operations plus integration frequently exceeds the subscription it replaced, particularly below a few hundred users.
 
 **When integrations are load-bearing.** Open source document tools generally have fewer connectors, and you will be building the missing ones.
+
+```figure
+type: bars
+title: Five lines, and which one usually decides it
+items: Licence or subscription | Infrastructure | Operations hours per month | Integration work | Support and risk
+value: 24 | 41 | 82 | 55 | 69
+caption: Figure 2. Open source converts the first line into the third. Whether that is a good trade depends entirely on whether you have spare engineering capacity, not on the licence.
+```
 
 ## A fair way to compare
 

@@ -2,6 +2,7 @@
 title: "ShimoDocs vs Notion: Documents, Wikis or Both?"
 seoTitle: "ShimoDocs vs Notion | ShimoDocs"
 description: "Notion is a hosted workspace; ShimoDocs is a self-hosted suite. How they differ on data control, structure, collaboration and cost."
+layout: magazine
 category: comparisons
 date: 2026-01-23
 tags: [comparison, notion, workspace, self-hosted]
@@ -20,6 +21,16 @@ Notion is a flexible block-based workspace with a hosted data model. ShimoDocs i
 
 The practical consequence: Notion is better at inventing a structure that does not exist yet. ShimoDocs is better at doing the work inside a recognisable file type.
 
+```figure
+type: compare
+title: The architectural question comes first
+left: Notion
+right: ShimoDocs
+leftItems: Vendor cloud only | No self-hosted deployment | AI inference on the vendor's stack | Permissions in the vendor's admin console
+rightItems: Your servers, private cloud or data centre | Single node or high-availability Kubernetes | Endpoint you nominate | Your directory, mapped to roles
+caption: Figure 1. If your requirement is that content stays inside your network, this table ends the evaluation before the feature comparison starts.
+```
+
 ## Deployment and data control
 
 | | Notion | ShimoDocs |
@@ -34,6 +45,16 @@ The practical consequence: Notion is better at inventing a structure that does n
 If data control is the deciding factor, this table ends the comparison. Notion does not offer a self-hosted deployment, so it cannot satisfy a requirement that content stay inside your network.
 
 That is not a criticism of the product. It is a positioning fact worth establishing early, because teams sometimes spend weeks comparing features before discovering the constraint is architectural.
+
+```figure
+type: matrix
+title: Which model fits which job
+items: Knowledge base with backlinks | Custom tracker or CRM | Spreadsheet-heavy analysis | External file exchange
+detail: Notion's linked pages and quick navigation are excellent for interconnected notes. | Notion's linked databases and multiple views have no direct equivalent in a file suite. | A document suite with a real spreadsheet editor usually wins on formula coverage and round-trip. | Shared decks and contracts favour a suite with format fidelity and permission control on export.
+xAxis: FAVOURS NOTION
+xAxisEnd: FAVOURS A DOCUMENT SUITE
+caption: Figure 2. Most teams have work in more than one quadrant, which is why a split is a common and legitimate outcome.
+```
 
 ## Where Notion is stronger
 

@@ -2,6 +2,7 @@
 title: "ShimoDocs vs Coda: Docs, Tables and Where They Diverge"
 seoTitle: "ShimoDocs vs Coda | ShimoDocs"
 description: "Coda blends documents with tables and automation. ShimoDocs is a self-hosted office suite. How to decide which model suits your team."
+layout: magazine
 category: comparisons
 date: 2026-02-13
 tags: [comparison, coda, tables, automation]
@@ -27,6 +28,16 @@ That is a design philosophy difference, and it determines what each is good at.
 **Fast iteration.** Editing a Coda doc to change a workflow is far quicker than changing a deployed application.
 
 If your need is a custom, lightweight internal tool, Coda's model is a strong fit and a conventional office suite is not competing with it.
+
+```figure
+type: compare
+title: Structure you build against structure you inherit
+left: Building a small application
+right: Producing a work product
+leftItems: A tracker with rules and buttons | An intake process with a form and a queue | A dashboard pulling external data | A workflow only your team needs
+rightItems: A contract with page layout and numbering | A model that must recalculate exactly | A deck that goes to a client | A file a partner sends back edited
+caption: Figure 1. Flexibility raises the ceiling and raises the variance. Which matters more depends on how many people build structure, and whether anyone reviews it.
+```
 
 ## Where the models diverge
 
@@ -95,6 +106,14 @@ Which you want depends on how many of these small applications your organisation
 A useful test: pick your most important in-document automation, if you have one, and ask who could rebuild it. If the answer is a single person, the flexibility is also a concentration risk. If the answer is nobody because the workflow is a three-step routine in a shared file, you have chosen durability over power.
 
 Neither is wrong. But organisations frequently adopt the more powerful model without deciding who maintains what it produces, and discover the maintenance question years later when the builder changes role.
+
+```figure
+type: bars
+title: How much value accumulates outside your reach
+items: Formulas across tables | Linked views and relations | In-document automation | External data packs | Document formatting standards
+value: 88 | 79 | 71 | 64 | 26
+caption: Figure 2. Indicative stickiness by asset. The top rows do not export, which means the migration cost you face in five years is partly decided by the model you choose now.
+```
 
 ## A note on data gravity
 

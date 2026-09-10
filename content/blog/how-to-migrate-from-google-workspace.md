@@ -2,6 +2,7 @@
 title: "How to Migrate from Google Workspace Without Losing Work"
 seoTitle: "Migrating from Google Workspace: A Staged Plan | ShimoDocs"
 description: "A staged migration plan for moving documents out of Google Workspace, including export formats, permissions, cutover and rollback."
+layout: feature
 category: guides
 date: 2026-01-26
 tags: [migration, google workspace, cutover, planning]
@@ -37,6 +38,14 @@ Use the Admin console and Drive audit to answer:
 - What are the ten largest folders?
 
 The active-versus-dormant split usually surprises people. A common result is that under a third of documents have been touched this year. Migrating dormant archives is a separate, lower-priority problem, and doing it first is a good way to burn the project's momentum.
+
+```figure
+type: bars
+title: Fidelity risk by content type
+items: Google Docs to document | Google Sheets to spreadsheet | Google Slides to presentation | Google Forms to form | Google Sites to wiki
+value: 45 | 88 | 52 | 40 | 90
+caption: Figure 1. Indicative risk of losing behaviour rather than content. Spreadsheets and Sites are where schedules slip, because a file that opens can still be wrong.
+```
 
 ## Step 2: Decide the destination format for each type
 
@@ -90,6 +99,14 @@ Do not accept "the file opened". Check:
 - Permissions on the new object match the mapping.
 
 A simple per-wave sample of ten files, checked properly, catches most systemic problems.
+
+```figure
+type: timeline
+title: The parallel-running window
+items: Announce the end date | Migrate the first wave | Source becomes read-only | Access is revoked | Archive retained cold
+detail: On day one, not when you feel ready | Policies and meeting notes, verified properly | Read-only removes ambiguity before revocation removes access | The step that actually retires the old system | A cold export, not a live read-only tenant
+caption: Figure 2. Most stalled migrations are stuck between steps three and four, because a live read-only tenant keeps the decision reversible.
+```
 
 ## Step 5: Run in parallel, with a deadline
 

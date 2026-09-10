@@ -2,6 +2,7 @@
 title: "ShimoDocs vs SharePoint for Document Management"
 seoTitle: "ShimoDocs vs SharePoint for Documents | ShimoDocs"
 description: "SharePoint is a broad Microsoft platform; ShimoDocs is a focused self-hosted suite. Where each fits and how to decide between them."
+layout: briefing
 category: comparisons
 date: 2026-02-06
 tags: [comparison, sharepoint, document management, microsoft]
@@ -25,6 +26,16 @@ That breadth is the reason comparisons with a focused suite are difficult. It is
 **A governance surface.** Retention policies, eDiscovery and DLP are all part of the broader Microsoft compliance stack.
 
 For an organisation already committed to Microsoft 365, SharePoint is the path of least resistance and often the correct one.
+
+```figure
+type: matrix
+title: SharePoint capability against effort to realise it
+items: Document libraries | Metadata and content types | Retention and eDiscovery | Power Automate workflows
+detail: Mature and quick to adopt. Versioning and libraries work without much configuration. | Powerful and dependent on a term store design nobody maintains after launch. | Excellent if the licences cover it; determine that by mapping plans, not by reading a feature list. | High ceiling, and needs an owner. Most tenants have flows nobody can explain.
+xAxis: LESS ADMIN EXPERTISE NEEDED
+xAxisEnd: MORE ADMIN EXPERTISE NEEDED
+caption: Figure 1. The bottom-right quadrant is where SharePoint projects stall: capability that exists and that no one on staff is resourced to configure.
+```
 
 ## Where the friction appears
 
@@ -51,6 +62,14 @@ For an organisation already committed to Microsoft 365, SharePoint is the path o
 | Time to first value | Weeks to months | Hours to days |
 
 The last row is the one teams underestimate in both directions. SharePoint can do far more, and it takes far longer to get there.
+
+```figure
+type: flow
+title: The tiered pattern most organisations land on
+items: Author in the suite | Review in the suite | Publish to records | Retain in SharePoint
+detail: Active collaborative work on documents, models and decks | Comments, suggestions and version history stay attached to the file | The document reaches a retention-relevant state | The governance layer keeps the authoritative copy
+caption: Figure 2. One rule decides whether this works: which system is authoritative at which stage. Without it, teams keep two copies and trust neither.
+```
 
 ## The self-hosting question
 

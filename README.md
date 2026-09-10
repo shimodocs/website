@@ -133,6 +133,42 @@ featured: true                                               # optional, pins to
 
 `seoTitle` is optional when `title` plus `" | ShimoDocs"` fits in 62 characters.
 
+### Layouts
+
+Every article picks a layout in its frontmatter. Each one renders a different
+document structure rather than the same markup with different classes:
+
+| Layout | Structure |
+| --- | --- |
+| `standard` | Breadcrumb, table of contents pinned left, two-column body |
+| `feature` | Full-width hero band with a fact list, then a single narrow column, no sidebar |
+| `briefing` | Intro separated out, every H2 becomes a numbered section, index rail on the right |
+| `magazine` | Wide masthead with a metadata grid and a drop cap, full-width column, no sidebar |
+
+The build fails if a layout is unused or if any layout covers more than 40% of
+articles, and it compares the class signature each layout emits so two layouts
+cannot quietly collapse into the same structure.
+
+### Figures and asides
+
+Articles carry diagrams and asides as fenced blocks, so an author writes data
+rather than markup. Figures are inlined as SVG at build time, which means no
+image requests and labels that crawlers can read.
+
+````markdown
+```figure
+type: flow
+title: The four egress points
+items: Retrieval | Prompt payload | Provider retention | The output
+detail: Does the search respect permissions | Text sent to a model endpoint | Requests kept for evaluation | Output cached or written back
+caption: Figure 1. If you cannot draw all four arrows, you do not know where your content goes.
+```
+````
+
+Figure types: `flow`, `layers`, `compare`, `bars`, `matrix`, `timeline`,
+`screenshot`. Asides: `callout` (with `tone: note | warning | tip`),
+`keypoints`, `pullquote`. Every article must have at least one figure.
+
 ### How articles are rendered
 
 Article pages are rendered to HTML at build time with the body already inlined,

@@ -2,6 +2,7 @@
 title: "ShimoDocs vs Microsoft 365: Suite Against Suite"
 seoTitle: "ShimoDocs vs Microsoft 365 | ShimoDocs"
 description: "A suite-level comparison of Microsoft 365 and ShimoDocs, covering deployment, AI data flow, administration and where each makes sense."
+layout: briefing
 category: comparisons
 date: 2026-02-09
 tags: [comparison, microsoft 365, suite, deployment]
@@ -25,6 +26,16 @@ The useful comparison is about a constraint. Organisations evaluate ShimoDocs ag
 **A predictable per-seat model.** With the considerable benefit that it includes the infrastructure, operations and upgrade work.
 
 If your organisation is Microsoft-first and there is no constraint on data handling, the correct answer is usually to stay.
+
+```figure
+type: compare
+title: What each model can and cannot answer
+left: Microsoft 365 answers
+right: A self-hosted suite answers
+leftItems: Which region stores the data | Whether the vendor is certified | How the vendor handles a lawful request, under policy | Where Copilot sends content, by contract
+rightItems: Which legal entity can be compelled, structurally | Whether plaintext ever reaches a third party | Which endpoint performs inference, and what it retains | Who can read a document, from your own logs
+caption: Figure 1. The left column is a set of assurances. The right column is a set of technical facts. Procurement usually needs the second one.
+```
 
 ## Where the constraint bites
 
@@ -89,6 +100,14 @@ Nobody replaces Microsoft 365 wholesale for a mid-size organisation. It is not a
 The realistic move is a tier. Regulated document classes — client files, financial models, contract drafts, clinical material — move to a controlled environment. Email, calendar, meetings and general documents stay where they are.
 
 That split achieves the sovereignty objective at a fraction of the disruption, and it is usually reachable within a quarter rather than a year. The [migration walkthrough](/blog/how-to-migrate-from-google-workspace) covers the staged approach even though it is written for Google Workspace; the mechanics are the same.
+
+```figure
+type: bars
+title: Five lines a like-for-like comparison usually omits
+items: Licences for the affected tier | Infrastructure at measured scale | Operations hours per month | One-time migration | Amortised over three to five years
+value: 46 | 31 | 78 | 34 | 22
+caption: Figure 2. Run against the whole organisation, hosted wins comfortably. Run against the tier that actually carries the constraint, the comparison is close enough to be worth doing properly.
+```
 
 ## The cost structures do not compare directly
 

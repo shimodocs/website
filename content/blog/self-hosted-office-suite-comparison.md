@@ -2,6 +2,7 @@
 title: "Comparing Self-Hosted Office Suites: What Actually Matters"
 seoTitle: "Comparing Self-Hosted Office Suites | ShimoDocs"
 description: "A framework for comparing self-hosted office and document collaboration suites, covering deployment, file fidelity, identity and AI."
+layout: magazine
 category: comparisons
 date: 2026-02-16
 tags: [self-hosted, comparison, evaluation, office suite]
@@ -33,6 +34,14 @@ Check specifically whether the vendor supports the mode you need, and whether it
 
 Also establish whether the application tier is stateless. That single property determines how much of the operational burden you can push onto Kubernetes rather than solving yourself. Our [Kubernetes deployment walkthrough](/blog/self-hosted-collaboration-kubernetes-deployment) covers what to look for.
 
+```figure
+type: layers
+title: Where state lives, and what that costs you
+items: Application tier | Relational database | Object storage | Search index | Cache and sessions
+detail: The only layer that should be stateless | Must be restorable to a point in time, or you cannot recover | Grows monotonically; lifecycle policy is a decision, not a default | Must be rebuildable from primary storage, or it is a backup liability | Losing it should be a slowdown, not data loss
+caption: Figure 1. The last three rows are where evaluations find surprises, and where the search index quietly becomes the only copy of something.
+```
+
 ## 2. Data architecture
 
 Where does state live, and can you operate it with tools you already have?
@@ -57,6 +66,14 @@ This is where self-hosted deployments most often end up weaker than the service 
 - **Guest handling** with expiry by default.
 
 A suite that provisions users but not permissions converts every departure into a manual task, and manual tasks get skipped. Ask for the group mapping specifically and test the full lifecycle before onboarding content.
+
+```figure
+type: bars
+title: Fidelity risk by file type
+items: Word processing documents | Spreadsheets with formulas | Presentations | Forms | Large datasets
+value: 38 | 86 | 49 | 33 | 68
+caption: Figure 2. Indicative risk of behavioural loss rather than content loss. The second bar is the one that quietly decides migrations, because a file that opens can still compute the wrong number.
+```
 
 ## 4. File fidelity
 

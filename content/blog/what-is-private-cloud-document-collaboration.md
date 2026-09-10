@@ -2,6 +2,7 @@
 title: "What Is Private Cloud Document Collaboration?"
 seoTitle: "What Is Private Cloud Document Collaboration? | ShimoDocs"
 description: "Private cloud document collaboration keeps real-time editing, comments and AI inside infrastructure you control. Here is how it works and when it fits."
+layout: standard
 category: self-hosting
 date: 2026-01-12
 tags: [private cloud, self-hosted, architecture, data sovereignty]
@@ -37,6 +38,14 @@ Ten years ago the argument for private deployment was mostly about cost and cont
 
 > The shift is not that collaboration software became riskier. It is that the content became more valuable, and the number of parties who could touch it went up.
 
+```figure
+type: layers
+title: Every layer that touches plaintext has to move
+items: Application tier | Real-time collaboration service | Relational database | Object storage | AI inference layer
+detail: The editors and APIs your users touch | Websocket coordination for concurrent editing | Metadata, permissions, comments and version pointers | Document bodies and attachments | The model endpoint plus the retrieval pipeline that feeds it
+caption: Figure 1. Self-hosting is not one component. A hosted editor with self-hosted storage still leaves the plaintext in somebody else's process.
+```
+
 ## What actually has to be self-hosted
 
 A common half-measure is to self-host storage while leaving the editor and AI in the vendor's cloud. That does not achieve much, because the editor is where the plaintext lives.
@@ -51,6 +60,16 @@ A complete private deployment usually includes:
 - **Identity** — LDAP, SAML or OIDC against your existing directory.
 
 If any of these stays with a third party, that party is inside your trust boundary whether or not it appears on the architecture diagram.
+
+```figure
+type: compare
+title: What changes when the suite moves in-house
+left: On a hosted suite
+right: On your own infrastructure
+leftItems: You inherit the vendor's uptime | The vendor controls upgrade timing | Plaintext is readable by the operator | AI inference runs on the vendor's stack
+rightItems: Uptime is your operations problem | Upgrade timing is a change-management decision | Plaintext stays inside your boundary | You nominate the inference endpoint
+caption: Figure 2. The trade is not features for control. It is operational burden for control, and the two are not symmetric.
+```
 
 ## What you give up
 

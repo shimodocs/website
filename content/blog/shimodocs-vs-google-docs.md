@@ -2,6 +2,7 @@
 title: "ShimoDocs vs Google Docs: A Working Comparison"
 seoTitle: "ShimoDocs vs Google Docs | ShimoDocs"
 description: "A feature-by-feature comparison of ShimoDocs and Google Docs, covering deployment, collaboration, AI, administration and total cost."
+layout: standard
 category: comparisons
 date: 2026-01-21
 tags: [comparison, google docs, self-hosted, deployment]
@@ -31,6 +32,16 @@ If your constraint is capability, choose Google. If your constraint is where the
 | Data at rest | Google storage | Your object storage |
 
 The operational difference is the largest real difference between the two. Self-hosting moves the pager to your team. For organisations that already run a platform, that is incremental. For a twenty-person company with no operations function, it is a genuine reason not to.
+
+```figure
+type: compare
+title: Where the two actually differ
+left: Google Docs is stronger
+right: ShimoDocs is stronger
+leftItems: Spreadsheet depth and formula coverage | Offline behaviour across browsers | Template and add-on ecosystem | Calendar, mail and Meet in one identity
+rightItems: Control over where plaintext lives | A configurable AI inference endpoint | Upgrade timing under change control | Access and deletion evidence from your own systems
+caption: Figure 1. This is not a quality ranking. Each column is a different constraint, and most organisations only have one of them.
+```
 
 ## Collaboration experience
 
@@ -68,6 +79,14 @@ The practical question is not which model is better. It is whether your organisa
 | Data location control | Region choice | Your infrastructure |
 
 Google's admin tooling is more polished because it is a managed product with a large admin user base. ShimoDocs gives you the underlying control but expects you to configure it. If you want a policy setting that simply exists, Google is ahead.
+
+```figure
+type: bars
+title: The cost curves cross, and where depends on you
+items: Licence or subscription | Infrastructure | Operations and on-call | Backup and restore testing | Integration work
+value: 55 | 38 | 72 | 24 | 30
+caption: Figure 2. Hosted pricing bundles every row into one invoice. Self-hosting splits them across three budgets, which is why operations time gets omitted from the business case and rediscovered after go-live.
+```
 
 ## Total cost shape
 

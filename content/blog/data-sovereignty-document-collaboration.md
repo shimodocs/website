@@ -2,6 +2,7 @@
 title: "Data Sovereignty in Document Collaboration"
 seoTitle: "Data Sovereignty in Document Collaboration | ShimoDocs"
 description: "Data sovereignty is not the same as data residency. What the distinction means for document collaboration, audits and cross-border access."
+layout: standard
 category: security
 date: 2026-01-16
 tags: [data sovereignty, compliance, governance, security]
@@ -22,6 +23,14 @@ Residency is about where the bytes sit. Sovereignty is about who can be compelle
 A vendor can run a region in your country, on your country's soil, staffed by local employees, and still be a subsidiary of a foreign parent. Lawful-access requests can reach the parent. Depending on the jurisdiction and the vendor's structure, the local region may not be a meaningful barrier.
 
 This is not a hypothetical concern that only affects unusual jurisdictions. It applies to any organisation with cross-border obligations, and to any organisation whose customers ask the question in a security review.
+
+```figure
+type: flow
+title: The copies nobody maps
+items: Primary storage | Backups | Search index | Caches | AI retrieval
+detail: The original document | Point-in-time snapshots | A full-text duplicate | Hot copies with their own TTL | Chunks sent to a model endpoint
+caption: Figure 1. Deleting from primary storage leaves four other copies. Most sovereignty reviews find at least one the organisation had forgotten.
+```
 
 ## Where document collaboration sits in the stack
 
@@ -59,6 +68,16 @@ A vendor that answers these crisply is one you can work with. A vendor that answ
 | Self-hosted plus local AI | Your infrastructure | Yours, including inference | Highest |
 
 The important column is sovereignty, and it only becomes fully yours at the last two rows.
+
+```figure
+type: compare
+title: Encryption answers a different question
+left: What encryption covers
+right: What sovereignty asks
+leftItems: Media theft and physical access | Network interception in transit | Storage at rest, with operator-held keys | Compliance checkboxes at procurement
+rightItems: Who can be compelled to produce the bytes | Whether the operator can read plaintext at all | Where inference happens and what is retained | Whether you hold the only key, or a key-shaped object
+caption: Figure 2. A vendor that answers a sovereignty question with an encryption claim has answered a different question.
+```
 
 ## Why AI features changed the calculus
 

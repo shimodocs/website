@@ -19,11 +19,11 @@ export function renderRoute(url) {
 
 // Article pages are build-time only and never hydrated, so the body arrives as
 // a prop instead of from a client bundle.
-export function renderBlogPost(post, related = [], previous = null, next = null) {
+export function renderBlogPost(post, related = [], older = null, newer = null) {
   return renderToString(
     <StaticRouter location={`/blog/${post.slug}`}>
       <Shell>
-        <BlogPost post={post} related={related} previous={previous} next={next} />
+        <BlogPost post={post} related={related} older={older} newer={newer} />
       </Shell>
     </StaticRouter>,
   )

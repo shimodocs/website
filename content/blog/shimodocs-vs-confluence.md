@@ -2,6 +2,7 @@
 title: "ShimoDocs vs Confluence: Wiki or Document Suite?"
 seoTitle: "ShimoDocs vs Confluence | ShimoDocs"
 description: "Confluence is a hosted wiki tied to Jira. ShimoDocs is a self-hosted document suite. How to tell which one your team actually needs."
+layout: briefing
 category: comparisons
 date: 2026-02-04
 tags: [comparison, confluence, wiki, knowledge base]
@@ -29,6 +30,16 @@ It is worth being clear, because a lot of "alternative" content is not.
 **A large user base.** Which means plentiful hiring familiarity and community answers.
 
 If your primary need is a hierarchical engineering wiki wired into Atlassian, Confluence is a reasonable answer and ShimoDocs is not trying to be it.
+
+```figure
+type: compare
+title: The shape difference in practice
+left: Page-shaped content
+right: File-shaped content
+leftItems: Hierarchical documentation with deep nesting | An API reference or product manual | Policy libraries indexed by section | Anything that lives inside Jira's orbit
+rightItems: A financial model that must recalculate correctly | A campaign deck someone presents | A collection form gathering structured responses | Contracts and client material with retention rules
+caption: Figure 1. The same team often has both columns. That is why coexistence is the usual outcome rather than a winner.
+```
 
 ## Where the fit breaks down
 
@@ -87,6 +98,14 @@ A workable pattern:
 - **A published rule states which system is authoritative for which class.** Without this, teams keep two copies and trust neither.
 
 The value of writing this down is that it converts a platform debate into a content-classification exercise. Classification is a task people can complete. "Which wiki should we standardise on" is a debate that can run for a year.
+
+```figure
+type: bars
+title: Where the money actually goes
+items: Licence or subscription | Infrastructure | Operations and on-call | Upgrades and validation | Restore testing
+value: 52 | 33 | 74 | 41 | 19
+caption: Figure 2. Hosted pricing presents the first bar as the whole cost. Self-hosting spreads the work across the other four, which live in budgets that do not sit next to each other.
+```
 
 ## The cost shapes are different
 

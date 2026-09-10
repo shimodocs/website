@@ -2,6 +2,7 @@
 title: "Self-Hosted Document Collaboration: What to Look For"
 seoTitle: "Self-Hosted Document Collaboration Tools | ShimoDocs"
 description: "How to evaluate self-hosted document collaboration tools, the deployment models involved, and the requirements that decide projects."
+layout: magazine
 category: comparisons
 date: 2026-02-20
 tags: [self-hosted, comparison, shortlist, deployment]
@@ -25,6 +26,14 @@ The term covers at least four deployment models, and vendors are loose with it.
 **Air-gapped.** No internet access at all. Rare, and only some products genuinely support it.
 
 Decide which one your requirement actually demands. A surprising number of evaluations specify the fourth and need the second.
+
+```figure
+type: bars
+title: How often each requirement kills a deployment
+items: Identity with group mapping | A tested restore | File fidelity both ways | Structured file support | Configurable AI endpoint | Staged upgrades
+value: 84 | 71 | 66 | 58 | 44 | 39
+caption: Figure 1. Indicative frequency from evaluations we have run. The top two are process gaps rather than product gaps, which is why they are missed: nothing in a feature matrix flags them.
+```
 
 ## The requirements that decide projects
 
@@ -72,6 +81,16 @@ These are not features. They are properties that determine how much operational 
 | Container images with pinned versions | Reproducible deployments and rollbacks |
 
 A suite that keeps state inside the cluster is not disqualified, but you should understand that you have taken on database operations as well.
+
+```figure
+type: matrix
+title: What you inherit, and when you notice
+items: Object storage growth | Upgrade change control | Search capacity | AI capacity | On-call ownership
+detail: Grows quietly with version history. Noticed when the invoice arrives, months after the decision. | Predictable in timing, expensive in process. Noticed at the first validated-environment upgrade. | Has its own tuning profile, and users judge the whole product by it. | Token or GPU cost with no relationship to user count. Noticed when agents are enabled broadly. | The cost that decides most business cases and the one nobody estimates in advance.
+xAxis: NOTICED LATER
+xAxisEnd: NOTICED IMMEDIATELY
+caption: Figure 2. The left column is why pilots must be instrumented. Every item there is invisible in the first two weeks and decisive in the second year.
+```
 
 ## The costs that get missed
 

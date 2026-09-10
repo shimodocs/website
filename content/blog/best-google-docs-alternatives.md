@@ -2,6 +2,7 @@
 title: "The Best Google Docs Alternatives, by What You Need"
 seoTitle: "Best Google Docs Alternatives | ShimoDocs"
 description: "A shortlist of Google Docs alternatives organised by what actually drives the decision: control, cost, capability or collaboration depth."
+layout: feature
 category: comparisons
 date: 2026-02-18
 tags: [google docs alternative, comparison, shortlist, evaluation]
@@ -22,6 +23,14 @@ What you need is a suite you operate, where document plaintext and the AI contex
 **What to evaluate:** self-hosted suites with a configurable AI endpoint, deployed into your own infrastructure. Read the [self-hosted office suite comparison framework](/blog/self-hosted-office-suite-comparison) for the criteria that matter, and the [self-hosted collaboration guide](/blog/self-hosted-collaboration-guide) for what running one involves.
 
 **What to watch:** a hosted product with a regional data-centre option is not the same as a self-hosted deployment. Residency answers where bytes sit; it does not answer who can read them.
+
+```figure
+type: bars
+title: What the per-seat curve hides
+items: Licence per seat | Infrastructure | Operations hours | Restore testing | Migration, amortised
+value: 48 | 34 | 76 | 22 | 28
+caption: Figure 1. The first bar is the one in the invoice. The third is the one that decides the business case, and it is the one nobody measures before committing.
+```
 
 ## If the driver is cost at scale
 
@@ -52,6 +61,16 @@ Retention, legal hold, eDiscovery, supervision or records management requirement
 Then the honest recommendation is to stay. Migrating a document platform is a multi-month project with real productivity cost, and "the alternative looks nicer" does not cover it.
 
 The exception is if you want capabilities the current suite does not offer — a self-hosted deployment does add things a hosted one cannot, particularly around AI inference control. But that is a driver, not a preference.
+
+```figure
+type: matrix
+title: Which category fits which constraint
+items: Hosted productivity suite | Hosted document tool | Self-hosted office suite | Self-hosted knowledge platform
+detail: Strong ecosystem and desktop apps, content processed by the vendor. The default when nothing is broken. | Fast to start and document-centric, but weak on structured files and the same hosting constraint applies. | Control over content and inference, format fidelity, and an operations burden you carry. | Excellent for hierarchical documentation, poor for spreadsheets and external file exchange.
+xAxis: LESS CONTROL
+xAxisEnd: MORE CONTROL
+caption: Figure 2. The vertical axis is control; the horizontal is how much structured-file work the category handles well.
+```
 
 ## The shortlist, by shape
 

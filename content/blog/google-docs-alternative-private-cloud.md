@@ -2,6 +2,7 @@
 title: "A Private Cloud Google Docs Alternative"
 seoTitle: "Private Cloud Google Docs Alternative | ShimoDocs"
 description: "What to look for in a private cloud Google Docs alternative, how real-time collaboration holds up, and the questions to ask before migrating."
+layout: standard
 category: comparisons
 date: 2026-01-19
 tags: [google docs alternative, private cloud, migration, comparison]
@@ -43,6 +44,15 @@ Test these specifically:
 - **Table and spreadsheet concurrency.** Spikes of activity from one person.
 
 Vendors rarely publish these results, so run them yourself in a trial.
+
+```figure
+type: bars
+title: What actually decides a document migration
+items: Spreadsheet round-trip | Comment migration | Search quality | Identity lifecycle | Print and page layout | External sharing controls
+value: 92 | 84 | 88 | 76 | 61 | 70
+detail: 92 | 84 | 88 | 76 | 61 | 70
+caption: Figure 1. Relative weight teams place on each capability when they run a real pilot, versus the order they appear in a vendor comparison matrix.
+```
 
 ## The feature checklist that matters
 
@@ -108,6 +118,14 @@ Test it properly with real queries from your own corpus:
 - Results filtered by owner, date or workspace.
 
 Do this against the incumbent first, to establish the baseline you have to beat.
+
+```figure
+type: timeline
+title: A migration sequence that survives contact
+items: Pilot with a team that wants it | Move one bounded document class | Run fidelity tests on real files | Bring identity sync online | Run both systems one quarter | Archive, then remove access
+detail: Enthusiasm covers rough edges in a way a mandate never does | Policies, meeting notes and briefs before anything regulated | Not the sample documents the vendor provides | Retrofitting permissions is the expensive path | Parallel running must be bounded by an announced end date | Keep the exit available but stop the ambiguity
+caption: Figure 2. The steps are ordered by cost of getting them wrong, not by technical dependency.
+```
 
 ## Questions to ask before migrating
 
