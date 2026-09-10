@@ -87,6 +87,38 @@ The technical install is usually the easy half. Getting content out of the incum
 
 Most suites export documents without the surrounding context. Budget time for a permissions rebuild and accept that some history will not survive. The [migration walkthrough](/blog/how-to-migrate-from-google-workspace) covers a staged approach that keeps both systems running during cutover.
 
+## Identity is the control plane
+
+Of everything on this page, identity deserves the most attention, because it is where self-hosted deployments most often end up weaker than the hosted service they replaced.
+
+The failure mode is specific: user accounts are provisioned from the directory, but permissions are not. Every join, move and departure becomes a manual task, and the tasks that get skipped are the departures. That is how a system ends up with active accounts belonging to former staff — a finding that is both common and awkward to explain.
+
+What a workable setup requires:
+
+- **Group-to-role mapping.** Directory groups drive roles in the suite, so permission changes follow organisational changes automatically.
+- **Deprovisioning on leave.** Disabling the directory account must revoke access immediately, without a second manual step.
+- **No local accounts.** A local break-glass administrator is fine; a local account per user is a shadow permission model that will drift.
+- **Periodic access review.** A report that lists who can access what, generated from the system rather than maintained by hand.
+- **Guest handling.** External collaborators need an expiry by default, not on request.
+
+Test the whole lifecycle before onboarding real content: create a user, change their group, move them between teams, disable the account and confirm access is gone. In the tenant, not in theory.
+
+For regulated organisations this is also the control examiners ask about first. Our [financial services piece](/blog/secure-document-collaboration-financial-services) covers how that review tends to go.
+
+## What "done" looks like
+
+Self-hosting is not finished when the installer succeeds. A deployment is operational when:
+
+1. Identity sync provisions and deprovisions without manual work.
+2. A restore has been performed from backup, end to end, and timed.
+3. Monitoring alerts on the signals that predict a user-visible outage.
+4. An upgrade has been applied once, and a rollback rehearsed.
+5. Certificate renewal is automated and alerts before expiry.
+6. An owner is named, with a documented escalation path.
+7. A retention and archive convention exists and is followed.
+
+Most stalled deployments are stuck on one of these rather than on the software. Working through the list before the pilot holds anything important is the difference between a system the organisation trusts and one it tolerates.
+
 ## A sane rollout order
 
 1. **Pilot with one team that already wants it.** Pick a team with a real pain point, not the most compliant team.

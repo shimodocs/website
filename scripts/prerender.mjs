@@ -230,7 +230,10 @@ for (const { post, file } of articles) {
     problems.push(`${post.slug}: table of contents is missing`)
   }
   // The body must be real HTML in the document, not deferred to the client.
-  if (!html.includes(post.headings[0]?.text || '\u0000')) {
+  // Checked via the heading anchor id rather than its text, because the
+  // typographer converts straight quotes to curly ones in the rendered output.
+  const firstHeading = post.headings[0]
+  if (!firstHeading || !html.includes(`id="${firstHeading.id}"`)) {
     problems.push(`${post.slug}: first heading is missing from the static HTML`)
   }
   if (/<script type="module"/.test(html)) {
@@ -239,7 +242,7 @@ for (const { post, file } of articles) {
   // Internal linking is the whole point of a content cluster.
   const inbound = (html.match(/href="\/blog\/[a-z0-9-]+"/g) || []).length
   if (inbound < 5) problems.push(`${post.slug}: only ${inbound} internal blog links`)
-  if (post.words < 900) problems.push(`${post.slug}: only ${post.words} words`)
+  if (post.words < 1000) problems.push(`${post.slug}: only ${post.words} words`)
 }
 
 // Home hero carries the two ways to get the product.

@@ -72,6 +72,32 @@ That creates three new questions:
 
 The defensible configuration is a self-hosted application with a configurable model endpoint, so the retrieval pipeline and the inference target are both under your change control. Our [guide to running AI agents inside documents](/blog/ai-agents-in-documents-security) covers how that is usually structured.
 
+## Encryption is not a sovereignty answer
+
+The most common deflection in this conversation is "the data is encrypted". It is true and it does not answer the question.
+
+Three distinct states matter, and vendors often describe only the first:
+
+**Encryption at rest.** Standard everywhere. It protects against physical media theft and almost nothing else, because the running system holds the keys and can decrypt anything it serves.
+
+**Encryption in transit.** Also standard. Protects against network interception.
+
+**Customer-managed keys.** Meaningful only if the vendor genuinely cannot decrypt without you. If the service can operate normally while your key is unavailable, you hold a key-shaped object rather than a control.
+
+There is a fourth state that vendors rarely offer and regulated buyers sometimes require: the vendor cannot access plaintext at all, because they do not run the software. That is the self-hosted position, and it is the only one where the answer does not depend on trusting an operator.
+
+So when a vendor responds to a sovereignty question with an encryption claim, the follow-up is specific: can you produce plaintext without my involvement, and can you demonstrate that? Everything else is a description of how the data is stored, not who can reach it.
+
+## The subprocessor chain
+
+Sovereignty analysis stops too early if it only looks at the primary vendor.
+
+A typical hosted document platform involves a storage provider, a CDN, an analytics service, an error-tracking service, a support tool with screen-sharing access, a backup provider and increasingly an AI inference provider. Each is a party with some access to some content under some conditions.
+
+Ask for the current subprocessor list and, more usefully, ask which of them can access document plaintext rather than metadata. The list is usually longer than the data-flow diagram in the security review.
+
+This is also where self-hosting simplifies things structurally rather than contractually. A deployment inside your network has no subprocessor chain, because there is no vendor between you and the content.
+
 ## Making the argument internally
 
 Sovereignty arguments fail when they are framed as ideology. They succeed when they are framed as specific obligations.

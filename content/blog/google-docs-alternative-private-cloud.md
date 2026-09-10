@@ -77,6 +77,38 @@ The collaboration experience should be comparable. These are the genuine differe
 
 **Mobile experience varies.** Check it if your users are field-based.
 
+## The features people forget to check
+
+The obvious capabilities get tested. These are the ones that surface in week three.
+
+**Print and page layout.** Documents destined for print or PDF distribution need proper page setup, headers, footers and page numbering. Collaborative editors vary here, and a legal or finance team will notice immediately.
+
+**Cross-file references.** A document that refers to a spreadsheet range, or a presentation that pulls a chart from a workbook. When the files move to a new suite, those links break, and nobody discovers it until a board pack is due.
+
+**Comment migration.** Comments are often the most valuable content in a document — they record why a decision was made. Check whether they survive import, and in what form. Losing the thread but keeping the text is a common outcome.
+
+**Permission granularity on export.** When you export for an external party, does the export strip internal comments and revision history? It should.
+
+**Shared templates.** Most teams have a handful of document templates that encode formatting standards. Confirm they can be recreated, or you will be reformatting by hand for months.
+
+**Keyboard shortcuts.** Sounds trivial. A team that lives in a document editor notices within an hour when the shortcuts change, and it colours their impression of the whole migration.
+
+## Search is the feature that decides adoption
+
+If there is one capability to over-invest in during evaluation, it is search.
+
+Users judge a document platform by whether they can find the thing they need. A migration that gets every other detail right but leaves people unable to locate an old brief will be described internally as a failure, regardless of the technical outcome.
+
+Test it properly with real queries from your own corpus:
+
+- A phrase you know appears in one document.
+- A document you remember by title but not location.
+- A concept expressed with different words than the source used.
+- A search across spreadsheets, not just documents.
+- Results filtered by owner, date or workspace.
+
+Do this against the incumbent first, to establish the baseline you have to beat.
+
 ## Questions to ask before migrating
 
 1. **Where does the plaintext live at every moment?** Storage, cache, search index, AI retrieval, backups.

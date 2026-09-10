@@ -98,6 +98,41 @@ Worth writing down before deciding:
 - Retention, audit and deletion can be evidenced against your own controls.
 - No per-seat vendor relationship over your content.
 
+## Offline and degraded connectivity
+
+Both products handle offline editing, and the difference shows up at the edges.
+
+Google Docs has had years to tune offline behaviour across browsers and devices, including conflict resolution when several offline editors reconnect. It is a genuinely hard engineering problem and Google has invested in it heavily.
+
+Check the specific cases your organisation hits:
+
+- A field team on intermittent mobile connections.
+- A site or vessel with no connectivity for days at a time.
+- A browser session that drops mid-edit.
+- Two people editing the same section offline and then reconnecting.
+
+The last one is the real test. Most implementations handle a single offline editor well; concurrent offline edits are where behaviour diverges, and where users discover that their changes were discarded.
+
+If your organisation is entirely office-based on reliable connections, this section is not decisive. If it is not, test it explicitly before committing.
+
+## Spreadsheet depth deserves its own evaluation
+
+If there is one thing that decides these migrations, it is spreadsheets.
+
+Documents migrate well. Presentations migrate acceptably. Spreadsheets are where a migration quietly fails, because a financial model is not a document with tables — it is a program, expressed in formulas, named ranges, array functions, pivot tables and conditional formatting, often built by someone who left the organisation.
+
+Build a test set before you evaluate:
+
+1. Your most complex model, opened and recalculated.
+2. A workbook with cross-sheet and cross-file references.
+3. A file with pivot tables and slicers.
+4. Something using newer dynamic array functions.
+5. The ugliest import you have — a .xlsx from a partner, full of merged cells.
+
+Then check whether formulas recalculate to the same values, not merely whether the file opens. A model that opens with subtly wrong numbers is worse than one that fails loudly, because the error surfaces in a decision rather than a dialogue box.
+
+If the spreadsheet workload is genuinely heavy, that finding alone may determine the answer, and it is better to discover it in a two-week test than in month four of a migration.
+
 ## A decision procedure
 
 1. **Write down the constraint.** "The content must not leave our infrastructure" and "we want to save money" lead to different answers.
