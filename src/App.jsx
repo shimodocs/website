@@ -12,6 +12,17 @@ function SeoManager() {
   return null
 }
 
+// Article pages are standalone static documents with no client bundle, so they
+// are not routes in this app. If client-side navigation ever reaches one, fall
+// back to a real page load rather than rendering an empty shell.
+function ArticleFallback() {
+  const { pathname, search } = useLocation()
+  useEffect(() => {
+    window.location.replace(`${pathname}${search}`)
+  }, [pathname, search])
+  return null
+}
+
 export default function App() {
   return (
     <Shell>
@@ -20,6 +31,7 @@ export default function App() {
         {ROUTES.map(({ path, Component }) => (
           <Route key={path} path={path} element={<Component />} />
         ))}
+        <Route path="/blog/:slug" element={<ArticleFallback />} />
       </Routes>
     </Shell>
   )

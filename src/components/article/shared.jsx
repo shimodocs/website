@@ -1,8 +1,9 @@
 // Shared building blocks for the article layouts.
 //
-// Each layout composes these differently and produces a different document
-// structure, so the archive does not read as one template repeated.
-import { Link } from 'react-router-dom'
+// Every link here is a plain anchor, never a router Link. Article pages are
+// separate static documents with no client bundle, so navigating to one has to
+// be a real page load. A router Link would be intercepted, match no route in
+// the app, and silently render an empty page.
 import { DOWNLOADS, LICENSE_REQUEST_URL } from '../../downloads'
 import { formatDate } from '../../format'
 
@@ -13,12 +14,12 @@ export function PostCard({ post }) {
         {post.categoryLabel} · {post.readingTime} min read
       </span>
       <h3>
-        <Link to={`/blog/${post.slug}`}>{post.title}</Link>
+        <a href={`/blog/${post.slug}`}>{post.title}</a>
       </h3>
       <p>{post.description}</p>
-      <Link className="card-link" to={`/blog/${post.slug}`}>
+      <a className="card-link" href={`/blog/${post.slug}`}>
         Read article ↗
-      </Link>
+      </a>
     </article>
   )
 }
@@ -26,9 +27,9 @@ export function PostCard({ post }) {
 export function Breadcrumb({ post }) {
   return (
     <nav className="breadcrumb" aria-label="Breadcrumb">
-      <Link to="/">Home</Link>
+      <a href="/">Home</a>
       <span aria-hidden="true">/</span>
-      <Link to="/blog">Blog</Link>
+      <a href="/blog">Blog</a>
       <span aria-hidden="true">/</span>
       <span className="breadcrumb-current">{post.categoryLabel}</span>
     </nav>
@@ -127,16 +128,16 @@ export function Pager({ older, newer, variant = 'cards' }) {
     return (
       <nav className="pager-stack" aria-label="More articles">
         {newer ? (
-          <Link to={`/blog/${newer.slug}`}>
+          <a href={`/blog/${newer.slug}`}>
             <small>Newer</small>
             <span>{newer.title}</span>
-          </Link>
+          </a>
         ) : null}
         {older ? (
-          <Link to={`/blog/${older.slug}`}>
+          <a href={`/blog/${older.slug}`}>
             <small>Older</small>
             <span>{older.title}</span>
-          </Link>
+          </a>
         ) : null}
       </nav>
     )
@@ -144,18 +145,18 @@ export function Pager({ older, newer, variant = 'cards' }) {
   return (
     <nav className="post-pager" aria-label="More articles">
       {older ? (
-        <Link to={`/blog/${older.slug}`}>
+        <a href={`/blog/${older.slug}`}>
           <small>Older article</small>
           <span>{older.title}</span>
-        </Link>
+        </a>
       ) : (
         <span />
       )}
       {newer ? (
-        <Link to={`/blog/${newer.slug}`} className="pager-next">
+        <a href={`/blog/${newer.slug}`} className="pager-next">
           <small>Newer article</small>
           <span>{newer.title}</span>
-        </Link>
+        </a>
       ) : null}
     </nav>
   )
@@ -164,7 +165,7 @@ export function Pager({ older, newer, variant = 'cards' }) {
 export function BackToArchive() {
   return (
     <p className="post-back">
-      <Link to="/blog">← All articles</Link>
+      <a href="/blog">← All articles</a>
     </p>
   )
 }
@@ -196,12 +197,12 @@ export function RelatedArticles({ posts, title = 'Related reading', variant = 'g
         <ul>
           {posts.map(post => (
             <li key={post.slug}>
-              <Link to={`/blog/${post.slug}`}>
+              <a href={`/blog/${post.slug}`}>
                 <span>{post.title}</span>
                 <small>
                   {post.categoryLabel} · {post.readingTime} min
                 </small>
-              </Link>
+              </a>
             </li>
           ))}
         </ul>

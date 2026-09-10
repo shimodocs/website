@@ -1,5 +1,4 @@
 import { useMemo, useState } from 'react'
-import { Link } from 'react-router-dom'
 import { Eyebrow } from '../components/Section'
 import { DOWNLOADS, LICENSE_REQUEST_URL } from '../downloads'
 import { formatDate, formatMonthYear } from '../format'
@@ -17,11 +16,13 @@ function matches(post, category, query) {
 function ArchiveRow({ post }) {
   return (
     <li>
-      <Link to={`/blog/${post.slug}`}>
+      {/* Plain anchor, not a router Link: /blog/<slug> is a separate static
+          document, so this must be a full page load. */}
+      <a href={`/blog/${post.slug}`}>
         <span className="archive-date">{formatMonthYear(post.date)}</span>
         <span className="archive-title">{post.title}</span>
         <span className="archive-meta">{post.categoryLabel}</span>
-      </Link>
+      </a>
     </li>
   )
 }
@@ -33,12 +34,12 @@ function PostCard({ post }) {
         {post.categoryLabel} · {post.readingTime} min read
       </span>
       <h3>
-        <Link to={`/blog/${post.slug}`}>{post.title}</Link>
+        <a href={`/blog/${post.slug}`}>{post.title}</a>
       </h3>
       <p>{post.description}</p>
-      <Link className="card-link" to={`/blog/${post.slug}`}>
+      <a className="card-link" href={`/blog/${post.slug}`}>
         Read article ↗
-      </Link>
+      </a>
     </article>
   )
 }

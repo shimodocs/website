@@ -12,7 +12,7 @@
 // client bundle stripped. A 2,000-word article therefore costs the browser
 // nothing to read, and because nothing hydrates an article there is no
 // possibility of a hydration mismatch.
-import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
+import { existsSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs'
 import { dirname, join, resolve } from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
 import { loadPosts, relatedPosts, toClientRecord } from './blog-content.mjs'
@@ -278,6 +278,20 @@ if (!/releases\/latest\/download\/mdp-installer-amd64/.test(homeHtml)) {
 }
 if (!/mailto:support\.global@shimo\.im/.test(homeHtml)) {
   problems.push('home: free licence request link is missing')
+}
+
+// Article pages are standalone documents with no client bundle, so nothing in
+// the React app may navigate to one with a router Link: the router would match
+// no route and silently render an empty page. Caught in source because the
+// prerendered markup looks identical either way.
+const reactSources = readdirSync(join(rootDir, 'src'), { recursive: true })
+  .map(entry => String(entry))
+  .filter(name => /\.jsx?$/.test(name))
+for (const name of reactSources) {
+  const source = readFileSync(join(rootDir, 'src', name), 'utf8')
+  if (/to=\{`\/blog\/|to="\/blog\//.test(source)) {
+    problems.push(`src/${name} routes to an article with a router Link; use a plain anchor instead`)
+  }
 }
 
 // The blog index must link every article, so the archive is reachable by
