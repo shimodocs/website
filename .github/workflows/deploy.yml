@@ -157,11 +157,20 @@ jobs:
           assert.match(robots.type, /text\/plain/, `/robots.txt served as ${robots.type}`);
           assert.match(robots.body, /Sitemap:\s*https?:\/\//, '/robots.txt is missing the Sitemap directive');
 
+          // The sitemap is generated from the build-time SITE_URL, which is the
+          // production domain once one is configured and not necessarily the host
+          // we are deploying to. Derive the expected origin from robots.txt so the
+          // check validates internal consistency instead of assuming they match.
+          const sitemapDirective = robots.body.match(/Sitemap:\s*(\S+)/);
+          assert.ok(sitemapDirective, '/robots.txt has no usable Sitemap directive');
+          const siteOrigin = new URL(sitemapDirective[1]).origin;
+          console.log(`Site origin from robots.txt: ${siteOrigin}`);
+
           const sitemap = await get('/sitemap.xml');
           assert.equal(sitemap.status, 200, `/sitemap.xml returned ${sitemap.status}`);
           assert.match(sitemap.type, /xml/, `/sitemap.xml served as ${sitemap.type}`);
           for (const route of routes) {
-            const loc = route === '/' ? `${origin}/` : `${origin}${route}`;
+            const loc = route === '/' ? `${siteOrigin}/` : `${siteOrigin}${route}`;
             assert.ok(sitemap.body.includes(`<loc>${loc}</loc>`), `sitemap.xml is missing ${loc}`);
           }
 
@@ -186,5 +195,42 @@ jobs:
             console.log(`Download OK: ${link.split('/').pop()}`);
           }
 
-          console.log(`Verified ${routes.length} prerendered routes, unique titles, robots.txt, sitemap.xml, a real 404 and ${installerLinks.length} installer links.`);
+          // Every article in the sitemap must be live, prerendered, carry article
+          // structured data and ship no client bundle. Checked with a small
+          // concurrency pool so a hundred posts do not serialise the deploy.
+          const articleUrls = [...sitemap.body.matchAll(/<loc>([^<]*\/blog\/[a-z0-9-]+)<\/loc>/g)].map(m => m[1]);
+          assert.ok(articleUrls.length >= 1, 'sitemap.xml lists no articles');
+
+          const blogIndex = await get('/blog');
+          for (const url of articleUrls) {
+            const slug = url.split('/blog/')[1];
+            assert.ok(blogIndex.body.includes(`href="/blog/${slug}"`), `blog index does not link /blog/${slug}`);
+          }
+
+          const articleTitles = new Set();
+          const failures = [];
+          const queue = [...articleUrls];
+          const worker = async () => {
+            while (queue.length) {
+              const url = queue.shift();
+              const path = new URL(url).pathname;
+              const res = await get(path);
+              const label = path.replace('/blog/', '');
+              if (res.status !== 200) { failures.push(`${label}: HTTP ${res.status}`); continue; }
+              if (!/<div id="root">\s*\S/.test(res.body)) failures.push(`${label}: no prerendered markup`);
+              if (!/<h1[\s>]/.test(res.body)) failures.push(`${label}: no <h1>`);
+              if (!res.body.includes('rel="canonical"')) failures.push(`${label}: no canonical link`);
+              if (!res.body.includes('"BlogPosting"')) failures.push(`${label}: no BlogPosting data`);
+              if (!res.body.includes('"BreadcrumbList"')) failures.push(`${label}: no breadcrumb data`);
+              if (/<script type="module"/.test(res.body)) failures.push(`${label}: ships the client bundle`);
+              const title = res.body.match(/<title>([^<]+)<\/title>/);
+              if (!title) failures.push(`${label}: no <title>`);
+              else if (articleTitles.has(title[1])) failures.push(`${label}: duplicate title "${title[1]}"`);
+              else articleTitles.add(title[1]);
+            }
+          };
+          await Promise.all(Array.from({ length: 8 }, worker));
+          assert.deepEqual(failures, [], `article checks failed:\n  ${failures.join('\n  ')}`);
+
+          console.log(`Verified ${routes.length} prerendered routes, ${articleUrls.length} articles, unique titles, robots.txt, sitemap.xml, a real 404 and ${installerLinks.length} installer links.`);
           NODE
