@@ -125,19 +125,29 @@ curl -s -o /dev/null -w '%{http_code}\n' -X POST \
    the page addresses columns by field id, not by name.
 2. If a column is added, removed or replaced, read the new ids with step 2 above
    and update `FIELD_IDS` in `src/contact.js`.
-3. If the share link is rotated (**Share form → copy the new link**), update
+3. Run `npm run check:contact`. It asks the share view what each id is called now
+   and fails if a column has been renamed or shuffled so an id no longer holds
+   the column expected for it — that check also runs in the release workflow,
+   because a silent swap would write a name into the email column.
+4. If the share link is rotated (**Share form → copy the new link**), update
    `CONTACT_ENDPOINT` in `src/contact.js` — or set `VITE_CONTACT_ENDPOINT` in the
    deploy workflow, the same way `VITE_SITE_URL` is passed — and cut a release.
 
+> Moving the *meaning* between two columns is the one edit that is not safe on
+> its own. Renaming `姓名` and `工作邮箱` around each other, as happened once,
+> leaves the ids pointing at the opposite columns; `npm run check:contact`
+> catches it and `FIELD_IDS` plus `FIELD_NAMES` have to be updated together.
+
 ### Notes
 
-- **`姓名` must stay optional in Teable.** The page only requires the work
-  email; an empty name is left out of the submission entirely. The shared form
-  endpoint then answers
-  `400 Required form fields are missing` (`view.required_fields_missing`) if the
-  form view marks 姓名 required, or `400 field 姓名 cannot be empty`
-  (`validation.field.not_null`) if the table column itself is not-null. Turn the
-  required switch off in both places, then confirm with:
+- **`姓名` must stay optional in Teable, in two places.** The page only requires
+  the work email; an empty name is left out of the submission entirely. The
+  shared form endpoint then answers
+  `400 Required form fields are missing` (`view.required_fields_missing`) while
+  the **form view** still marks 姓名 required, or
+  `400 field 姓名 cannot be empty` (`validation.field.not_null`) while the
+  **table column** itself is not-null. Turn the required switch off on the form
+  question *and* on the table column, then confirm with:
 
   ```bash
   curl -s -o /dev/null -w '%{http_code}\n' -X POST \

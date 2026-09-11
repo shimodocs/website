@@ -10,6 +10,7 @@
     "build:client": "vite build",
     "build:seo": "node scripts/build-content.mjs && vite build --ssr src/entry-server.jsx --outDir dist-ssr && node scripts/prerender.mjs",
     "content": "node scripts/build-content.mjs",
+    "check:contact": "node scripts/check-contact-fields.mjs",
     "assets": "python3 scripts/make-assets.py",
     "preview": "vite preview --port 4173"
   },

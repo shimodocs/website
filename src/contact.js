@@ -18,12 +18,23 @@ export const CONTACT_ENDPOINT =
 // Teable addresses each column by field id, so renaming a column in the table
 // cannot silently break the form. These ids belong to the shared form view
 // "官网联系表单"; `GET https://app.teable.ai/api/share/<shareId>/view` lists
-// them next to the field names and types.
+// them next to the field names and types. `npm run check:contact` verifies that
+// every id below still carries the column named in the comment — if the columns
+// in Teable are shuffled or renamed, that check fails the release instead of
+// quietly writing a name into the email column.
 const FIELD_IDS = {
-  name: 'fldh3njWoBjMxgBtxHD', // 姓名
-  email: 'fldF2EPy8psae3sJcPa', // 工作邮箱
+  email: 'fldh3njWoBjMxgBtxHD', // 工作邮箱 (primary field)
+  name: 'fldF2EPy8psae3sJcPa', // 姓名
   teamSize: 'fld5h0Y4WhyAy47DOo3', // 团队规模
   message: 'fldQa4NIZtbzbvibX2C', // 需求描述
+}
+
+// The column each id is expected to be, checked by scripts/check-contact-fields.mjs.
+export const FIELD_NAMES = {
+  email: '工作邮箱',
+  name: '姓名',
+  teamSize: '团队规模',
+  message: '需求描述',
 }
 
 // The public channel documented in the repository README, used as the fallback

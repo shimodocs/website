@@ -40,6 +40,13 @@ jobs:
           VITE_SITE_URL: ${{ vars.SITE_URL || 'http://43.172.115.22' }}
         run: npm run build
 
+      # The contact form submits by Teable field id. If the columns in Teable
+      # have been shuffled so an id now holds a different column, every inquiry
+      # would land in the wrong column with no error anywhere, so this fails the
+      # release rather than shipping that. An unreachable Teable only warns.
+      - name: Verify the contact form still targets the right Teable columns
+        run: npm run check:contact
+
       - name: Record release version
         env:
           RELEASE_TAG: ${{ github.ref_name }}
