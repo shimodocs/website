@@ -153,7 +153,7 @@ export const FAQS = [
   {
     question: 'How do I get a license?',
     answer:
-      'Email support.global@shimo.im to request the free-forever 5-user license. No credit card is required. Larger teams can ask for a quote based on team size, and the license is activated from the operations platform after the suite is deployed.',
+      'Email support.global@shimo.im to request the free perpetual license. No credit card is required. Larger teams can ask for a quote based on team size, and the license is activated from the operations platform after the suite is deployed.',
   },
 ]
 

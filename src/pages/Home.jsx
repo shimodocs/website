@@ -98,7 +98,7 @@ export default function Home() {
                   strokeLinejoin="round"
                 />
               </svg>
-              Get free 5-user license
+              Get a free perpetual license
             </a>
             <Link className="text-link" to="/ai-workspace">
               Explore AI Workspace ↗

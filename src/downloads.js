@@ -34,14 +34,14 @@ export const DOWNLOADS = {
 // support.global@shimo.im", free forever for five users with no credit card.
 export const LICENSE_EMAIL = 'support.global@shimo.im'
 
-const LICENSE_SUBJECT = 'Free 5-user ShimoDocs license request'
+const LICENSE_SUBJECT = 'Free perpetual ShimoDocs license request'
 
 // A prefilled body turns a bare mailto into a usable request form and saves a
 // round trip, because the details we need are already in the message.
 const LICENSE_BODY = [
   'Hi ShimoDocs team,',
   '',
-  'We would like to request the free 5-user ShimoDocs license.',
+  'We would like to request the free perpetual ShimoDocs license.',
   '',
   'Company:',
   'Team size:',

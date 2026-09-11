@@ -81,7 +81,7 @@ The home hero carries the two ways to get the product, both defined in
 - **Download for Linux · amd64** links the self-hosted installer, with the
   `arm64` build and an "All releases" fallback beside it. The footer links the
   releases page as well.
-- **Get free 5-user license** opens a prefilled licence request addressed to
+- **Get a free perpetual license** opens a prefilled licence request addressed to
   `support.global@shimo.im`, which the repository README documents as the
   official channel for the global build ("Request free by emailing
   support.global@shimo.im", free forever for five users, no credit card).

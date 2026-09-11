@@ -12,7 +12,7 @@ const FOOTER_SECTIONS = [
     links: [
       ['/ai-workspace', 'AI Workspace for documents'],
       [DOWNLOADS.latest, 'Download the self-hosted installer'],
-      [LICENSE_REQUEST_URL, 'Request a free 5-user license'],
+      [LICENSE_REQUEST_URL, 'Get a free perpetual license'],
       ['/pricing', 'Pricing and plans'],
       ['/contact-sales', 'Request a private cloud demo'],
     ],

@@ -193,7 +193,7 @@ export default function Blog() {
             Download installer
           </a>
           <a className="button outline" href={LICENSE_REQUEST_URL}>
-            Get free license
+            Get a free perpetual license
           </a>
         </div>
       </section>
