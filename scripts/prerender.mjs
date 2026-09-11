@@ -280,6 +280,27 @@ if (!/mailto:support\.global@shimo\.im/.test(homeHtml)) {
   problems.push('home: free licence request link is missing')
 }
 
+// The contact page must keep a working submission path. The fields are checked
+// in the prerendered markup because a rewrite that drops one of them would look
+// fine in a browser and quietly lose inquiries; the endpoint is checked in the
+// client bundle because the form cannot submit without it.
+const contactHtml = readFileSync(join(distDir, 'contact-sales', 'index.html'), 'utf8')
+for (const marker of ['contact-name', 'contact-email', 'contact-team-size', 'contact-message']) {
+  if (!contactHtml.includes(`id="${marker}"`)) problems.push(`contact-sales: the form is missing #${marker}`)
+}
+if (!/<button class="button" type="submit"/.test(contactHtml)) {
+  problems.push('contact-sales: the submit button is missing')
+}
+if (!process.env.VITE_CONTACT_ENDPOINT) {
+  const bundles = readdirSync(join(distDir, 'assets'))
+    .filter(name => name.endsWith('.js'))
+    .map(name => readFileSync(join(distDir, 'assets', name), 'utf8'))
+    .join('\n')
+  if (!bundles.includes('app.teable.ai/api/share/')) {
+    problems.push('contact-sales: no client bundle points at the Teable form endpoint')
+  }
+}
+
 // Article pages are standalone documents with no client bundle, so nothing in
 // the React app may navigate to one with a router Link: the router would match
 // no route and silently render an empty page. Caught in source because the

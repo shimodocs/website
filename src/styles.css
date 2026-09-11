@@ -435,3 +435,19 @@
   .hero-scenes .scene-caption h3{font-size:19px}
   .hero-scenes .scene-caption p{display:none}
 }
+
+/* Contact-sales form states. The prerendered document ships the idle form, so
+   these rules only take effect once the page hydrates and someone submits. */
+.contact-form .contact-honeypot{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+.contact-form .contact-error{margin:0;padding:10px 12px;border:1px solid #ff006e59;border-radius:7px;background:#ff006e17;color:#ffc2d8;font-size:12.5px;line-height:1.5}
+.contact-form .contact-error a{color:#fff}
+.contact-form .button[disabled]{opacity:.65;cursor:progress}
+.contact-form .button[disabled]:hover{box-shadow:0 10px 30px #ff006e2e}
+/* The confirmation replaces the form inside the same card, so the layout does
+   not jump when the request succeeds. */
+.contact-sent{align-content:start;gap:12px}
+.contact-sent h2{margin:2px 0 0;font:600 26px 'Space Grotesk',sans-serif;letter-spacing:-.5px}
+.contact-sent p{margin:0;color:var(--muted);font-size:13.5px;line-height:1.6}
+.contact-sent .contact-sent-note{font-size:12.5px}
+.contact-sent .contact-sent-note a{color:#d9d2f5}
+.contact-sent .button{margin-top:6px}

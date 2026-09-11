@@ -84,6 +84,81 @@ After activating the release, the workflow verifies against the live host that e
 
 After migrating, disable `deploy.yml` in `liwo-yuandian/shimodocs` so the old repository cannot publish over the tag-based releases. Its code and history can remain as a backup.
 
+## Contact-sales submissions
+
+The `/contact-sales` form writes each inquiry into a Teable table as one row.
+Teable serves a public share-form endpoint that allows cross-origin requests, so
+the page posts to it directly — no backend process, no Nginx rule, and no
+credential in the client bundle:
+
+```text
+browser ──POST /api/share/<shareId>/view/form-submit──▶ Teable ──▶ new row
+```
+
+- `src/pages/ContactSales.jsx` validates the form and calls `submitInquiry`.
+- `src/contact.js` holds the share endpoint and the field-id mapping.
+- The shared view is the form view **官网联系表单**. A short share link
+  `https://app.teable.ai/s/<id>` redirects to `/share/<shareId>/view`.
+
+### How the wiring was derived
+
+```bash
+# 1. Resolve a short share link (/s/xxx) to its shareId
+curl -sI https://app.teable.ai/s/DmeNUgLBq | grep -i location
+#   location: /share/shr3o8M2RVcBeSz4KCV/view
+
+# 2. Read the form's fields (ids, names, types, choices) — public, read-only
+curl -s "https://app.teable.ai/api/share/shr3o8M2RVcBeSz4KCV/view" \
+  | python3 -c 'import json,sys; d=json.load(sys.stdin); print(d["view"]["type"]); [print(f["id"], f["name"], f["type"]) for f in d["fields"]]'
+
+# 3. Prove the endpoint accepts the exact body the page sends
+curl -s -o /dev/null -w '%{http_code}\n' -X POST \
+  -H 'Content-Type: application/json' \
+  -d '{"fields":{"fldh3njWoBjMxgBtxHD":"Deploy check","fldF2EPy8psae3sJcPa":"test@example.com","fld5h0Y4WhyAy47DOo3":"5–20 people","fldQa4NIZtbzbvibX2C":"ignore"},"typecast":true}' \
+  https://app.teable.ai/api/share/shr3o8M2RVcBeSz4KCV/view/form-submit
+#   201 = the row was appended; delete the "Deploy check" row afterwards
+```
+
+### Changing the table or rotating the link
+
+1. Edit the table or the form view in Teable as usual. Renaming a column is safe:
+   the page addresses columns by field id, not by name.
+2. If a column is added, removed or replaced, read the new ids with step 2 above
+   and update `FIELD_IDS` in `src/contact.js`.
+3. If the share link is rotated (**Share form → copy the new link**), update
+   `CONTACT_ENDPOINT` in `src/contact.js` — or set `VITE_CONTACT_ENDPOINT` in the
+   deploy workflow, the same way `VITE_SITE_URL` is passed — and cut a release.
+
+### Notes
+
+- **`姓名` must stay optional in Teable.** The page only requires the work
+  email; an empty name is left out of the submission entirely. The shared form
+  endpoint then answers
+  `400 Required form fields are missing` (`view.required_fields_missing`) if the
+  form view marks 姓名 required, or `400 field 姓名 cannot be empty`
+  (`validation.field.not_null`) if the table column itself is not-null. Turn the
+  required switch off in both places, then confirm with:
+
+  ```bash
+  curl -s -o /dev/null -w '%{http_code}\n' -X POST \
+    -H 'Content-Type: application/json' \
+    -d '{"fields":{"fldF2EPy8psae3sJcPa":"no-name@example.com","fld5h0Y4WhyAy47DOo3":"5–20 people","fldQa4NIZtbzbvibX2C":"no name field sent"},"typecast":true}' \
+    https://app.teable.ai/api/share/shr3o8M2RVcBeSz4KCV/view/form-submit
+  #   201 = a submission without 姓名 is accepted
+  ```
+
+- The endpoint is public by design: anyone holding the share link can submit a
+  row, exactly as anyone can open the form in a browser. The honeypot field in
+  the form stops naive form bots and Teable rate-limits the endpoint; nothing
+  else guards it. If it is ever spammed, rotate the share link, and if that is
+  not enough, move the endpoint to a Cloudflare Worker that holds a Teable API
+  token and can rate-limit per IP.
+- Keep **password protection** and **track submitters** off in the form's
+  submission settings. Either one makes an anonymous POST fail.
+- The Teable free plan allows 1000 rows, 100 automation runs and 100 system
+  emails per month, which is the ceiling for this table. Pro is $24/month;
+  self-hosting lifts the row cap.
+
 ## Rollback
 
 In the **server SSH terminal**, inspect the release metadata and select the exact previous release directory:

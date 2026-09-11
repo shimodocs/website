@@ -100,6 +100,17 @@ either the installer link or the licence link, and the deploy workflow resolves
 both installer URLs with a ranged request and fails the release if either stops
 working.
 
+## Contact Sales
+
+The `/contact-sales` form writes each inquiry into a Teable table as one row. The
+page posts straight to Teable's public share-form endpoint (`src/contact.js`),
+which needs no credential and allows cross-origin requests, so the static build
+needs no backend and the server needs no extra Nginx rule. Columns are addressed
+by field id, so renaming one in Teable cannot break the form; the endpoint and
+the field ids, plus how they were derived and how to rotate them, are documented
+in [deploy/README.md](deploy/README.md#contact-sales-submissions). Set
+`VITE_CONTACT_ENDPOINT` to send the form somewhere else instead.
+
 ## Blog
 
 Articles are Markdown files in `content/blog/`. Adding a file is all that is
