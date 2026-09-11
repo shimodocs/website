@@ -112,22 +112,35 @@ export default function Home() {
             </a>
           </div>
         </div>
-        <div className="hero-product">
-          <img
-            src="/assets/extract-0.png"
-            alt="ShimoDocs private cloud workspace showing a shared product launch plan with a comment from Shimo AI"
-          />
-          <div className="ai-cursor">
-            <span>✦</span> AI
+        <div className="hero-scenes" id="scenes">
+          <div className="hero-scenes-head">
+            <Eyebrow>Built around real work</Eyebrow>
+            <p>Pick a scene and watch the workspace move — every example is a real file type.</p>
           </div>
-          <div className="ai-comment">
-            <div>
-              <b>Shimo AI</b>
-              <small>Just now</small>
-              <i>✓</i>
+          <div className="scene-pills">
+            {scenes.map(([label], i) => (
+              <button key={label} type="button" onClick={() => setScene(i)} className={scene === i ? 'active' : ''}>
+                {label}
+              </button>
+            ))}
+          </div>
+          <div className="scene-demo">
+            <div className="scene-list">
+              {scenes.map(([label, title], i) => (
+                <button key={label} type="button" onClick={() => setScene(i)} className={scene === i ? 'active' : ''}>
+                  <small>0{i + 1}</small>
+                  {title}
+                </button>
+              ))}
             </div>
-            <p>Grouped the launch tasks into a clearer sequence.</p>
-            <em>AI suggestion</em>
+            <div className="scene-screen">
+              <img src={`/assets/${scenes[scene][2]}`} alt={`ShimoDocs workflow preview: ${scenes[scene][1]}`} />
+              <div className="scene-caption">
+                <Eyebrow>Live workflow preview</Eyebrow>
+                <h3>{scenes[scene][1]}</h3>
+                <p>Shared context, visible handoffs and a clear next step for the team.</p>
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -174,45 +187,6 @@ export default function Home() {
               </div>
             </article>
           ))}
-        </div>
-      </section>
-
-      <section className="section scenes-section" id="scenes">
-        <div className="section-heading">
-          <div>
-            <Eyebrow>Built around real work</Eyebrow>
-            <h2>
-              Pick a scene.
-              <br />
-              <span className="gradient">Watch it move.</span>
-            </h2>
-          </div>
-          <p className="section-lead">Start with the work in front of you and keep every decision connected.</p>
-        </div>
-        <div className="scene-pills">
-          {scenes.map(([label], i) => (
-            <button key={label} type="button" onClick={() => setScene(i)} className={scene === i ? 'active' : ''}>
-              {label}
-            </button>
-          ))}
-        </div>
-        <div className="scene-demo">
-          <div className="scene-list">
-            {scenes.map(([label, title], i) => (
-              <button key={label} type="button" onClick={() => setScene(i)} className={scene === i ? 'active' : ''}>
-                <small>0{i + 1}</small>
-                {title}
-              </button>
-            ))}
-          </div>
-          <div className="scene-screen">
-            <img src={`/assets/${scenes[scene][2]}`} alt={`ShimoDocs workflow preview: ${scenes[scene][1]}`} />
-            <div className="scene-caption">
-              <Eyebrow>Live workflow preview</Eyebrow>
-              <h3>{scenes[scene][1]}</h3>
-              <p>Shared context, visible handoffs and a clear next step for the team.</p>
-            </div>
-          </div>
         </div>
       </section>
 
