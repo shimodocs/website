@@ -80,6 +80,12 @@ npm run assets
 `scripts/make-assets.py` measures its own layout and refuses to write an Open
 Graph card where text would overflow or collide with the screenshot.
 
+The icon it writes is not drawn in code: `brand/shimodocs-mark.svg` and
+`brand/shimodocs-icon.png` hold the designed artwork the previous site shipped
+(the leaf mark in a circle for the favicon, in a tile for the touch icon), and
+the script resamples them. Replace those two files to change the mark — the
+header wordmark lives at `public/assets/logo-shimodocs.svg`.
+
 ## Download and licence call to action
 
 The home hero carries the two ways to get the product, both defined in

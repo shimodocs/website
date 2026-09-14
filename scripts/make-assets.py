@@ -21,6 +21,9 @@ ROOT = Path(__file__).resolve().parent.parent
 PUBLIC = ROOT / "public"
 ASSETS = PUBLIC / "assets"
 OUT = PUBLIC
+# The designed brand artwork, kept out of public/ so it is not served: the icon
+# and the favicon are generated from these.
+BRAND = ROOT / "brand"
 
 BG = (9, 7, 19)
 INK = (247, 244, 255)
@@ -36,18 +39,10 @@ DM_REGULAR = ASSETS / "dm-sans-400.ttf"
 DM_MEDIUM = ASSETS / "dm-sans-500.ttf"
 SCREENSHOT = ASSETS / "extract-0.png"
 
-FAVICON_SVG = """<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="ShimoDocs">
-  <defs>
-    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#5d34d0"/>
-      <stop offset="0.55" stop-color="#8c4be0"/>
-      <stop offset="1" stop-color="#ff006e"/>
-    </linearGradient>
-  </defs>
-  <rect width="64" height="64" rx="15" fill="url(#g)"/>
-  <path d="M39.6 21.4c-1.9-2-4.6-3-8-3-3.2 0-5.9.9-8 2.7-2.1 1.8-3.2 4.2-3.2 7.1 0 2.6.8 4.7 2.5 6.2 1.6 1.5 4 2.5 7.2 3.1 2.2.4 3.8 1 4.7 1.6.9.6 1.3 1.5 1.3 2.6 0 1.2-.5 2.2-1.5 2.9-1 .7-2.4 1-4.2 1-2.1 0-3.9-.5-5.3-1.4-1.4-1-2.4-2.4-2.9-4.3l-4.6 1.5c.6 2.7 2.1 4.9 4.3 6.4 2.2 1.5 5 2.3 8.4 2.3 3.6 0 6.5-1 8.7-2.8 2.2-1.9 3.3-4.4 3.3-7.4 0-2.5-.8-4.5-2.4-6-1.6-1.5-4.1-2.5-7.5-3.1-2.1-.4-3.6-.9-4.5-1.5-.9-.6-1.3-1.4-1.3-2.5s.5-2 1.4-2.6c.9-.6 2.2-.9 3.9-.9 1.8 0 3.3.4 4.5 1.2 1.2.8 2 2 2.5 3.6l4.6-1.5c-.7-2.5-2-4.5-3.9-6z" fill="#fff"/>
-</svg>
-"""
+FAVICON_SVG = (BRAND / "shimodocs-mark.svg").read_text(encoding="utf-8")
+# The leaf mark the previous site shipped as its touch icon. A designed asset,
+# so it is resampled rather than redrawn.
+ICON_SOURCE = BRAND / "shimodocs-icon.png"
 
 
 def font(path: Path, size: int) -> ImageFont.FreeTypeFont:
@@ -74,12 +69,6 @@ def fit_size(
     raise SystemExit(f"Cannot fit {lines!r} into {max_width:.0f}px")
 
 
-def rounded_mask(size: tuple[int, int], radius: int) -> Image.Image:
-    mask = Image.new("L", size, 0)
-    ImageDraw.Draw(mask).rounded_rectangle([0, 0, size[0] - 1, size[1] - 1], radius=radius, fill=255)
-    return mask
-
-
 def add_glow(
     base: Image.Image, center: tuple[int, int], radius: int, colour: tuple[int, int, int], strength: int
 ) -> Image.Image:
@@ -92,35 +81,14 @@ def add_glow(
     return Image.composite(layer, base, mask)
 
 
-def gradient_tile(size: tuple[int, int]) -> Image.Image:
-    """Diagonal violet to pink gradient, drawn small then upscaled."""
-    w, h = size
-    small = Image.new("RGB", (64, 64))
-    px = small.load()
-    for y in range(64):
-        for x in range(64):
-            t = (x / 63 * 0.55) + (y / 63 * 0.45)
-            px[x, y] = (
-                round(VIOLET[0] + (PINK[0] - VIOLET[0]) * t),
-                round(VIOLET[1] + (PINK[1] - VIOLET[1]) * t),
-                round(VIOLET[2] + (PINK[2] - VIOLET[2]) * t),
-            )
-    return small.resize(size, Image.LANCZOS)
-
-
 def build_icon(size: int) -> Image.Image:
-    icon = gradient_tile((size, size))
-    icon.putalpha(rounded_mask((size, size), max(3, round(size * 0.23))))
-    draw = ImageDraw.Draw(icon)
-    glyph = font(SPACE_BOLD, round(size * 0.72))
-    box = draw.textbbox((0, 0), "S", font=glyph)
-    draw.text(
-        ((size - (box[2] - box[0])) / 2 - box[0], (size - (box[3] - box[1])) / 2 - box[1] - size * 0.02),
-        "S",
-        font=glyph,
-        fill=(255, 255, 255, 255),
-    )
-    return icon
+    """Resample the touch icon that ships with the brand.
+
+    This used to paint a violet-to-pink tile with a typeset "S", which was not
+    the mark the site was designed around: the logo the previous site used is the
+    leaf cut out of a dark tile, kept in brand/ so it cannot drift.
+    """
+    return Image.open(ICON_SOURCE).convert("RGBA").resize((size, size), Image.LANCZOS)
 
 
 def draw_tracked(
