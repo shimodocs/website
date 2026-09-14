@@ -22,6 +22,12 @@ export const OG_IMAGE_URL = `${SITE_URL}/og-image.png`
 export const OG_IMAGE_WIDTH = 1200
 export const OG_IMAGE_HEIGHT = 630
 
+// An article can ship its own social card. The cards reused from the previous
+// site are 16:9 rather than the site card's 1.91:1, so the dimensions are
+// declared per article instead of assuming the shared ones.
+export const ARTICLE_CARD_WIDTH = 1200
+export const ARTICLE_CARD_HEIGHT = 675
+
 export const ORGANIZATION_ID = `${SITE_URL}/#organization`
 export const WEBSITE_ID = `${SITE_URL}/#website`
 
@@ -458,6 +464,10 @@ export function blogPostPath(slug) {
 export function blogPostHead(post, options = {}) {
   const canonical = absoluteUrl(blogPostPath(post.slug))
   const esc = escapeHtml
+  // The card the article publishes, or the shared site card when it has none.
+  const card = post.image ? absoluteUrl(post.image) : OG_IMAGE_URL
+  const cardWidth = post.image ? ARTICLE_CARD_WIDTH : OG_IMAGE_WIDTH
+  const cardHeight = post.image ? ARTICLE_CARD_HEIGHT : OG_IMAGE_HEIGHT
   const tags = [
     `<title>${esc(post.seoTitle)}</title>`,
     `<meta name="description" content="${esc(post.description)}"/>`,
@@ -470,9 +480,9 @@ export function blogPostHead(post, options = {}) {
     `<meta property="og:title" content="${esc(post.seoTitle)}"/>`,
     `<meta property="og:description" content="${esc(post.description)}"/>`,
     `<meta property="og:url" content="${esc(canonical)}"/>`,
-    `<meta property="og:image" content="${esc(OG_IMAGE_URL)}"/>`,
-    `<meta property="og:image:width" content="${OG_IMAGE_WIDTH}"/>`,
-    `<meta property="og:image:height" content="${OG_IMAGE_HEIGHT}"/>`,
+    `<meta property="og:image" content="${esc(card)}"/>`,
+    `<meta property="og:image:width" content="${cardWidth}"/>`,
+    `<meta property="og:image:height" content="${cardHeight}"/>`,
     `<meta property="og:image:alt" content="${esc(post.title)}"/>`,
     `<meta property="article:published_time" content="${esc(post.date)}"/>`,
     `<meta property="article:modified_time" content="${esc(post.updated || post.date)}"/>`,
@@ -481,7 +491,7 @@ export function blogPostHead(post, options = {}) {
     `<meta name="twitter:card" content="summary_large_image"/>`,
     `<meta name="twitter:title" content="${esc(post.seoTitle)}"/>`,
     `<meta name="twitter:description" content="${esc(post.description)}"/>`,
-    `<meta name="twitter:image" content="${esc(OG_IMAGE_URL)}"/>`,
+    `<meta name="twitter:image" content="${esc(card)}"/>`,
     `<script type="application/ld+json" id="structured-data">${serialiseJsonLd(blogPostJsonLd(post))}</script>`,
   ]
   return (options.indent || '    ') + tags.join('\n' + (options.indent || '    ')) + '\n  '
@@ -534,7 +544,7 @@ export function blogPostJsonLd(post) {
         dateModified: post.updated || post.date,
         author: { '@type': 'Organization', name: SITE_NAME, url: canonicalFor('/') },
         publisher: { '@id': ORGANIZATION_ID },
-        image: [OG_IMAGE_URL],
+        image: [post.image ? absoluteUrl(post.image) : OG_IMAGE_URL],
         articleSection: post.categoryLabel,
         keywords: post.keywords || post.tags.join(', '),
         wordCount: post.words,

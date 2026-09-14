@@ -71,6 +71,22 @@ export default function Download() {
             </article>
           ))}
         </div>
+
+        <div className="page-figures">
+          <figure className="page-figure">
+            <img
+              src="/assets/workspace-recent-files.png"
+              alt="ShimoDocs workspace listing recent files, files shared with you, team space, trash and the storage each user and the organisation is using"
+              width="1400"
+              height="749"
+              loading="lazy"
+            />
+            <figcaption>
+              The installed workspace opens on the files your team already shares, with personal and organisation
+              storage accounted for separately.
+            </figcaption>
+          </figure>
+        </div>
       </section>
 
       <section className="section">

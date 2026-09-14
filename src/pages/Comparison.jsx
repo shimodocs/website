@@ -116,6 +116,22 @@ export default function Comparison() {
             </article>
           ))}
         </div>
+
+        <div className="page-figures">
+          <figure className="page-figure">
+            <img
+              src="/assets/workspace-collaboration.png"
+              alt="ShimoDocs editor showing a product launch plan with two live collaborator cursors and a comments panel"
+              width="1400"
+              height="750"
+              loading="lazy"
+            />
+            <figcaption>
+              The comparison above is about where the work runs, not what it feels like to do. Live cursors, comments
+              and sharing behave the way your team already expects.
+            </figcaption>
+          </figure>
+        </div>
       </section>
 
       <section className="section">

@@ -7,6 +7,7 @@ date: 2026-08-13
 tags: [web3, security, smart contracts, solidity, tooling]
 keywords: "web3 security tools, smart contract security, solidity static analysis, evm fuzzing, wallet security"
 layout: feature
+image: /assets/og-web3-security-tools.png
 ---
 
 There is no shortage of Web3 security tooling. The harder part is figuring out which tools are actually useful, what each one is good at, and where they fit into a real development workflow.

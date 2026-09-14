@@ -7,6 +7,7 @@ date: 2026-08-14
 tags: [ai training data, consent, defaults, data control]
 keywords: "ai training content, opt out of ai training, content consent, document data control"
 layout: magazine
+image: /assets/og-ai-training-content.png
 ---
 
 If you stream on Twitch, there is a good chance you have spent years building up a library of broadcasts, clips, chat conversations, images and other material around your channel.

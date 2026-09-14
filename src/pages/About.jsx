@@ -68,6 +68,35 @@ export default function About() {
             </article>
           ))}
         </div>
+
+        <div className="page-figures two-up">
+          <figure className="page-figure">
+            <img
+              src="/assets/about-private-cloud.png"
+              alt="Documents, spreadsheets, presentations and forms passing through a security boundary into servers and storage"
+              width="1400"
+              height="933"
+              loading="lazy"
+            />
+            <figcaption>
+              The editing experience stays the same; where the files live changes. Content, permissions and AI endpoints
+              stay inside infrastructure you operate.
+            </figcaption>
+          </figure>
+          <figure className="page-figure">
+            <img
+              src="/assets/about-global-teams.png"
+              alt="Diagram of one private project workspace shared by teams in North America, Europe, South America and Asia Pacific, with admin and security controls around it"
+              width="1400"
+              height="860"
+              loading="lazy"
+            />
+            <figcaption>
+              One workspace, four regional teams, and the admin and security controls that sit around it. Which region
+              holds the data is a deployment decision, not a vendor default.
+            </figcaption>
+          </figure>
+        </div>
       </section>
 
       <section className="section">

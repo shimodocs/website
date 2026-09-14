@@ -3,6 +3,7 @@ title: "Secure Cloud Collaboration: Balancing Security and Productivity"
 seoTitle: "Secure Cloud Collaboration: Security and Productivity"
 description: "Secure cloud collaboration helps teams protect sensitive data without slowing work down, covering sharing controls, identity and deployment choices."
 layout: briefing
+image: /assets/og-secure-cloud-collaboration.png
 category: security
 date: 2026-08-19
 tags: [security, collaboration, access control, private cloud]

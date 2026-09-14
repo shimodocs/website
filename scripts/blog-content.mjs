@@ -267,6 +267,9 @@ function loadPost(fileName) {
     keywords: typeof data.keywords === 'string' ? data.keywords : '',
     author: typeof data.author === 'string' ? data.author : 'ShimoDocs Team',
     featured: data.featured === true,
+    // Optional social card published with the article. Empty means "use the
+    // shared site card", which is what every article did before.
+    image: typeof data.image === 'string' ? data.image.trim() : '',
     layout,
     figures,
     words,
