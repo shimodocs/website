@@ -59,8 +59,8 @@ export const BLOG_POSTS = [
       "solidity",
       "tooling"
     ],
-    "readingTime": 8,
-    "words": 1860,
+    "readingTime": 9,
+    "words": 1912,
     "featured": false
   },
   {

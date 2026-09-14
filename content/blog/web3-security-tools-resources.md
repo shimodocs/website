@@ -122,17 +122,17 @@ caption: Figure 2. There is no shortcut here. Reading about exploits helps, but 
 
 We collected 50 Web3 security tools and resources across eleven areas: static analysis, symbolic execution, fuzzing and invariant testing, reverse engineering, wallet and signing security, MPC and key management, monitoring, blockchain OSINT, security frameworks, training and CTFs, and AI-assisted security.
 
-The projects this guide walks through, grouped the same way:
+The projects this guide walks through, grouped the same way. The full directory — all fifty entries, including the OSINT collections and the AI-assisted tooling this guide does not name individually — is in our [Web3 security resources table](https://shimo.page/tables/D0qRO6Qx07hbjlvE/):
 
-- **Static analysis and symbolic execution** — Slither, Mythril, Aderyn, Wake, Halmos
-- **Fuzzing and invariant testing** — Echidna, Medusa, Foundry
-- **Reverse engineering and verification** — Heimdall-rs, evmole, Sourcify, evm-mirror
-- **Studying real exploits** — DeFiHackLabs, DeFiVulnLabs
-- **Wallet and signing security** — eth-phishing-detect, SafeLens, ERC-7730 Clear Signing Registry
-- **MPC and key management** — Coinbase cb-mpc, tss-lib
-- **Monitoring and investigation** — OpenZeppelin Monitor, Blockscout, blockchain OSINT collections
-- **Security frameworks** — SEAL Security Frameworks, Smart Contract Security Best Practices, SlowMist Web3 Project Security Practice Requirements
-- **Training and CTFs** — Ethernaut, Paradigm CTF
+- **Static analysis and symbolic execution** — [Slither](https://github.com/crytic/slither), [Mythril](https://github.com/ConsenSys/mythril), [Aderyn](https://github.com/Cyfrin/aderyn), [Wake](https://github.com/Ackee-Blockchain/wake), [Halmos](https://github.com/a16z/halmos)
+- **Fuzzing and invariant testing** — [Echidna](https://github.com/crytic/echidna), [Medusa](https://github.com/crytic/medusa), [Foundry](https://github.com/foundry-rs/foundry)
+- **Reverse engineering and verification** — [Heimdall-rs](https://github.com/Jon-Becker/heimdall-rs), [evmole](https://github.com/cdump/evmole), [Sourcify](https://github.com/argotorg/sourcify), [evm-mirror](https://github.com/aragon/evm-mirror)
+- **Studying real exploits** — [DeFiHackLabs](https://github.com/SunWeb3Sec/DeFiHackLabs), [DeFiVulnLabs](https://github.com/SunWeb3Sec/DeFiVulnLabs)
+- **Wallet and signing security** — [eth-phishing-detect](https://github.com/MetaMask/eth-phishing-detect), [SafeLens](https://github.com/Th0rgal/SafeLens), [ERC-7730 Clear Signing Registry](https://github.com/ethereum/clear-signing-erc7730-registry)
+- **MPC and key management** — [Coinbase cb-mpc](https://github.com/coinbase/cb-mpc), [tss-lib](https://github.com/bnb-chain/tss-lib)
+- **Monitoring and investigation** — [OpenZeppelin Monitor](https://github.com/OpenZeppelin/openzeppelin-monitor), [Blockscout](https://github.com/blockscout/blockscout)
+- **Security frameworks** — [SEAL Security Frameworks](https://github.com/security-alliance/frameworks), [Smart Contract Security Best Practices](https://github.com/ConsenSysDiligence/smart-contract-best-practices), [SlowMist Web3 Project Security Practice Requirements](https://github.com/slowmist/Web3-Project-Security-Practice-Requirements)
+- **Training and CTFs** — [Ethernaut](https://github.com/OpenZeppelin/ethernaut), [Paradigm CTF](https://github.com/paradigm-operations/paradigm-ctf-2021)
 
 AI-assisted security is the newest of the categories, and the one where the tooling is changing fastest. The same caution applies there as everywhere else in this list: an assistant that reads your contracts is another reviewer, not a replacement for one, and anything it touches inherits the same access questions — a point our notes on [AI agents and document security](/blog/ai-agents-in-documents-security) make about AI access in general.
 

@@ -10,7 +10,7 @@ const MATRIX = [
   ['Real-time collaboration', '✓', '✓', '✓', '✓', '✓', '✓'],
   ['Private deployment', '✓', '—', 'Limited', '✓', '✓', '—'],
   ['Full data ownership', '✓', '—', 'Limited', '✓', '✓', '—'],
-  ['Google Docs-like editing', '✓', '✓', '—', '—', '✓', '—'],
+  ['Native browser editor', '✓', '✓', '—', '—', '✓', '—'],
   ['Enterprise permissions', '✓', '✓', '✓', '✓', '✓', 'Limited'],
   ['Audit logs', '✓', '✓', '✓', '✓', '✓', 'Enterprise only'],
   ['SSO', '✓', '✓', '✓', '✓', '✓', 'Enterprise only'],
@@ -69,9 +69,11 @@ export default function Comparison() {
         </h2>
         <p className="section-lead">
           Ticks mark capabilities available on the platform&apos;s own terms. &ldquo;Limited&rdquo; and &ldquo;Enterprise
-          only&rdquo; mark capabilities that exist but are restricted or gated. Prices are list prices per user per month
-          when billed annually, last reviewed in September 2026; self-hosted options are shown as infrastructure cost
-          because you supply the servers.
+          only&rdquo; mark capabilities that exist but are restricted or gated. &ldquo;Native browser editor&rdquo;
+          marks an editor built for the web, as opposed to a browser version of a desktop suite or an editor supplied by
+          an integrated third party — which is the distinction those cells draw, not whether documents can be edited
+          together. Prices are list prices per user per month when billed annually, last reviewed in September 2026;
+          self-hosted options are shown as infrastructure cost because you supply the servers.
         </p>
         <div className="post-body">
           <table>
