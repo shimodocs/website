@@ -3,6 +3,206 @@
 
 export const BLOG_POSTS = [
   {
+    "slug": "byo-key-encryption-documents",
+    "title": "Document Encryption and Key Custody",
+    "description": "What encryption at rest actually protects, when a customer-managed key is a real control, and why key custody decides the answer.",
+    "category": "security",
+    "categoryLabel": "Security & compliance",
+    "layout": "magazine",
+    "figures": 2,
+    "date": "2026-03-20",
+    "updated": null,
+    "tags": [
+      "encryption",
+      "key management",
+      "byok",
+      "security"
+    ],
+    "readingTime": 5,
+    "words": 1196,
+    "featured": false
+  },
+  {
+    "slug": "external-sharing-risks-documents",
+    "title": "External Document Sharing: Where Audits Find Problems",
+    "description": "Why external sharing is the control that fails most audits, and how to configure link sharing, guest access and expiry so it does not.",
+    "category": "security",
+    "categoryLabel": "Security & compliance",
+    "layout": "briefing",
+    "figures": 2,
+    "date": "2026-03-18",
+    "updated": null,
+    "tags": [
+      "external sharing",
+      "data leakage",
+      "guests",
+      "dlp"
+    ],
+    "readingTime": 5,
+    "words": 1158,
+    "featured": false
+  },
+  {
+    "slug": "access-control-best-practices-documents",
+    "title": "Access Control for Document Platforms",
+    "description": "Least privilege, group-derived roles and access reviews: the access control practices that hold up in a document platform audit.",
+    "category": "security",
+    "categoryLabel": "Security & compliance",
+    "layout": "standard",
+    "figures": 2,
+    "date": "2026-03-16",
+    "updated": null,
+    "tags": [
+      "access control",
+      "least privilege",
+      "identity",
+      "audit"
+    ],
+    "readingTime": 5,
+    "words": 1154,
+    "featured": false
+  },
+  {
+    "slug": "legal-hold-document-management",
+    "title": "Legal Hold in Document Platforms",
+    "description": "What a legal hold requires from a document platform: preservation that survives user deletion, custodian scoping, audit and release.",
+    "category": "security",
+    "categoryLabel": "Security & compliance",
+    "layout": "feature",
+    "figures": 2,
+    "date": "2026-03-13",
+    "updated": null,
+    "tags": [
+      "legal hold",
+      "preservation",
+      "litigation",
+      "records"
+    ],
+    "readingTime": 5,
+    "words": 1163,
+    "featured": false
+  },
+  {
+    "slug": "document-retention-policy-guide",
+    "title": "Building a Document Retention Policy That Holds",
+    "description": "How to build a document retention policy a platform can actually enforce, including the copies that deletion usually misses.",
+    "category": "security",
+    "categoryLabel": "Security & compliance",
+    "layout": "briefing",
+    "figures": 2,
+    "date": "2026-03-11",
+    "updated": null,
+    "tags": [
+      "retention",
+      "compliance",
+      "deletion",
+      "records"
+    ],
+    "readingTime": 5,
+    "words": 1209,
+    "featured": false
+  },
+  {
+    "slug": "data-residency-requirements-guide",
+    "title": "A Practical Guide to Data Residency Requirements",
+    "description": "What data residency requirements actually cover, how they differ from sovereignty, and the questions that reveal where content really goes.",
+    "category": "security",
+    "categoryLabel": "Security & compliance",
+    "layout": "standard",
+    "figures": 2,
+    "date": "2026-03-09",
+    "updated": null,
+    "tags": [
+      "data residency",
+      "compliance",
+      "transfers",
+      "procurement"
+    ],
+    "readingTime": 5,
+    "words": 1167,
+    "featured": false
+  },
+  {
+    "slug": "iso27001-document-management",
+    "title": "ISO 27001 and Document Management",
+    "description": "How ISO 27001 applies to document collaboration: ISMS scope, the Annex A controls that matter, and why certification is not a product feature.",
+    "category": "security",
+    "categoryLabel": "Security & compliance",
+    "layout": "magazine",
+    "figures": 2,
+    "date": "2026-03-06",
+    "updated": null,
+    "tags": [
+      "iso 27001",
+      "compliance",
+      "isms",
+      "controls"
+    ],
+    "readingTime": 5,
+    "words": 1206,
+    "featured": false
+  },
+  {
+    "slug": "soc2-document-collaboration-controls",
+    "title": "SOC 2 Controls for Document Collaboration",
+    "description": "What SOC 2 means for a document platform, why self-hosting moves the service organisation boundary, and which controls actually matter.",
+    "category": "security",
+    "categoryLabel": "Security & compliance",
+    "layout": "briefing",
+    "figures": 2,
+    "date": "2026-03-04",
+    "updated": null,
+    "tags": [
+      "soc2",
+      "compliance",
+      "audit",
+      "controls"
+    ],
+    "readingTime": 6,
+    "words": 1225,
+    "featured": false
+  },
+  {
+    "slug": "hipaa-compliant-document-collaboration",
+    "title": "HIPAA-Compliant Document Collaboration",
+    "description": "How HIPAA applies to document collaboration: covered entities, business associate agreements, the Security Rule safeguards and breach duties.",
+    "category": "security",
+    "categoryLabel": "Security & compliance",
+    "layout": "feature",
+    "figures": 2,
+    "date": "2026-03-02",
+    "updated": null,
+    "tags": [
+      "hipaa",
+      "healthcare",
+      "compliance",
+      "phi"
+    ],
+    "readingTime": 6,
+    "words": 1249,
+    "featured": false
+  },
+  {
+    "slug": "gdpr-compliant-document-collaboration",
+    "title": "GDPR-Compliant Document Collaboration",
+    "description": "What GDPR actually asks of document collaboration software: controller and processor duties, retention, breach response and international transfers.",
+    "category": "security",
+    "categoryLabel": "Security & compliance",
+    "layout": "standard",
+    "figures": 2,
+    "date": "2026-02-27",
+    "updated": null,
+    "tags": [
+      "gdpr",
+      "compliance",
+      "personal data",
+      "retention"
+    ],
+    "readingTime": 6,
+    "words": 1246,
+    "featured": false
+  },
+  {
     "slug": "google-workspace-alternatives-for-enterprise",
     "title": "Google Workspace Alternatives for Enterprise Teams",
     "description": "Enterprise evaluation of Google Workspace alternatives, covering data residency, AI governance, administration and migration risk.",
@@ -421,7 +621,7 @@ export const BLOG_CATEGORIES = [
     "id": "security",
     "label": "Security & compliance",
     "description": "Data sovereignty, access control and the compliance questions teams ask before migrating.",
-    "count": 1
+    "count": 11
   },
   {
     "id": "ai",
@@ -443,4 +643,4 @@ export const BLOG_CATEGORIES = [
   }
 ]
 
-export const BLOG_UPDATED = "2026-02-25"
+export const BLOG_UPDATED = "2026-03-20"
