@@ -3,6 +3,67 @@
 
 export const BLOG_POSTS = [
   {
+    "slug": "secure-cloud-collaboration",
+    "title": "Secure Cloud Collaboration: Balancing Security and Productivity",
+    "description": "Secure cloud collaboration helps teams protect sensitive data without slowing work down, covering sharing controls, identity and deployment choices.",
+    "category": "security",
+    "categoryLabel": "Security & compliance",
+    "layout": "briefing",
+    "figures": 2,
+    "date": "2026-08-19",
+    "updated": null,
+    "tags": [
+      "security",
+      "collaboration",
+      "access control",
+      "private cloud"
+    ],
+    "readingTime": 8,
+    "words": 1698,
+    "featured": false
+  },
+  {
+    "slug": "ai-training-content-control",
+    "title": "Your Content Is Training AI. Did You Actually Agree to That?",
+    "description": "Twitch made AI training opt-out by default. What that reveals about consent, defaults, and controlling content that already lives on someone else's platform.",
+    "category": "ai",
+    "categoryLabel": "AI at work",
+    "layout": "magazine",
+    "figures": 3,
+    "date": "2026-08-14",
+    "updated": null,
+    "tags": [
+      "ai training data",
+      "consent",
+      "defaults",
+      "data control"
+    ],
+    "readingTime": 8,
+    "words": 1682,
+    "featured": false
+  },
+  {
+    "slug": "web3-security-tools-resources",
+    "title": "50 Web3 Security Tools & Resources for Builders",
+    "description": "A builder's guide to Web3 security tooling: static analysis, fuzzing, bytecode tooling, wallet signing safety, monitoring and the frameworks behind them.",
+    "category": "security",
+    "categoryLabel": "Security & compliance",
+    "layout": "feature",
+    "figures": 2,
+    "date": "2026-08-13",
+    "updated": null,
+    "tags": [
+      "web3",
+      "security",
+      "smart contracts",
+      "solidity",
+      "tooling"
+    ],
+    "readingTime": 8,
+    "words": 1860,
+    "featured": false
+  },
+  {
     "slug": "byo-key-encryption-documents",
     "title": "Document Encryption and Key Custody",
     "description": "What encryption at rest actually protects, when a customer-managed key is a real control, and why key custody decides the answer.",
@@ -621,13 +682,13 @@ export const BLOG_CATEGORIES = [
     "id": "security",
     "label": "Security & compliance",
     "description": "Data sovereignty, access control and the compliance questions teams ask before migrating.",
-    "count": 11
+    "count": 13
   },
   {
     "id": "ai",
     "label": "AI at work",
     "description": "Putting AI agents inside documents without handing your content to someone else.",
-    "count": 1
+    "count": 2
   },
   {
     "id": "industry",
@@ -643,4 +704,4 @@ export const BLOG_CATEGORIES = [
   }
 ]
 
-export const BLOG_UPDATED = "2026-03-20"
+export const BLOG_UPDATED = "2026-08-19"

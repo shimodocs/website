@@ -25,6 +25,16 @@ const FOOTER_SECTIONS = [
       [GITHUB_URL, 'ShimoDocs on GitHub'],
     ],
   },
+  {
+    // Company, comparison and legal pages are linked from here rather than the
+    // header bar, and every one of them is a path the previous site published.
+    heading: 'Company',
+    links: [
+      ['/about', 'About ShimoDocs'],
+      ['/comparison', 'Compare collaboration platforms'],
+      ['/download', 'Download packages and licences'],
+    ],
+  },
 ]
 
 export default function Shell({ children }) {
@@ -106,6 +116,11 @@ export default function Shell({ children }) {
         </nav>
         <div className="footer-legal">
           <span>© 2026 ShimoDocs</span>
+          <span>
+            <Link to="/legal-page/privacy-policy">Privacy Policy</Link>
+            {' · '}
+            <Link to="/legal-page/terms-conditions">Terms &amp; Conditions</Link>
+          </span>
           <span>Intelligent work, in one place.</span>
         </div>
       </footer>

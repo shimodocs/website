@@ -91,6 +91,58 @@ export const ROUTE_SEO = {
       'contact ShimoDocs sales, private cloud deployment, enterprise document collaboration demo, self-hosted office suite rollout, Google Docs alternative',
     ogAlt: 'Contact the ShimoDocs sales team',
   },
+  // The routes below keep the addresses the previous site published, because
+  // Google already indexed them. Their titles and descriptions stay close to
+  // the ones those pages ranked with, so the indexed listing does not have to
+  // be re-learned.
+  '/about': {
+    changeFrequency: 'monthly',
+    priority: '0.6',
+    title: 'About ShimoDocs | Private Cloud Document Collaboration',
+    description:
+      'ShimoDocs brings collaboration to private cloud environments: 12 years of collaboration software, 1000+ teams served, and a privacy-first office platform.',
+    keywords:
+      'about ShimoDocs, Shimo company, private cloud collaboration vendor, self-hosted office platform company, enterprise document collaboration team',
+    ogAlt: 'The ShimoDocs team and the story behind the private cloud workspace',
+  },
+  '/comparison': {
+    changeFrequency: 'monthly',
+    priority: '0.7',
+    title: 'ShimoDocs vs Google Workspace, Nextcloud & ONLYOFFICE',
+    description:
+      'Compare ShimoDocs with Google Docs, Microsoft 365, Nextcloud, ONLYOFFICE and Notion on private deployment, data ownership, editing experience and price.',
+    keywords:
+      'ShimoDocs comparison, Google Workspace alternative, Nextcloud alternative, ONLYOFFICE comparison, Notion vs document suite, private cloud office suite comparison',
+    ogAlt: 'A capability matrix comparing ShimoDocs with five collaboration platforms',
+  },
+  '/download': {
+    changeFrequency: 'weekly',
+    priority: '0.8',
+    title: 'Download ShimoDocs | Private Cloud Document Collaboration',
+    description:
+      'Download the self-hosted ShimoDocs installer for Linux amd64 and arm64, request the free perpetual licence for up to five users, and read the release channel.',
+    keywords:
+      'download ShimoDocs, self-hosted installer, Linux amd64 arm64 package, private cloud office suite download, free perpetual licence, on-premise document collaboration',
+    ogAlt: 'Download the ShimoDocs self-hosted installer for Linux',
+  },
+  '/legal-page/privacy-policy': {
+    changeFrequency: 'yearly',
+    priority: '0.3',
+    title: 'Privacy Policy | ShimoDocs',
+    description:
+      'How ShimoDocs collects, uses, stores and protects personal information across our website, the self-hosted product and the support channels you contact.',
+    keywords: 'ShimoDocs privacy policy, data protection, personal information, enterprise privacy, self-hosted data handling',
+    ogAlt: 'The ShimoDocs privacy policy',
+  },
+  '/legal-page/terms-conditions': {
+    changeFrequency: 'yearly',
+    priority: '0.3',
+    title: 'Terms & Conditions | ShimoDocs',
+    description:
+      'The terms that govern use of the ShimoDocs website and software licence, including responsibilities, payment, intellectual property and limitation of liability.',
+    keywords: 'ShimoDocs terms and conditions, software licence terms, acceptable use, enterprise agreement, limitation of liability',
+    ogAlt: 'The ShimoDocs terms and conditions',
+  },
 }
 
 export const ROUTE_PATHS = Object.keys(ROUTE_SEO)
@@ -173,6 +225,11 @@ function breadcrumbLabel(pathname) {
     '/help-center': 'Help Center',
     '/pricing': 'Pricing',
     '/contact-sales': 'Contact Sales',
+    '/about': 'About',
+    '/comparison': 'Comparison',
+    '/download': 'Download',
+    '/legal-page/privacy-policy': 'Privacy Policy',
+    '/legal-page/terms-conditions': 'Terms & Conditions',
   }
   return titles[pathname] || ROUTE_SEO[pathname]?.title || pathname
 }
@@ -370,7 +427,7 @@ export function sitemapXml(lastmod = new Date().toISOString().slice(0, 10), extr
   return ['<?xml version="1.0" encoding="UTF-8"?>', '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">', ...rows, '</urlset>', ''].join('\n')
 }
 
-function escapeHtml(value) {
+export function escapeHtml(value) {
   return String(value)
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')

@@ -43,4 +43,5 @@ export {
   blogPostJsonLd,
   blogIndexJsonLd,
   absoluteUrl,
+  escapeHtml,
 } from './seo'

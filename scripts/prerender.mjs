@@ -41,6 +41,7 @@ const {
   blogPostHead,
   blogIndexJsonLd,
   absoluteUrl,
+  escapeHtml,
 } = ssr
 
 const posts = loadPosts()
@@ -202,7 +203,10 @@ for (const routePath of ROUTE_PATHS) {
   const meta = ROUTE_SEO[routePath]
   if (markup.length < 2000) problems.push(`${routePath}: prerendered markup is only ${markup.length} chars`)
   if (!/<h1[\s>]/.test(html)) problems.push(`${routePath}: no <h1>`)
-  if (!html.includes(`<title>${meta.title}</title>`)) problems.push(`${routePath}: title not injected`)
+  // headFor escapes the title into HTML, so a title containing "&" arrives as
+  // "&amp;". Compare against the escaped form or every ampersand reads as a
+  // missing title.
+  if (!html.includes(`<title>${escapeHtml(meta.title)}</title>`)) problems.push(`${routePath}: title not injected`)
   if (!html.includes('rel="canonical"')) problems.push(`${routePath}: no canonical link`)
   if (!html.includes('application/ld+json')) problems.push(`${routePath}: no structured data`)
   const titleTags = html.match(/<title>/g)
@@ -235,7 +239,7 @@ for (const { post, file } of articles) {
   const markup = prerenderedMarkup(html)
 
   if (markup.length < 6000) problems.push(`${post.slug}: article markup is only ${markup.length} chars`)
-  if (!html.includes(`<title>${post.seoTitle}</title>`)) problems.push(`${post.slug}: search title not injected`)
+  if (!html.includes(`<title>${escapeHtml(post.seoTitle)}</title>`)) problems.push(`${post.slug}: search title not injected`)
   if (!/<h1[\s>]/.test(html)) problems.push(`${post.slug}: no <h1>`)
   if (!html.includes(`<link rel="canonical" href="${absoluteUrl(`/blog/${post.slug}`)}"`)) {
     problems.push(`${post.slug}: canonical link is missing or wrong`)
