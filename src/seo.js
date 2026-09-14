@@ -131,6 +131,16 @@ export const ROUTE_SEO = {
       'download ShimoDocs, self-hosted installer, Linux amd64 arm64 package, private cloud office suite download, free perpetual licence, on-premise document collaboration',
     ogAlt: 'Download the ShimoDocs self-hosted installer for Linux',
   },
+  '/resources': {
+    changeFrequency: 'weekly',
+    priority: '0.7',
+    title: 'ShimoDocs Resources | Guides, Comparisons and Downloads',
+    description:
+      'Guides and insights on secure document collaboration, private cloud deployment and data control, plus the platform comparisons and self-hosted installers.',
+    keywords:
+      'ShimoDocs resources, private cloud collaboration guides, document collaboration insights, deployment guides, platform comparisons, self-hosted downloads',
+    ogAlt: 'The ShimoDocs resource hub for guides, comparisons and downloads',
+  },
   '/legal-page/privacy-policy': {
     changeFrequency: 'yearly',
     priority: '0.3',
@@ -234,6 +244,7 @@ function breadcrumbLabel(pathname) {
     '/about': 'About',
     '/comparison': 'Comparison',
     '/download': 'Download',
+    '/resources': 'Resources',
     '/legal-page/privacy-policy': 'Privacy Policy',
     '/legal-page/terms-conditions': 'Terms & Conditions',
   }

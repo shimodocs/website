@@ -20,6 +20,7 @@ const FOOTER_SECTIONS = [
   {
     heading: 'Resources',
     links: [
+      ['/resources', 'Guides, comparisons and downloads'],
       ['/help-center', 'Self-hosted deployment guides'],
       ['/blog', 'Private cloud collaboration blog'],
       [GITHUB_URL, 'ShimoDocs on GitHub'],

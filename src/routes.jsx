@@ -11,6 +11,7 @@ import ContactSales from './pages/ContactSales'
 import About from './pages/About'
 import Comparison from './pages/Comparison'
 import Download from './pages/Download'
+import Resources from './pages/Resources'
 import PrivacyPolicy from './pages/PrivacyPolicy'
 import TermsConditions from './pages/TermsConditions'
 import { ROUTE_SEO } from './seo'
@@ -28,6 +29,7 @@ export const ROUTES = [
   { path: '/about', label: 'About', Component: About },
   { path: '/comparison', label: 'Comparison', Component: Comparison },
   { path: '/download', label: 'Download', Component: Download },
+  { path: '/resources', label: 'Resources', Component: Resources },
   { path: '/legal-page/privacy-policy', label: 'Privacy Policy', Component: PrivacyPolicy },
   { path: '/legal-page/terms-conditions', label: 'Terms & Conditions', Component: TermsConditions },
 ]
