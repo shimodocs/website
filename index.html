@@ -3,11 +3,14 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" href="/favicon.ico" sizes="32x32" />
+    <!-- Browsers cache favicons for days and refresh them on their own schedule,
+         so the version in the query string is what actually makes a new icon
+         show up. Bump it whenever the artwork changes. -->
+    <link rel="icon" href="/favicon.ico?v=2" sizes="32x32" />
     <!-- The mark is dark, so it disappears on a dark tab bar. Same artwork,
          inverted, for browsers that report a dark colour scheme. -->
-    <link rel="icon" href="/favicon.svg" type="image/svg+xml" media="(prefers-color-scheme: light)" />
-    <link rel="icon" href="/favicon-dark.svg" type="image/svg+xml" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="/favicon.svg?v=2" type="image/svg+xml" media="(prefers-color-scheme: light)" />
+    <link rel="icon" href="/favicon-dark.svg?v=2" type="image/svg+xml" media="(prefers-color-scheme: dark)" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <meta name="theme-color" content="#090713" />
     <meta name="application-name" content="ShimoDocs" />
