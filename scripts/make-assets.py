@@ -40,6 +40,12 @@ DM_MEDIUM = ASSETS / "dm-sans-500.ttf"
 SCREENSHOT = ASSETS / "extract-0.png"
 
 FAVICON_SVG = (BRAND / "shimodocs-mark.svg").read_text(encoding="utf-8")
+# The mark is dark, which is right for a light tab bar and invisible on a dark
+# one, so the same artwork ships inverted for prefers-color-scheme: dark.
+ICON_FILL = 'fill="#41464B"'
+FAVICON_DARK_SVG = FAVICON_SVG.replace(ICON_FILL, 'fill="#f7f4ff"')
+if FAVICON_DARK_SVG == FAVICON_SVG:
+    raise SystemExit(f"brand mark no longer uses {ICON_FILL}; update FAVICON_DARK_SVG")
 # The leaf mark the previous site shipped as its touch icon. A designed asset,
 # so it is resampled rather than redrawn.
 ICON_SOURCE = BRAND / "shimodocs-icon.png"
@@ -234,6 +240,7 @@ def main() -> None:
     OUT.mkdir(parents=True, exist_ok=True)
 
     (OUT / "favicon.svg").write_text(FAVICON_SVG, encoding="utf-8")
+    (OUT / "favicon-dark.svg").write_text(FAVICON_DARK_SVG, encoding="utf-8")
 
     build_icon(512).save(OUT / "logo.png")
     build_icon(180).save(OUT / "apple-touch-icon.png")
@@ -242,7 +249,7 @@ def main() -> None:
     og = build_og_image()
     og.save(OUT / "og-image.png", optimize=True)
 
-    for name in ("favicon.svg", "favicon.ico", "apple-touch-icon.png", "logo.png", "og-image.png"):
+    for name in ("favicon.svg", "favicon-dark.svg", "favicon.ico", "apple-touch-icon.png", "logo.png", "og-image.png"):
         path = OUT / name
         print(f"{name:22} {path.stat().st_size / 1024:8.1f} kB")
     print(f"{'og-image.png':22} {og.size[0]}x{og.size[1]}")
