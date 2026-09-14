@@ -467,5 +467,8 @@
 /* The wordmark is the lockup the previous site used in its header and footer,
    kept as artwork rather than retyped in the site font. It ships as a light
    variant because both places sit on the dark background. */
-.brand img{display:block;height:30px;width:auto}
-.footer-brand .footer-logo img{display:block;height:28px;width:auto}
+/* The file's canvas is 500x110 while the artwork inside it is 458x78, so the
+   rendered heights here are chosen to land the visible wordmark at 26px in the
+   header and 23px in the footer — the sizes the typeset brand used. */
+.brand img{display:block;height:36px;width:auto}
+.footer-brand .footer-logo img{display:block;height:32px;width:auto}
