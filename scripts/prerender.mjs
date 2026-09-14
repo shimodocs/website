@@ -119,8 +119,23 @@ posts.forEach((post, index) => {
 
 // --------------------------------------------------------------------- 404
 
+// The 404 document gets its own head. Reusing the home page's head had it
+// announce the home title and claim the home canonical, which is wrong for a
+// document that must never be indexed: it carries a branded title, a short
+// description, noindex, and deliberately no canonical at all.
+const notFoundHead = [
+  '<title>Page not found | ShimoDocs</title>',
+  '<meta name="description" content="That page is not on this site. Head back to the ShimoDocs home page, or jump to the AI Workspace, pricing, the deployment guides or the blog archive."/>',
+  '<meta name="robots" content="noindex, follow"/>',
+  '<meta property="og:type" content="website"/>',
+  '<meta property="og:site_name" content="ShimoDocs"/>',
+  '<meta property="og:title" content="Page not found | ShimoDocs"/>',
+  '<meta property="og:description" content="That page is not on this site."/>',
+]
+  .map(tag => `    ${tag}`)
+  .join('\n')
+
 const notFoundHtml = (() => {
-  const head = headFor('/').replace(/<meta name="robots"[^>]*>/, '<meta name="robots" content="noindex, follow"/>')
   const body =
     '<div class="page"><section class="section page-intro not-found">' +
     '<div class="eyebrow">Error 404</div>' +
@@ -129,7 +144,7 @@ const notFoundHtml = (() => {
     '<a href="/ai-workspace">AI Workspace</a>, <a href="/pricing">Pricing</a>, ' +
     '<a href="/help-center">Help Center</a> or the <a href="/blog">blog archive</a>.</p>' +
     '</section></div>'
-  return documentFrom(head, body)
+  return documentFrom(notFoundHead, body)
 })()
 writeHtml('404.html', notFoundHtml)
 
