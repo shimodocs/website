@@ -1,0 +1,80 @@
+name: Daily download stats
+
+# GitHub exposes only a cumulative `download_count` per release asset. A daily
+# number therefore exists only if something reads the counter every day and
+# subtracts, which is what this workflow does. It archives the history in the
+# repository and pushes a card to Lark.
+#
+# 01:00 UTC is 09:00 in Shanghai. That is deliberately after midnight there, so
+# a "day" in the report is a finished Beijing day rather than a partial one.
+#
+# The daily commit also keeps the schedule alive: GitHub disables a scheduled
+# workflow after 60 days without repository activity.
+
+on:
+  schedule:
+    - cron: '0 1 * * *'
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: Print the numbers without writing a snapshot or notifying
+        type: boolean
+        default: false
+      notify_test:
+        description: Send the Lark card without archiving a snapshot
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+# A manual run must not race the scheduled run into the same history file.
+concurrency:
+  group: download-stats
+  cancel-in-progress: false
+
+jobs:
+  stats:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: 22
+
+      # GITHUB_TOKEN only needs to read the product repository's public
+      # releases; it is passed to lift the anonymous 60-requests-per-hour limit.
+      # The Lark secrets are optional: without them the numbers are still
+      # archived and the run logs a warning instead of failing.
+      - name: Snapshot the release download counts
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          LARK_WEBHOOK: ${{ secrets.LARK_WEBHOOK }}
+          LARK_WEBHOOK_SECRET: ${{ secrets.LARK_WEBHOOK_SECRET }}
+        run: |
+          args=""
+          if [ "${{ inputs.dry_run }}" = "true" ]; then args="--dry-run"; fi
+          if [ "${{ inputs.notify_test }}" = "true" ]; then args="$args --notify"; fi
+          node scripts/download-stats.mjs $args
+
+      # Pushing to main runs the build check but does not deploy: production
+      # only moves on a v* tag, exactly as before. Branch protection that
+      # refuses a direct push fails the run here rather than silently.
+      - name: Commit the snapshot
+        if: ${{ inputs.dry_run != true && inputs.notify_test != true }}
+        run: |
+          if [ -z "$(git status --porcelain data reports)" ]; then
+            echo "Nothing changed; no commit."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data reports
+          git commit -m "chore(stats): download snapshot $(date -u +%F)"
+          # A release or a docs sync can land while this job runs.
+          git pull --rebase --autostash origin "${GITHUB_REF_NAME:-main}"
+          git push origin "HEAD:${GITHUB_REF_NAME:-main}"

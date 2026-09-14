@@ -12,6 +12,8 @@
     "content": "node scripts/build-content.mjs",
     "check:contact": "node scripts/check-contact-fields.mjs",
     "assets": "python3 scripts/make-assets.py",
+    "stats": "node scripts/download-stats.mjs",
+    "stats:dry": "node scripts/download-stats.mjs --dry-run",
     "preview": "vite preview --port 4173"
   },
   "dependencies": {

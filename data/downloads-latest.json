@@ -1,0 +1,30 @@
+{
+  "date": "2026-09-15",
+  "capturedAt": "2026-09-14T17:12:34.067Z",
+  "downloads": 61,
+  "delta": null,
+  "deltaByAsset": null,
+  "stars": 7,
+  "forks": 1,
+  "byArch": {
+    "amd64": 33,
+    "arm64": 28
+  },
+  "assets": [
+    {
+      "key": "381861479:542466125",
+      "releaseTag": "co1.8.20260830.3884-drive-release",
+      "name": "mdp-installer-amd64-v1.8.1-rc12-global.zip",
+      "arch": "amd64",
+      "downloads": 33
+    },
+    {
+      "key": "381861479:542470987",
+      "releaseTag": "co1.8.20260830.3884-drive-release",
+      "name": "mdp-installer-arm64-v1.8.1-rc12-global.zip",
+      "arch": "arm64",
+      "downloads": 28
+    }
+  ],
+  "notes": []
+}
