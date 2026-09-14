@@ -46,7 +46,7 @@ export default function Shell({ children }) {
       </a>
       <header className="site-nav">
         <Link to="/" className="brand" aria-label="ShimoDocs home">
-          Shimo<span>Docs</span>
+          <img src="/assets/logo-shimodocs.svg" alt="ShimoDocs" width="500" height="110" />
         </Link>
         <nav className="nav-tabs" aria-label="Primary navigation">
           {NAV_LINKS.map(([to, label]) => (
@@ -76,7 +76,7 @@ export default function Shell({ children }) {
       <footer className="site-footer">
         <div className="footer-brand">
           <span className="footer-logo">
-            Shimo<span>Docs</span>
+            <img src="/assets/logo-shimodocs.svg" alt="ShimoDocs" width="500" height="110" />
           </span>
           <p>Self-hosted document collaboration with AI agents, in your private cloud.</p>
           <p className="footer-contact">

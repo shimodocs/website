@@ -463,3 +463,9 @@
 .page-figure img{display:block;width:100%;height:auto}
 .page-figure figcaption{padding:13px 16px;border-top:1px solid var(--line);color:var(--muted);font-size:12.5px;line-height:1.5}
 @media(max-width:700px){.page-figures.two-up{grid-template-columns:1fr}}
+
+/* The wordmark is the lockup the previous site used in its header and footer,
+   kept as artwork rather than retyped in the site font. It ships as a light
+   variant because both places sit on the dark background. */
+.brand img{display:block;height:30px;width:auto}
+.footer-brand .footer-logo img{display:block;height:28px;width:auto}
