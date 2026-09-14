@@ -59,10 +59,17 @@ JavaScript still receives headings, copy and internal links.
 ### Canonical origin
 
 Canonical URLs, the sitemap and the social images all derive from `VITE_SITE_URL`,
-which defaults to `http://43.172.115.22`. When the production domain is live, set
-the repository variable `SITE_URL` (Settings → Secrets and variables → Actions →
-Variables) to the real origin, for example `https://shimodocs.com`, and tag a new
-release. No code change is required.
+which the release workflow fills from the repository variable `SITE_URL`. That
+variable is set to `https://shimodocs.com`, the live origin, so every release from
+`v1.3.3` on emits the domain. It defaults to `http://43.172.115.22` — the origin
+the site was served from before the domain was connected — when the variable is
+unset, so a fresh clone still builds without one. Changing it only requires
+tagging another release; no code change is needed.
+
+Cloudflare proxies `shimodocs.com` to that origin with SSL/TLS mode Full (strict),
+Always Use HTTPS and HSTS on. The origin certificate is issued by Let's Encrypt
+and renewed by `certbot.timer`; see
+[deploy/README.md](deploy/README.md#https) for the server side.
 
 ### Regenerating brand assets
 

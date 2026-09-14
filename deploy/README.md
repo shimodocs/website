@@ -31,9 +31,44 @@ sudo systemctl enable --now nginx
 sudo systemctl reload nginx
 ```
 
-The default config serves the site at `http://43.172.115.22/`. Replace `server_name _;` with the real domain when DNS is ready, then add HTTPS separately.
+The config names the production domain (`server_name shimodocs.com www.shimodocs.com;`) and answers both plain HTTP and HTTPS from one block, so the site behaves the same whether Cloudflare reaches the origin on port 80 or 443. `www` is redirected to the apex with a `301`, which is the host the canonical link and the sitemap use.
 
 The configuration routes `/robots.txt`, `/sitemap.xml` and the brand images to real files with `try_files $uri =404`. Routes match `$uri/index.html` before `$uri`, so `/ai-workspace` returns `200` instead of a `301` to the trailing-slash form, and `/ai-workspace/` redirects back to the canonical `/ai-workspace`. Because every route is prerendered to its own directory, an unknown path returns the `404.html` document with a `404` status instead of the home page with a `200`.
+
+## HTTPS
+
+`/etc/nginx/ssl/shimodocs.com.pem` and `.key` must exist before the
+configuration is installed, or `nginx -t` fails. On a new server create the
+self-signed placeholder first:
+
+```bash
+sudo mkdir -p /etc/nginx/ssl /var/www/certbot
+sudo openssl req -x509 -nodes -newkey rsa:2048 -days 90 \
+  -keyout /etc/nginx/ssl/shimodocs.com.key \
+  -out /etc/nginx/ssl/shimodocs.com.pem \
+  -subj "/CN=shimodocs.com" \
+  -addext "subjectAltName=DNS:shimodocs.com,DNS:www.shimodocs.com"
+sudo chmod 600 /etc/nginx/ssl/shimodocs.com.key
+```
+
+Cloudflare proxies `shimodocs.com` with SSL/TLS mode **Full (strict)**, so the
+origin has to present a publicly trusted certificate. Let's Encrypt issues it
+with an HTTP-01 challenge served from `/var/www/certbot`, which Cloudflare passes
+through to the origin:
+
+```bash
+sudo apt-get install -y certbot
+sudo certbot certonly --webroot -w /var/www/certbot \
+  -d shimodocs.com -d www.shimodocs.com
+```
+
+`/etc/letsencrypt/renewal-hooks/deploy/shimodocs-nginx.sh` copies each renewed
+certificate into `/etc/nginx/ssl/` and reloads Nginx, and `certbot.timer` runs
+twice a day. The matching zone settings are SSL/TLS **Full (strict)**,
+**Always Use HTTPS** on, minimum TLS version 1.2 and HSTS enabled. Because the
+renewal challenge is answered on port 80, the Nginx configuration deliberately
+carries no HTTP-to-HTTPS redirect: behind a Flexible proxy such a redirect loops
+forever.
 
 ## GitHub repository settings
 
@@ -55,16 +90,17 @@ The dedicated deployment private key lives at `~/.ssh/shimodocs_actions` on the 
 ssh-keygen -F 43.172.115.22 -f ~/.ssh/known_hosts | sed '/^#/d'
 ```
 
-Then add one optional **variable** (Settings → Secrets and variables → Actions → Variables):
+Then one optional **variable** (Settings → Secrets and variables → Actions → Variables), which is currently set:
 
 | Name | Value |
 | --- | --- |
-| `SITE_URL` | The production origin, for example `https://shimodocs.com` |
+| `SITE_URL` | `https://shimodocs.com` |
 
 `SITE_URL` feeds `VITE_SITE_URL` during the build, which is where every canonical
 URL, the sitemap and the social image URLs come from. It defaults to
-`http://43.172.115.22`, so leaving it unset is safe until the domain is live.
-Changing it only requires tagging the next release.
+`http://43.172.115.22` when unset, which is the origin the site was served from
+before the domain was connected. Changing it only requires tagging the next
+release.
 
 ## Release flow
 
