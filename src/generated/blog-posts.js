@@ -64,6 +64,207 @@ export const BLOG_POSTS = [
     "featured": false
   },
   {
+    "slug": "object-storage-document-platform",
+    "title": "Choosing Object Storage for a Document Platform",
+    "description": "S3-compatible storage for a self-hosted document platform: versioning, lifecycle rules, performance and the settings that prevent regret.",
+    "category": "self-hosting",
+    "categoryLabel": "Self-hosting",
+    "layout": "magazine",
+    "figures": 2,
+    "date": "2026-04-13",
+    "updated": null,
+    "tags": [
+      "object storage",
+      "s3",
+      "infrastructure",
+      "lifecycle"
+    ],
+    "readingTime": 7,
+    "words": 1528,
+    "featured": false
+  },
+  {
+    "slug": "capacity-planning-concurrent-editors",
+    "title": "Capacity Planning Around Concurrent Editors",
+    "description": "Why concurrent editors, not registered users, determine document platform capacity, and how to measure and project the number that matters.",
+    "category": "self-hosting",
+    "categoryLabel": "Self-hosting",
+    "layout": "standard",
+    "figures": 2,
+    "date": "2026-04-10",
+    "updated": null,
+    "tags": [
+      "capacity",
+      "concurrency",
+      "sizing",
+      "operations"
+    ],
+    "readingTime": 7,
+    "words": 1505,
+    "featured": false
+  },
+  {
+    "slug": "disaster-recovery-document-platform",
+    "title": "Disaster Recovery for a Document Platform",
+    "description": "Designing disaster recovery for a self-hosted document platform: objectives, tiers of loss, site recovery and what to rehearse.",
+    "category": "self-hosting",
+    "categoryLabel": "Self-hosting",
+    "layout": "magazine",
+    "figures": 2,
+    "date": "2026-04-08",
+    "updated": null,
+    "tags": [
+      "disaster recovery",
+      "resilience",
+      "business continuity",
+      "operations"
+    ],
+    "readingTime": 7,
+    "words": 1461,
+    "featured": false
+  },
+  {
+    "slug": "air-gapped-document-collaboration",
+    "title": "Document Collaboration on an Air-Gapped Network",
+    "description": "Running document collaboration with no internet access: offline installation, dependency handling, updates, identity and the tradeoffs involved.",
+    "category": "self-hosting",
+    "categoryLabel": "Self-hosting",
+    "layout": "briefing",
+    "figures": 2,
+    "date": "2026-04-06",
+    "updated": null,
+    "tags": [
+      "air-gapped",
+      "offline",
+      "security",
+      "deployment"
+    ],
+    "readingTime": 6,
+    "words": 1412,
+    "featured": false
+  },
+  {
+    "slug": "sso-self-hosted-document-platform",
+    "title": "Identity and SSO for a Self-Hosted Document Platform",
+    "description": "LDAP, SAML and OIDC for a self-hosted document platform: what to integrate, how group mapping drives permissions, and what fails in practice.",
+    "category": "self-hosting",
+    "categoryLabel": "Self-hosting",
+    "layout": "feature",
+    "figures": 2,
+    "date": "2026-04-03",
+    "updated": null,
+    "tags": [
+      "sso",
+      "identity",
+      "ldap",
+      "saml",
+      "oidc"
+    ],
+    "readingTime": 6,
+    "words": 1378,
+    "featured": false
+  },
+  {
+    "slug": "upgrade-and-rollback-document-platform",
+    "title": "Upgrading a Document Platform Without Downtime Drama",
+    "description": "Why upgrades are the highest-risk routine operation in a self-hosted document platform, and how to stage and roll back without drama.",
+    "category": "self-hosting",
+    "categoryLabel": "Self-hosting",
+    "layout": "standard",
+    "figures": 2,
+    "date": "2026-04-01",
+    "updated": null,
+    "tags": [
+      "upgrades",
+      "change management",
+      "rollback",
+      "operations"
+    ],
+    "readingTime": 6,
+    "words": 1369,
+    "featured": false
+  },
+  {
+    "slug": "monitoring-self-hosted-document-platform",
+    "title": "Monitoring a Self-Hosted Document Platform",
+    "description": "What to monitor in a self-hosted document platform, which alerts are worth waking someone for, and why user-visible actions beat host metrics.",
+    "category": "self-hosting",
+    "categoryLabel": "Self-hosting",
+    "layout": "magazine",
+    "figures": 2,
+    "date": "2026-03-30",
+    "updated": null,
+    "tags": [
+      "monitoring",
+      "observability",
+      "alerting",
+      "operations"
+    ],
+    "readingTime": 7,
+    "words": 1499,
+    "featured": false
+  },
+  {
+    "slug": "backup-and-restore-document-platform",
+    "title": "Backup and Restore for a Document Platform",
+    "description": "What to back up in a self-hosted document platform, why database and object storage must be restored together, and how to test it.",
+    "category": "self-hosting",
+    "categoryLabel": "Self-hosting",
+    "layout": "briefing",
+    "figures": 2,
+    "date": "2026-03-27",
+    "updated": null,
+    "tags": [
+      "backup",
+      "restore",
+      "disaster recovery",
+      "operations"
+    ],
+    "readingTime": 8,
+    "words": 1700,
+    "featured": false
+  },
+  {
+    "slug": "database-tuning-document-collaboration",
+    "title": "Tuning the Database Behind a Document Platform",
+    "description": "The relational database holds a document platform's real source of truth. Here is what to tune, and what to back up before anything else.",
+    "category": "self-hosting",
+    "categoryLabel": "Self-hosting",
+    "layout": "feature",
+    "figures": 2,
+    "date": "2026-03-25",
+    "updated": null,
+    "tags": [
+      "database",
+      "tuning",
+      "mysql",
+      "operations"
+    ],
+    "readingTime": 6,
+    "words": 1288,
+    "featured": false
+  },
+  {
+    "slug": "hardware-sizing-self-hosted-document-platform",
+    "title": "Sizing Hardware for a Self-Hosted Document Platform",
+    "description": "How to size CPU, memory and storage for a self-hosted document platform, and why registered users are the wrong planning number.",
+    "category": "self-hosting",
+    "categoryLabel": "Self-hosting",
+    "layout": "standard",
+    "figures": 2,
+    "date": "2026-03-23",
+    "updated": null,
+    "tags": [
+      "sizing",
+      "infrastructure",
+      "capacity",
+      "operations"
+    ],
+    "readingTime": 7,
+    "words": 1521,
+    "featured": false
+  },
+  {
     "slug": "byo-key-encryption-documents",
     "title": "Document Encryption and Key Custody",
     "description": "What encryption at rest actually protects, when a customer-managed key is a real control, and why key custody decides the answer.",
@@ -676,7 +877,7 @@ export const BLOG_CATEGORIES = [
     "id": "self-hosting",
     "label": "Self-hosting",
     "description": "Deploying and running document collaboration on infrastructure you control.",
-    "count": 3
+    "count": 13
   },
   {
     "id": "security",

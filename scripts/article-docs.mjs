@@ -23,6 +23,14 @@ export const ARTICLE_DOCS = {
     'deployment/system-requirements',
   ],
   'ai-training-content-control': ['deployment/operations-platform/suite/ai-configuration'],
+  'air-gapped-document-collaboration': [
+    'deployment/troubleshooting/installation',
+    'deployment/getting-started/quick-start',
+  ],
+  'backup-and-restore-document-platform': [
+    'deployment/troubleshooting/data-backup',
+    'deployment/middleware/object-storage/configuration',
+  ],
   'best-google-docs-alternatives': [
     'deployment/getting-started/quick-start',
     'deployment/system-requirements',
@@ -36,6 +44,10 @@ export const ARTICLE_DOCS = {
     'deployment/system-requirements',
     'deployment/operations-platform/system-services/control-panel/advanced-settings',
   ],
+  'capacity-planning-concurrent-editors': [
+    'deployment/getting-started/resource-planning',
+    'deployment/operations-platform/system-services/toolset/static-resource-monitoring',
+  ],
   'data-residency-requirements-guide': [
     'deployment/system-requirements',
     'deployment/getting-started/resource-planning',
@@ -43,6 +55,15 @@ export const ARTICLE_DOCS = {
   'data-sovereignty-document-collaboration': [
     'deployment/getting-started/quick-start',
     'deployment/system-requirements',
+  ],
+  'database-tuning-document-collaboration': [
+    'deployment/middleware/mysql/requirements',
+    'deployment/operations-platform/system-services/service-operations/middleware-configuration',
+  ],
+  'disaster-recovery-document-platform': [
+    'deployment/troubleshooting/data-backup',
+    'deployment/troubleshooting/incident-response-sop',
+    'deployment/getting-started/high-availability-kubernetes',
   ],
   'document-retention-policy-guide': [
     'deployment/troubleshooting/data-backup',
@@ -64,6 +85,10 @@ export const ARTICLE_DOCS = {
     'deployment/getting-started/quick-start',
     'deployment/getting-started/resource-planning',
   ],
+  'hardware-sizing-self-hosted-document-platform': [
+    'deployment/getting-started/resource-planning',
+    'deployment/system-requirements',
+  ],
   'hipaa-compliant-document-collaboration': [
     'deployment/system-requirements',
     'deployment/troubleshooting/data-backup',
@@ -80,6 +105,14 @@ export const ARTICLE_DOCS = {
   'legal-hold-document-management': [
     'deployment/operations-platform/system-services/system-management/audit-logs',
     'deployment/troubleshooting/data-backup',
+  ],
+  'monitoring-self-hosted-document-platform': [
+    'deployment/troubleshooting/monitoring-metrics',
+    'deployment/operations-platform/system-services/control-panel/notification-channels',
+  ],
+  'object-storage-document-platform': [
+    'deployment/middleware/object-storage/configuration',
+    'deployment/middleware/object-storage/deployment',
   ],
   'open-source-document-collaboration-options': [
     'deployment/getting-started/quick-start',
@@ -108,7 +141,10 @@ export const ARTICLE_DOCS = {
     'deployment/getting-started/quick-start',
     'deployment/system-requirements',
   ],
-  'shimodocs-vs-coda': ['deployment/getting-started/quick-start', 'deployment/system-requirements'],
+  'shimodocs-vs-coda': [
+    'deployment/getting-started/quick-start',
+    'deployment/system-requirements',
+  ],
   'shimodocs-vs-confluence': ['deployment/getting-started/quick-start'],
   'shimodocs-vs-google-docs': [
     'deployment/getting-started/quick-start',
@@ -128,6 +164,14 @@ export const ARTICLE_DOCS = {
     'deployment/operations-platform/system-services/system-management/audit-logs',
     'deployment/troubleshooting/data-backup',
     'deployment/system-requirements',
+  ],
+  'sso-self-hosted-document-platform': [
+    'deployment/operations-platform/suite/user-management',
+    'deployment/operations-platform/system-services/system-management/user-management',
+  ],
+  'upgrade-and-rollback-document-platform': [
+    'deployment/operations-platform/system-services/service-operations/system-upgrade',
+    'deployment/operations-platform/system-services/service-operations/cluster-management',
   ],
   'web3-security-tools-resources': ['deployment/system-requirements'],
   'what-is-private-cloud-document-collaboration': [
