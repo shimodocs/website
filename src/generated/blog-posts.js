@@ -660,8 +660,8 @@ export const BLOG_POSTS = [
       "wiki",
       "knowledge base"
     ],
-    "readingTime": 6,
-    "words": 1318,
+    "readingTime": 8,
+    "words": 1723,
     "featured": false
   },
   {
@@ -773,15 +773,15 @@ export const BLOG_POSTS = [
     "layout": "standard",
     "figures": 2,
     "date": "2026-01-21",
-    "updated": null,
+    "updated": "2026-09-15",
     "tags": [
       "comparison",
       "google docs",
       "self-hosted",
       "deployment"
     ],
-    "readingTime": 6,
-    "words": 1334,
+    "readingTime": 8,
+    "words": 1713,
     "featured": true
   },
   {

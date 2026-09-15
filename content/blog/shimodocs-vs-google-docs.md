@@ -5,9 +5,23 @@ description: "A feature-by-feature comparison of ShimoDocs and Google Docs, cove
 layout: standard
 category: comparisons
 date: 2026-01-21
+updated: 2026-09-15
 tags: [comparison, google docs, self-hosted, deployment]
 keywords: "shimodocs vs google docs, google docs comparison, self-hosted google docs comparison"
 featured: true
+faq:
+  - question: "Is ShimoDocs a like-for-like replacement for Google Docs?"
+    answer: "No, and the framing matters. Google Docs is a mature hosted product with a large ecosystem and no operational burden, while ShimoDocs is a self-hosted suite with a configurable AI layer and no vendor access to your content. If your constraint is capability, choose Google. If your constraint is where the data and the AI context live, that constraint cannot be met by configuration inside a hosted suite."
+  - question: "What is the largest real difference between the two?"
+    answer: "The operational difference. Self-hosting moves the pager to your team. For an organisation that already runs a platform this is incremental; for a twenty-person company with no operations function it is a genuine reason not to move."
+  - question: "What do you lose by leaving Google Docs?"
+    answer: "Integrated calendar, mail and Meet in one identity; the Chrome and Android ecosystem handling of documents; a large template and add-on marketplace; real-time collaborative spreadsheet maturity; the fact that uptime is not your problem; and long-term familiarity, because retraining is a real cost that is usually underestimated."
+  - question: "What do you gain?"
+    answer: "Document plaintext never sits in a third party storage, the AI retrieval and inference path can stay inside your boundary, upgrade timing becomes a change-management decision rather than an external event, retention and audit and deletion can be evidenced against your own controls, and there is no per-seat vendor relationship over your content."
+  - question: "Where is Google Docs genuinely stronger?"
+    answer: "Spreadsheet depth and formula coverage, offline behaviour across browsers, the template and add-on ecosystem, and having calendar, mail and Meet in one identity. That is not a quality ranking: each side represents a different constraint, and most organisations only have one of them."
+  - question: "How should the decision between them be made?"
+    answer: "Write down the constraint first, because the content must not leave our infrastructure and we want to save money lead to different answers. Then test the spreadsheet workload, which is the most likely deal-breaker; estimate operations time honestly, including on-call, upgrades and backup verification; check the three integrations that matter; and pilot with one team for a quarter, comparing review workflows rather than features. Deciding per document class is a legitimate outcome."
 ---
 
 Comparisons between a hosted suite and a self-hosted one go wrong when they are framed as feature lists. Google Docs will win a feature count, comfortably. The decision is about which costs you would rather carry.
@@ -168,3 +182,29 @@ If the spreadsheet workload is genuinely heavy, that finding alone may determine
 **Choose ShimoDocs when** data handling is the binding constraint, AI adoption is blocked on where inference happens, you already run infrastructure, or you need upgrade control for compliance reasons.
 
 If you are still at the category level, start with [what private cloud document collaboration is](/blog/what-is-private-cloud-document-collaboration) or read the broader [private cloud Google Docs alternative](/blog/google-docs-alternative-private-cloud) analysis.
+
+## Frequently asked questions
+
+### Is ShimoDocs a like-for-like replacement for Google Docs?
+
+No, and the framing matters. Google Docs is a mature hosted product with a large ecosystem and no operational burden, while ShimoDocs is a self-hosted suite with a configurable AI layer and no vendor access to your content. If your constraint is capability, choose Google. If your constraint is where the data and the AI context live, that constraint cannot be met by configuration inside a hosted suite.
+
+### What is the largest real difference between the two?
+
+The operational difference. Self-hosting moves the pager to your team. For an organisation that already runs a platform this is incremental; for a twenty-person company with no operations function it is a genuine reason not to move.
+
+### What do you lose by leaving Google Docs?
+
+Integrated calendar, mail and Meet in one identity; the Chrome and Android ecosystem handling of documents; a large template and add-on marketplace; real-time collaborative spreadsheet maturity; the fact that uptime is not your problem; and long-term familiarity, because retraining is a real cost that is usually underestimated.
+
+### What do you gain?
+
+Document plaintext never sits in a third party storage, the AI retrieval and inference path can stay inside your boundary, upgrade timing becomes a change-management decision rather than an external event, retention and audit and deletion can be evidenced against your own controls, and there is no per-seat vendor relationship over your content.
+
+### Where is Google Docs genuinely stronger?
+
+Spreadsheet depth and formula coverage, offline behaviour across browsers, the template and add-on ecosystem, and having calendar, mail and Meet in one identity. That is not a quality ranking: each side represents a different constraint, and most organisations only have one of them.
+
+### How should the decision between them be made?
+
+Write down the constraint first, because the content must not leave our infrastructure and we want to save money lead to different answers. Then test the spreadsheet workload, which is the most likely deal-breaker; estimate operations time honestly, including on-call, upgrades and backup verification; check the three integrations that matter; and pilot with one team for a quarter, comparing review workflows rather than features. Deciding per document class is a legitimate outcome.

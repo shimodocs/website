@@ -8,6 +8,19 @@ date: 2026-02-04
 updated: 2026-09-15
 tags: [comparison, confluence, wiki, knowledge base]
 keywords: "shimodocs vs confluence, confluence alternative, self-hosted confluence alternative"
+faq:
+  - question: "What is the main structural difference between Confluence and ShimoDocs?"
+    answer: "Confluence is organised around the page inside a space, while ShimoDocs is organised around the file inside a workspace. A page is a container for prose; a file is a document, spreadsheet, presentation or table with its own editor. That single distinction explains most of the practical differences between them."
+  - question: "When is Confluence the better choice?"
+    answer: "When your content is genuinely hierarchical documentation, when you are committed to the Atlassian ecosystem and rely on Jira linking, when you want a hosted service and have no requirement that content stay inside your network, or when you need a large template and macro ecosystem more than structured file editing. If the primary need is a hierarchical engineering wiki wired into Atlassian, Confluence is a reasonable answer."
+  - question: "When is ShimoDocs the better fit?"
+    answer: "When your knowledge lives in documents, spreadsheets and decks rather than page trees; when the content has to sit inside your own infrastructure with the AI inference path under your control; when you need real-time collaborative editing with suggestion mode and comments anchored to the actual file; when you exchange files externally and need Office import and export fidelity; or when you need upgrade control for a validated environment."
+  - question: "Do you have to choose between Confluence and ShimoDocs?"
+    answer: "Usually not. Most organisations end up running both, and that is a legitimate destination rather than a failure. The binary framing of migrate or stay is what makes these projects contentious, while a division of labour is what most teams actually land on: engineering documentation in the wiki, product and business documents in the suite, and regulated documents in a controlled environment."
+  - question: "What is the better question than which platform to standardise on?"
+    answer: "Which document classes belong in which system. Answering that usually dissolves the migration argument, because the two systems are rarely competing for the same content. Classification is a task people can complete, whereas which wiki to standardise on is a debate that can run for a year."
+  - question: "How do the cost shapes differ?"
+    answer: "Hosted pricing presents the subscription as the whole cost, while self-hosting spreads the spend across infrastructure, operations and on-call, upgrades and validation, and restore testing. Those live in budgets that do not sit next to each other, which is why the hosted figure tends to look smaller than the total it is being compared against."
 ---
 
 Confluence and ShimoDocs both hold team knowledge, which is why they get compared. They are built for different shapes of content, and the difference decides most evaluations once you look past the feature grid.
@@ -140,3 +153,29 @@ Do not compare feature lists. Run these instead:
 If that evaluation concludes you are replacing Confluence rather than comparing it, the [Confluence alternative page](/solutions/confluence-alternative) sets out the hosting options and the migration sequence, and the [Atlassian alternative page](/solutions/atlassian-alternative) covers the 2026 data contribution default and the Data Center end-of-life schedule.
 
 Competitor capabilities and packaging change frequently. Verify current specifics with each vendor before you commit; the structural differences above are the part that stays stable.
+
+## Frequently asked questions
+
+### What is the main structural difference between Confluence and ShimoDocs?
+
+Confluence is organised around the page inside a space, while ShimoDocs is organised around the file inside a workspace. A page is a container for prose; a file is a document, spreadsheet, presentation or table with its own editor. That single distinction explains most of the practical differences between them.
+
+### When is Confluence the better choice?
+
+When your content is genuinely hierarchical documentation, when you are committed to the Atlassian ecosystem and rely on Jira linking, when you want a hosted service and have no requirement that content stay inside your network, or when you need a large template and macro ecosystem more than structured file editing. If the primary need is a hierarchical engineering wiki wired into Atlassian, Confluence is a reasonable answer.
+
+### When is ShimoDocs the better fit?
+
+When your knowledge lives in documents, spreadsheets and decks rather than page trees; when the content has to sit inside your own infrastructure with the AI inference path under your control; when you need real-time collaborative editing with suggestion mode and comments anchored to the actual file; when you exchange files externally and need Office import and export fidelity; or when you need upgrade control for a validated environment.
+
+### Do you have to choose between Confluence and ShimoDocs?
+
+Usually not. Most organisations end up running both, and that is a legitimate destination rather than a failure. The binary framing of migrate or stay is what makes these projects contentious, while a division of labour is what most teams actually land on: engineering documentation in the wiki, product and business documents in the suite, and regulated documents in a controlled environment.
+
+### What is the better question than which platform to standardise on?
+
+Which document classes belong in which system. Answering that usually dissolves the migration argument, because the two systems are rarely competing for the same content. Classification is a task people can complete, whereas which wiki to standardise on is a debate that can run for a year.
+
+### How do the cost shapes differ?
+
+Hosted pricing presents the subscription as the whole cost, while self-hosting spreads the spend across infrastructure, operations and on-call, upgrades and validation, and restore testing. Those live in budgets that do not sit next to each other, which is why the hosted figure tends to look smaller than the total it is being compared against.
