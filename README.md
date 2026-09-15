@@ -149,6 +149,27 @@ missing, the deploy verification asserts the live site serves it, and the deploy
 job submits the URLs after the release is verified — with `continue-on-error`, so
 a rejected submission is a visible red step rather than a failed release.
 
+### Pointing the product README at this site
+
+```bash
+node scripts/product-readme-links.mjs /path/to/shimodocs-checkout --check
+node scripts/product-readme-links.mjs /path/to/shimodocs-checkout
+```
+
+The README in `shimodocs/shimodocs` links to its own documentation with relative
+paths, which GitHub renders as file views. Those links are the most valuable
+inbound links the guides can have — the repository is where a reader arrives
+first and it is crawled constantly — and every one of them currently points at a
+blob page instead of the page. The script rewrites the English, German and
+Japanese READMEs, which are the languages this site publishes, and leaves the
+other translations alone rather than pointing them at pages that do not exist.
+Every URL it writes is checked against the last build in `dist/`, so it fails on
+a guide this site does not publish instead of shipping a 404.
+
+The deployment-docs block sits between `<!-- deployment-docs:start -->` markers.
+If something outside the product repository regenerates that block, the generator
+needs the same change or the next run will put the file links back.
+
 ### Regenerating brand assets
 
 ```bash
