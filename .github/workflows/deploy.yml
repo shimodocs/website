@@ -82,7 +82,11 @@ jobs:
           chmod 600 "$HOME/.ssh/id_ed25519"
           printf '%s\n' "$DEPLOY_KNOWN_HOSTS" > "$HOME/.ssh/known_hosts"
 
+      # `id` exists for the rollback step: activation happens before
+      # verification, so a release that fails its checks is already live and the
+      # run has to be able to put the previous one back.
       - name: Upload and activate release
+        id: activate
         env:
           DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
           DEPLOY_PORT: ${{ secrets.DEPLOY_PORT || 22 }}
@@ -92,26 +96,45 @@ jobs:
           test -n "$DEPLOY_USER"
           ssh_options=(-o BatchMode=yes -o StrictHostKeyChecking=yes -o IdentitiesOnly=yes -o ConnectTimeout=10)
           scp "${ssh_options[@]}" -P "$DEPLOY_PORT" shimodocs-dist.tgz "$DEPLOY_USER@$DEPLOY_HOST:/tmp/shimodocs-$RELEASE_ID.tgz"
-          ssh "${ssh_options[@]}" -p "$DEPLOY_PORT" "$DEPLOY_USER@$DEPLOY_HOST" "RELEASE_ID='$RELEASE_ID' DEPLOY_PATH='$DEPLOY_PATH' bash -s" <<'REMOTE'
+          activation="$(ssh "${ssh_options[@]}" -p "$DEPLOY_PORT" "$DEPLOY_USER@$DEPLOY_HOST" "RELEASE_ID='$RELEASE_ID' DEPLOY_PATH='$DEPLOY_PATH' bash -s" <<'REMOTE'
           set -euo pipefail
           test -w "$DEPLOY_PATH/releases"
+          # What production serves right now, resolved before this release
+          # replaces it. Empty on a first deploy, where there is nothing to fall
+          # back to and a rollback would be impossible rather than unnecessary.
+          previous="$(readlink -f "$DEPLOY_PATH/current" 2>/dev/null || true)"
+          # Persisted as well as printed: if this job dies between the swap and
+          # printing it, whoever is on call can still see what production was
+          # serving before, without digging through the releases directory.
+          printf '%s\n' "$previous" > "$DEPLOY_PATH/.previous-release"
           release_dir="$DEPLOY_PATH/releases/$RELEASE_ID"
           mkdir "$release_dir"
           tar -xzf "/tmp/shimodocs-$RELEASE_ID.tgz" -C "$release_dir"
           # Refuse to activate a release that is missing the app shell, the
-          # release record, or any crawler surface.
+          # release record, any crawler surface, or the documentation. This runs
+          # before the swap, so a truncated upload never reaches production.
           test -s "$release_dir/index.html"
           test -s "$release_dir/release.json"
           test -s "$release_dir/robots.txt"
           test -s "$release_dir/sitemap.xml"
           test -s "$release_dir/404.html"
-          for route in ai-workspace blog help-center pricing contact-sales; do
+          for route in ai-workspace blog help-center pricing contact-sales docs de/docs ja/docs; do
             test -s "$release_dir/$route/index.html"
           done
           ln -s "$release_dir" "$DEPLOY_PATH/.current-$RELEASE_ID"
           mv -Tf "$DEPLOY_PATH/.current-$RELEASE_ID" "$DEPLOY_PATH/current"
           unlink "/tmp/shimodocs-$RELEASE_ID.tgz"
+          printf 'previous=%s\n' "$previous"
           REMOTE
+          )"
+          printf '%s\n' "$activation"
+          previous="$(printf '%s\n' "$activation" | sed -n 's/^previous=//p' | tail -1)"
+          echo "previous_release=$previous" >> "$GITHUB_OUTPUT"
+          if [ -n "$previous" ]; then
+            echo "Previous release kept for rollback: $previous"
+          else
+            echo "::warning::No previous release to roll back to; this looks like the first deploy."
+          fi
 
       - name: Verify deployed pages and crawler surfaces
         env:
@@ -176,10 +199,74 @@ jobs:
           const sitemap = await get('/sitemap.xml');
           assert.equal(sitemap.status, 200, `/sitemap.xml returned ${sitemap.status}`);
           assert.match(sitemap.type, /xml/, `/sitemap.xml served as ${sitemap.type}`);
+
+          // sitemap.xml is an index, not a urlset: the URLs live in one child per
+          // content type, and the documentation is split again per language. A
+          // child that is empty, missing or 404s is invisible from the index
+          // alone, so every one of them is fetched and checked.
+          assert.match(sitemap.body, /<sitemapindex/, 'sitemap.xml is not a sitemap index');
+          const childSitemaps = [...sitemap.body.matchAll(/<sitemap>\s*<loc>([^<]+)<\/loc>/g)].map(m => m[1]);
+          assert.ok(childSitemaps.length >= 4, `sitemap.xml indexes ${childSitemaps.length} sitemaps, expected at least 4`);
+
+          const childBodies = new Map();
+          for (const url of childSitemaps) {
+            const path = new URL(url).pathname;
+            const child = await get(path);
+            assert.equal(child.status, 200, `${path} returned ${child.status}`);
+            assert.match(child.type, /xml/, `${path} served as ${child.type}`);
+            assert.match(child.body, /<urlset/, `${path} is not a urlset`);
+            assert.ok(child.body.includes('<loc>'), `${path} lists no URLs`);
+            childBodies.set(path, child.body);
+          }
+          const sitemapText = [...childBodies.values()].join('\n');
           for (const route of routes) {
             const loc = route === '/' ? `${siteOrigin}/` : `${siteOrigin}${route}`;
-            assert.ok(sitemap.body.includes(`<loc>${loc}</loc>`), `sitemap.xml is missing ${loc}`);
+            assert.ok(sitemapText.includes(`<loc>${loc}</loc>`), `no sitemap contains ${loc}`);
           }
+          // The published language set lives in src/docs-languages.js. It is
+          // repeated here on purpose: a release that quietly stops publishing
+          // German should fail the deploy rather than pass it, so changing the
+          // set means changing this list too.
+          for (const language of ['en', 'de', 'ja']) {
+            assert.ok(
+              childSitemaps.some(url => url.endsWith(`sitemap-docs-${language}.xml`)),
+              `sitemap.xml does not index sitemap-docs-${language}.xml`,
+            );
+          }
+
+          // The documentation is the largest surface on the site — 215 of ~264
+          // URLs — and the one whose plumbing can fail while every marketing
+          // route still looks perfect: a language prefix that stops resolving, a
+          // guide that loses its TechArticle data, an hreflang set that quietly
+          // loses its return links. None of that is visible from /.
+          const docsIndex = await get('/docs');
+          assert.equal(docsIndex.status, 200, `/docs returned ${docsIndex.status}`);
+          assert.match(docsIndex.body, /<h1[\s>]/, '/docs has no <h1>');
+          assert.match(docsIndex.body, /"CollectionPage"/, '/docs has no CollectionPage structured data');
+          assert.match(docsIndex.body, /hreflang="x-default"/, '/docs has no x-default hreflang');
+
+          for (const [path, language] of [
+            ['/docs/deployment/getting-started/quick-start', 'en'],
+            ['/de/docs/deployment/getting-started/quick-start', 'de'],
+            ['/ja/docs/deployment/getting-started/quick-start', 'ja'],
+          ]) {
+            const res = await get(path);
+            assert.equal(res.status, 200, `${path} returned ${res.status}`);
+            assert.match(res.body, new RegExp(`<html lang="${language}"`), `${path} does not declare lang="${language}"`);
+            assert.match(res.body, /<h1[\s>]/, `${path} has no <h1>`);
+            assert.match(res.body, /rel="canonical"/, `${path} has no canonical link`);
+            assert.match(res.body, /"TechArticle"/, `${path} has no TechArticle structured data`);
+            assert.match(res.body, /"BreadcrumbList"/, `${path} has no breadcrumb structured data`);
+            assert.match(res.body, /hreflang="x-default"/, `${path} has no x-default hreflang`);
+            // Every language that publishes the guide has to be named, including
+            // the page itself: a missing return tag makes Google drop the whole
+            // cluster, which is worse than not marking it up at all.
+            for (const other of ['en', 'de', 'ja']) {
+              assert.ok(res.body.includes(`hreflang="${other}"`), `${path} is missing hreflang="${other}"`);
+            }
+            assert.ok(!/<script type="module"/.test(res.body), `${path} ships the client bundle`);
+          }
+          console.log(`Documentation OK: /docs plus three language variants, hreflang, TechArticle.`);
 
           const missing = await get('/not-a-real-shimodocs-page');
           assert.equal(missing.status, 404, 'unknown paths must 404 instead of serving the app shell');
@@ -205,7 +292,9 @@ jobs:
           // Every article in the sitemap must be live, prerendered, carry article
           // structured data and ship no client bundle. Checked with a small
           // concurrency pool so a hundred posts do not serialise the deploy.
-          const articleUrls = [...sitemap.body.matchAll(/<loc>([^<]*\/blog\/[a-z0-9-]+)<\/loc>/g)].map(m => m[1]);
+          const blogSitemapPath = [...childBodies.keys()].find(path => path.endsWith('sitemap-blog.xml'));
+          assert.ok(blogSitemapPath, 'sitemap.xml does not index sitemap-blog.xml');
+          const articleUrls = [...childBodies.get(blogSitemapPath).matchAll(/<loc>([^<]*\/blog\/[a-z0-9-]+)<\/loc>/g)].map(m => m[1]);
           assert.ok(articleUrls.length >= 1, 'sitemap.xml lists no articles');
 
           const blogIndex = await get('/blog');
@@ -254,7 +343,50 @@ jobs:
 
           console.log(
             `Verified ${routes.length} prerendered routes, ${articleUrls.length} articles across ` +
-              `${articleLayouts.size} layouts (${[...articleLayouts].sort().join(', ')}), unique titles, ` +
-              `robots.txt, sitemap.xml, a real 404 and ${installerLinks.length} installer links.`,
+              `${articleLayouts.size} layouts (${[...articleLayouts].sort().join(', ')}), ` +
+              `${childSitemaps.length} sitemaps, 3 documentation languages, unique titles, ` +
+              `robots.txt, a real 404 and ${installerLinks.length} installer links.`,
           );
           NODE
+
+      # Activation happens before verification, so by the time anything above
+      # fails the broken release is already serving production. Putting the
+      # previous one back is the difference between a red run and an outage, and
+      # it is safe to leave to automation because the releases directory keeps
+      # every previous build.
+      - name: Roll back to the previous release
+        if: failure() && steps.activate.outputs.previous_release != ''
+        env:
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          DEPLOY_PORT: ${{ secrets.DEPLOY_PORT || 22 }}
+          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+          PREVIOUS_RELEASE: ${{ steps.activate.outputs.previous_release }}
+          FAILED_RELEASE_ID: ${{ github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
+        run: |
+          ssh_options=(-o BatchMode=yes -o StrictHostKeyChecking=yes -o IdentitiesOnly=yes -o ConnectTimeout=10)
+          ssh "${ssh_options[@]}" -p "$DEPLOY_PORT" "$DEPLOY_USER@$DEPLOY_HOST" "PREVIOUS='$PREVIOUS_RELEASE' DEPLOY_PATH='$DEPLOY_PATH' bash -s" <<'REMOTE'
+          set -euo pipefail
+          test -d "$PREVIOUS"
+          ln -s "$PREVIOUS" "$DEPLOY_PATH/.current-rollback"
+          mv -Tf "$DEPLOY_PATH/.current-rollback" "$DEPLOY_PATH/current"
+          printf 'production now serves %s\n' "$(readlink -f "$DEPLOY_PATH/current")"
+          REMOTE
+          curl --fail --silent --show-error --max-time 15 "http://$DEPLOY_HOST/release.json" -o rolled-back.json
+          RELEASE_ID="$FAILED_RELEASE_ID" node --input-type=module <<'NODE'
+          import assert from 'node:assert/strict';
+          import { readFileSync } from 'node:fs';
+
+          // Confirming the rollback is not a formality: the previous release
+          // could have been pruned, or the symlink swap could have pointed at a
+          // directory that is no longer there, in which case production is now
+          // serving something that is not a release at all.
+          const release = JSON.parse(readFileSync('rolled-back.json', 'utf8'));
+          assert.ok(release.tag, 'the rolled-back release has no tag');
+          assert.notEqual(
+            release.release,
+            process.env.RELEASE_ID,
+            'release.json still reports the release that just failed',
+          );
+          console.log(`Rolled back to ${release.repository} ${release.tag} (${release.commit})`);
+          NODE
+          echo "::error::The release failed verification and production was rolled back to $(cat rolled-back.json)"

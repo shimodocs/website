@@ -114,9 +114,23 @@ git push origin v1.0.2
 
 Replace the example with a new version each time. Pushing `main` runs build checks only. The **GitHub Actions → Deploy tagged ShimoDocs release** workflow runs when a `v*` tag is pushed. There is no branch-triggered or manual deployment entrypoint.
 
-Each run creates a unique release directory, leaving previous versions available. The upload step refuses to activate a release that is missing `index.html`, `release.json`, `robots.txt`, `sitemap.xml`, `404.html` or any of the five prerendered subroutes. `/release.json` records the tag, commit, repository and release ID.
+Each run creates a unique release directory, leaving previous versions available. The upload step refuses to activate a release that is missing `index.html`, `release.json`, `robots.txt`, `sitemap.xml`, `404.html`, or any of the prerendered subroutes `ai-workspace`, `blog`, `help-center`, `pricing`, `contact-sales`, `docs`, `de/docs` and `ja/docs`. That check runs **before** the symlink is swapped, so a truncated upload never reaches production. `/release.json` records the tag, commit, repository and release ID.
 
-After activating the release, the workflow verifies against the live host that every route returns `200` with prerendered markup, an `<h1>`, a canonical link and structured data; that all six titles are distinct; that `robots.txt` is served as `text/plain` with a `Sitemap:` directive; that `sitemap.xml` is served as XML and lists every route; and that an unknown path returns `404`. In-progress deployments are not cancelled by newer tags.
+After activating the release, the workflow verifies against the live host:
+
+- Every marketing route returns `200` with prerendered markup, an `<h1>`, a canonical link and structured data, and all six titles are distinct.
+- `robots.txt` is served as `text/plain` with a `Sitemap:` directive.
+- `sitemap.xml` is a `<sitemapindex>`; every child sitemap is fetched and checked as a urlset with at least one URL; every route appears in one of them; and `sitemap-docs-en.xml`, `sitemap-docs-de.xml` and `sitemap-docs-ja.xml` are all indexed. The language list is repeated here on purpose, so a release that quietly stops publishing a language fails instead of passing.
+- `/docs`, `/de/docs/...` and `/ja/docs/...` return `200` with the right `<html lang>`, a canonical link, `TechArticle` and `BreadcrumbList` data, a full set of `hreflang` links including `x-default`, and no client bundle. This is 215 of the roughly 264 URLs, and it is the surface whose plumbing can fail while every marketing route still looks perfect.
+- An unknown path returns `404`.
+- Every installer link on the home page resolves, with a ranged request so the full package is not pulled.
+- Every article listed in the blog sitemap is live, prerendered, carries `BlogPosting` and breadcrumb data, ships no client bundle, and uses one of the four known layouts.
+
+In-progress deployments are not cancelled by newer tags.
+
+### Automatic rollback
+
+Activation happens before verification, so a release that fails its checks is already serving production. When any step fails after activation, the workflow puts the previous release back: it resolves what `current` pointed at before the swap, re-points the symlink at it, and confirms through `/release.json` that the tag serving production is no longer the one that just failed. The previous target is also written to `/var/www/shimodocs/.previous-release` on the server, so the same information is available by hand if the job dies mid-swap. A first deploy has nothing to roll back to and says so instead.
 
 After migrating, disable `deploy.yml` in `liwo-yuandian/shimodocs` so the old repository cannot publish over the tag-based releases. Its code and history can remain as a backup.
 
@@ -207,9 +221,12 @@ curl -s -o /dev/null -w '%{http_code}\n' -X POST \
 
 ## Rollback
 
-In the **server SSH terminal**, inspect the release metadata and select the exact previous release directory:
+A release that fails verification is rolled back automatically, and the run says so. This section is for the cases automation cannot cover: a problem found after the workflow went green, or a job that died mid-swap.
+
+In the **server SSH terminal**, inspect the release metadata and select the exact previous release directory. `/var/www/shimodocs/.previous-release` holds what `current` pointed at before the last deployment, which is the quickest way to see what to go back to:
 
 ```bash
+cat /var/www/shimodocs/.previous-release
 readlink -f /var/www/shimodocs/current
 ls /var/www/shimodocs/releases
 ```
