@@ -120,7 +120,7 @@ export default function Comparison() {
         <div className="page-figures">
           <figure className="page-figure">
             <img
-              src="/assets/workspace-collaboration.png"
+              src="/assets/workspace-collaboration.webp"
               alt="ShimoDocs editor showing a product launch plan with two live collaborator cursors and a comments panel"
               width="1400"
               height="750"

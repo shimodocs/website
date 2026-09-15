@@ -314,13 +314,17 @@ const sitemapFiles = [
       // image search has a reason to index them under this domain. Only the
       // pages that really show them carry them: an image sitemap that claims
       // images a page does not have is a spam signal, not a shortcut.
+      //
+      // Six, not seven. The seventh screenshot belongs to the workflow carousel,
+      // which renders one scene at a time, so it is not in the served HTML and
+      // listing it would be the overstatement this rule exists to prevent.
       images:
         path === '/'
-          ? Array.from({ length: 7 }, (unused, index) => absoluteUrl(`/assets/extract-${index + 1}.webp`))
+          ? Array.from({ length: 6 }, (unused, index) => absoluteUrl(`/assets/extract-${index + 1}.webp`))
           : path === '/download'
-            ? [absoluteUrl('/assets/workspace-recent-files.png')]
-            : path === '/ai-workspace'
-              ? [absoluteUrl('/assets/workspace-collaboration.png')]
+            ? [absoluteUrl('/assets/workspace-recent-files.webp')]
+            : path === '/comparison'
+              ? [absoluteUrl('/assets/workspace-collaboration.webp')]
               : [],
     })),
   },
@@ -999,6 +1003,17 @@ for (const file of sitemapFiles) {
       }
       if (!existsSync(join(distDir, image.replace(SITE_URL, '')))) {
         problems.push(`${entry.loc} claims an image this build did not produce: ${image}`)
+      }
+      // Listing an image on a page that does not display it is exactly the
+      // overstatement an image sitemap is not allowed to make. Checked against
+      // the rendered page rather than the source, because that is what Google
+      // will fetch.
+      const pageFile = join(distDir, `${entry.loc.replace(SITE_URL, '').replace(/^\//, '')}/index.html`)
+      if (existsSync(pageFile)) {
+        const pageHtml = readFileSync(pageFile, 'utf8')
+        if (!pageHtml.includes(image.replace(SITE_URL, ''))) {
+          problems.push(`${entry.loc} lists ${image} but the page does not reference it`)
+        }
       }
     }
   }

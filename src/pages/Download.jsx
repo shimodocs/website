@@ -75,7 +75,7 @@ export default function Download() {
         <div className="page-figures">
           <figure className="page-figure">
             <img
-              src="/assets/workspace-recent-files.png"
+              src="/assets/workspace-recent-files.webp"
               alt="ShimoDocs workspace listing recent files, files shared with you, team space, trash and the storage each user and the organisation is using"
               width="1400"
               height="749"
