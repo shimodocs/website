@@ -553,15 +553,15 @@ export const BLOG_POSTS = [
     "layout": "magazine",
     "figures": 2,
     "date": "2026-02-16",
-    "updated": null,
+    "updated": "2026-09-15",
     "tags": [
       "self-hosted",
       "comparison",
       "evaluation",
       "office suite"
     ],
-    "readingTime": 6,
-    "words": 1242,
+    "readingTime": 8,
+    "words": 1689,
     "featured": false
   },
   {

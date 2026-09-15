@@ -5,8 +5,22 @@ description: "A framework for comparing self-hosted office and document collabor
 layout: magazine
 category: comparisons
 date: 2026-02-16
+updated: 2026-09-15
 tags: [self-hosted, comparison, evaluation, office suite]
 keywords: "self-hosted office suite comparison, best self-hosted office suite, open source office suite comparison"
+faq:
+  - question: "What is the first thing to compare between self-hosted office suites?"
+    answer: "The deployment model, because the first question is what self-hosted actually means for that vendor. Vendor-hosted in your own cloud account gives data residency but not control of plaintext. A single-node install trades high availability for simplicity, a high-availability cluster adds resilience and rolling upgrades at the cost of simplicity, and an air-gapped install buys network isolation at the cost of convenience. Check whether the mode you need is a first-class deployment path or a documented workaround."
+  - question: "Why do self-hosted suite evaluations fail?"
+    answer: "Most fail because they start with the feature comparison and discover a structural problem in month three. Work the framework top to bottom instead: if a suite fails a hard requirement in the first three sections, stop there, and only do the feature comparison once it passes those."
+  - question: "What is the key test of a suite data architecture?"
+    answer: "Can you rebuild the search index from primary storage, and does losing the cache cause an outage or merely a slowdown? If the search index is not rebuildable, you have a backup problem you will discover at the worst moment. Whether object storage is S3-compatible matters too, because it decides whether your existing backup tooling applies."
+  - question: "Why does the application tier being stateless matter?"
+    answer: "It determines how much of the operational burden you can push onto Kubernetes rather than solving yourself. Of the layers a suite runs, the application tier is the only one that should be stateless. The relational database, object storage, search index and cache each hold something you have to plan either to rebuild or to restore."
+  - question: "What does identity integration need to cover?"
+    answer: "Five things, and provisioning users is only the first. SAML or OIDC against your existing directory, group-to-role mapping rather than provisioning alone, deprovisioning that revokes access when the directory account is disabled, no per-user local accounts beyond a break-glass administrator, and guest handling with expiry by default. A suite that provisions users but not permissions converts every departure into a manual task, and manual tasks get skipped."
+  - question: "How should file fidelity be tested?"
+    answer: "With five files from your own corpus, not vendor sample documents, which are chosen to pass. Check import fidelity for docx and xlsx, export fidelity that round-trips formatting and formulas, whether comments and tracked changes survive or are deliberately dropped, print layout for documents that end up as PDFs, and large spreadsheet performance, which is where most suites reveal their limits. Spreadsheets carry the highest behavioural risk, because a file that opens can still compute the wrong number."
 ---
 
 Choosing a self-hosted office suite is not like choosing a hosted one. With a hosted product you are comparing features and a monthly bill. With a self-hosted product you are comparing an operational commitment, and the feature grid tells you very little about that.
@@ -162,3 +176,29 @@ Rather than a weighted matrix, use gates:
 The gate approach prevents the most common failure: a product that scores brilliantly on features and cannot satisfy the identity or file-fidelity requirement that a regulated environment depends on.
 
 For the wider decision about whether to self-host at all, start with [what private cloud document collaboration is](/blog/what-is-private-cloud-document-collaboration).
+
+## Frequently asked questions
+
+### What is the first thing to compare between self-hosted office suites?
+
+The deployment model, because the first question is what self-hosted actually means for that vendor. Vendor-hosted in your own cloud account gives data residency but not control of plaintext. A single-node install trades high availability for simplicity, a high-availability cluster adds resilience and rolling upgrades at the cost of simplicity, and an air-gapped install buys network isolation at the cost of convenience. Check whether the mode you need is a first-class deployment path or a documented workaround.
+
+### Why do self-hosted suite evaluations fail?
+
+Most fail because they start with the feature comparison and discover a structural problem in month three. Work the framework top to bottom instead: if a suite fails a hard requirement in the first three sections, stop there, and only do the feature comparison once it passes those.
+
+### What is the key test of a suite data architecture?
+
+Can you rebuild the search index from primary storage, and does losing the cache cause an outage or merely a slowdown? If the search index is not rebuildable, you have a backup problem you will discover at the worst moment. Whether object storage is S3-compatible matters too, because it decides whether your existing backup tooling applies.
+
+### Why does the application tier being stateless matter?
+
+It determines how much of the operational burden you can push onto Kubernetes rather than solving yourself. Of the layers a suite runs, the application tier is the only one that should be stateless. The relational database, object storage, search index and cache each hold something you have to plan either to rebuild or to restore.
+
+### What does identity integration need to cover?
+
+Five things, and provisioning users is only the first. SAML or OIDC against your existing directory, group-to-role mapping rather than provisioning alone, deprovisioning that revokes access when the directory account is disabled, no per-user local accounts beyond a break-glass administrator, and guest handling with expiry by default. A suite that provisions users but not permissions converts every departure into a manual task, and manual tasks get skipped.
+
+### How should file fidelity be tested?
+
+With five files from your own corpus, not vendor sample documents, which are chosen to pass. Check import fidelity for docx and xlsx, export fidelity that round-trips formatting and formulas, whether comments and tracked changes survive or are deliberately dropped, print layout for documents that end up as PDFs, and large spreadsheet performance, which is where most suites reveal their limits. Spreadsheets carry the highest behavioural risk, because a file that opens can still compute the wrong number.
