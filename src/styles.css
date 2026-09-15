@@ -914,3 +914,28 @@
 .post-docs a{display:block;font:600 16.5px/1.3 'DM Sans';color:var(--ink);text-decoration:none;margin-bottom:6px}
 .post-docs a:hover{color:var(--cyan)}
 .post-docs small{display:block;color:var(--muted);font-size:12.5px;line-height:1.6}
+
+/* ------------------------------------------------------------------
+   Blog topic pages.
+   The topic links are anchors, not the filter buttons they sit beside,
+   so they need the same shape with link semantics.
+   ------------------------------------------------------------------ */
+.blog-filters.topic-links a{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  padding:11px 15px;
+  border-radius:999px;
+  background:#ffffff0a;
+  border:1px solid var(--line);
+  color:#c8c2de;
+  text-decoration:none;
+  font-size:13px;
+}
+.blog-filters.topic-links a:hover{border-color:var(--cyan);color:#fff}
+.blog-filters.topic-links a span{
+  font:11px 'Space Grotesk';
+  color:var(--cyan);
+}
+.archive-head h3 a{text-decoration:none}
+.archive-head h3 a:hover{color:var(--cyan)}

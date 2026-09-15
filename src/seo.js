@@ -68,6 +68,70 @@ export const ROUTE_SEO = {
       'private cloud collaboration blog, document security, data sovereignty, enterprise productivity, secure digital workplace, self-hosted collaboration guide',
     ogAlt: 'ShimoDocs journal cover artwork',
   },
+  // Topic pages. Each one is a real subject with its own search demand —
+  // "self-hosted document collaboration", "document collaboration comparison" —
+  // so it is a page, not a filter on the archive: the archive is one URL that
+  // answers none of those queries on its own.
+  '/blog/category/comparisons': {
+    changeFrequency: 'weekly',
+    priority: '0.7',
+    title: 'Document Collaboration Comparisons | ShimoDocs',
+    description:
+      'Head-to-head comparisons of ShimoDocs with Google Docs, Notion, Confluence, Microsoft 365, SharePoint, Coda and Slab — and what each costs in control.',
+    keywords:
+      'document collaboration comparison, google docs alternative, notion alternative, confluence alternative, self-hosted vs cloud',
+    ogAlt: 'Comparison of ShimoDocs with public cloud collaboration tools',
+  },
+  '/blog/category/self-hosting': {
+    changeFrequency: 'weekly',
+    priority: '0.8',
+    title: 'Self-Hosted Document Collaboration | ShimoDocs',
+    description:
+      'Guides to running document collaboration on your own infrastructure: sizing, Kubernetes deployment, databases, monitoring, backup and disaster recovery.',
+    keywords:
+      'self-hosted document collaboration, self-hosted office suite, kubernetes document platform, private cloud deployment, on-premises collaboration',
+    ogAlt: 'Self-hosted ShimoDocs deployment on infrastructure the reader controls',
+  },
+  '/blog/category/security': {
+    changeFrequency: 'weekly',
+    priority: '0.8',
+    title: 'Document Security and Compliance | ShimoDocs Blog',
+    description:
+      'Data sovereignty, access control, retention, encryption and the compliance questions teams ask before moving documents out of a public cloud.',
+    keywords:
+      'document security, document compliance, gdpr document collaboration, hipaa document management, iso 27001, soc 2, data sovereignty',
+    ogAlt: 'Document security and compliance controls in a private deployment',
+  },
+  '/blog/category/ai': {
+    changeFrequency: 'monthly',
+    priority: '0.7',
+    title: 'AI in Document Collaboration | ShimoDocs Blog',
+    description:
+      'Putting AI agents inside documents without handing the content to someone else: private model endpoints, training controls and reviewable edits.',
+    keywords: 'AI in documents, private AI, self-hosted AI agents, AI data control, bring your own model',
+    ogAlt: 'AI agents working inside documents on a private model endpoint',
+  },
+  '/blog/category/industry': {
+    changeFrequency: 'monthly',
+    priority: '0.6',
+    title: 'Document Collaboration by Industry | ShimoDocs',
+    description:
+      'How regulated and distributed teams run document collaboration: financial services, healthcare, legal, public sector and the controls each one needs.',
+    keywords:
+      'document collaboration by industry, financial services documents, healthcare document collaboration, regulated industries',
+    ogAlt: 'Document collaboration controls mapped to regulated industries',
+  },
+  '/blog/category/guides': {
+    changeFrequency: 'monthly',
+    priority: '0.6',
+    title: 'Document Collaboration Guides | ShimoDocs Blog',
+    description:
+      'Practical workflows for teams moving off public cloud tools: migration, onboarding, meeting notes, knowledge management and policy documentation.',
+    keywords:
+      'document collaboration guide, google workspace migration, knowledge management, meeting notes workflow, policy documentation',
+    ogAlt: 'Practical document collaboration workflows and migration guides',
+  },
+
   '/help-center': {
     changeFrequency: 'weekly',
     priority: '0.7',

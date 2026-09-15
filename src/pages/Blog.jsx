@@ -166,7 +166,11 @@ export default function Blog() {
             {grouped.map(entry => (
               <div className="archive-group" key={entry.id}>
                 <div className="archive-head">
-                  <h3>{entry.label}</h3>
+                  {/* Linked, so the topic pages are reachable by crawling from
+                      the archive rather than only from the sitemap. */}
+                  <h3>
+                    <a href={`/blog/category/${entry.id}`}>{entry.label}</a>
+                  </h3>
                   <p>{entry.description}</p>
                 </div>
                 <ul>

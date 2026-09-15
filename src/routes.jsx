@@ -5,6 +5,7 @@
 import Home from './pages/Home'
 import AIWorkspace from './pages/AIWorkspace'
 import Blog from './pages/Blog'
+import BlogCategory from './pages/BlogCategory'
 import HelpCenter from './pages/HelpCenter'
 import DocsIndex from './pages/DocsIndex'
 import Hub from './pages/Hub'
@@ -22,6 +23,14 @@ export const ROUTES = [
   { path: '/', label: 'Home', Component: Home },
   { path: '/ai-workspace', label: 'AI Workspace', Component: AIWorkspace },
   { path: '/blog', label: 'Blog', Component: Blog },
+  // Topic pages. One per category rather than a dynamic segment: the
+  // prerenderer writes <route>/index.html, so a route has to be a real path.
+  { path: '/blog/category/comparisons', label: 'Comparisons', Component: BlogCategory },
+  { path: '/blog/category/self-hosting', label: 'Self-hosting', Component: BlogCategory },
+  { path: '/blog/category/security', label: 'Security', Component: BlogCategory },
+  { path: '/blog/category/ai', label: 'AI at work', Component: BlogCategory },
+  { path: '/blog/category/industry', label: 'Industry', Component: BlogCategory },
+  { path: '/blog/category/guides', label: 'Guides', Component: BlogCategory },
   { path: '/help-center', label: 'Help Center', Component: HelpCenter },
   { path: '/docs', label: 'Documentation', Component: DocsIndex },
   // Commercial hubs. Each answers one deployment question and links into the

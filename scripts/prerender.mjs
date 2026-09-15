@@ -748,6 +748,26 @@ for (const [href, source] of linkProblems) {
   problems.push(`${source} links to ${href}, which this build did not produce`)
 }
 
+// ------------------------------------------------------- topic page checks
+
+// A topic page that stops listing its own articles, or loses the guides behind
+// them, still looks fine in a browser: it just becomes a thin page ranking for a
+// query it no longer answers. Both are checked, along with the link from the
+// archive that makes the page reachable by crawling at all.
+for (const path of ROUTE_PATHS.filter(entry => entry.startsWith('/blog/category/'))) {
+  const id = path.split('/').pop()
+  const html = readFileSync(join(distDir, `${path.slice(1)}/index.html`), 'utf8')
+  const inCategory = posts.filter(post => post.category === id)
+  if (!inCategory.length) problems.push(`${path}: no articles in category ${id}`)
+  for (const post of inCategory) {
+    if (!html.includes(`href="/blog/${post.slug}"`)) problems.push(`${path} does not link /blog/${post.slug}`)
+  }
+  const topicDocLinks = new Set([...html.matchAll(/href="(\/docs\/[^"#]*)"/g)].map(match => match[1]))
+  if (topicDocLinks.size < 2) problems.push(`${path} links only ${topicDocLinks.size} documentation guides`)
+  if (!html.includes('rel="canonical"')) problems.push(`${path}: no canonical link`)
+  if (!/application\/ld\+json/.test(html)) problems.push(`${path}: no structured data`)
+}
+
 // ------------------------------------------------------ article verification
 
 // The editorial article → guide mapping has to keep pointing at real pages, and
@@ -873,6 +893,11 @@ for (const post of posts) {
   if (!blogIndexHtml.includes(`href="/blog/${post.slug}"`)) {
     problems.push(`blog index does not link /blog/${post.slug}`)
   }
+}
+// The same for the topic pages: an archive that lists categories as headings but
+// never links them leaves six pages reachable only through the sitemap.
+for (const path of ROUTE_PATHS.filter(entry => entry.startsWith('/blog/category/'))) {
+  if (!blogIndexHtml.includes(`href="${path}"`)) problems.push(`blog index does not link ${path}`)
 }
 
 const robots = readFileSync(join(distDir, 'robots.txt'), 'utf8')

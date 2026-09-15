@@ -8,6 +8,7 @@
 import { mkdirSync, writeFileSync } from 'node:fs'
 import { dirname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { ARTICLE_DOCS } from './article-docs.mjs'
 import { CATEGORIES, loadPosts, toClientRecord } from './blog-content.mjs'
 import { buildNav, loadDocs, sortDocs, toDocClientRecord } from './docs-content.mjs'
 
@@ -85,3 +86,45 @@ console.log(
 for (const group of nav) {
   console.log(`  ${(group.label || 'Overview').padEnd(34)} ${String(group.docs.length).padStart(3)}`)
 }
+
+// ------------------------------------------------- category documentation
+
+// Each topic page lists the guides its own articles point at.
+//
+// Derived from ARTICLE_DOCS rather than written again here: the editorial link
+// map already says which guide proves which article, so counting those links per
+// category gives the guides a topic page should lead with. A guide that no
+// article in the category cites is not listed, which keeps the block honest
+// instead of turning every topic page into the same list of five guides.
+const docsById = new Map(docs.map(doc => [doc.id, doc]))
+const categoryCounts = new Map()
+for (const post of posts) {
+  for (const id of ARTICLE_DOCS[post.slug] || []) {
+    if (!docsById.has(id)) continue
+    const counts = categoryCounts.get(post.category) || new Map()
+    counts.set(id, (counts.get(id) || 0) + 1)
+    categoryCounts.set(post.category, counts)
+  }
+}
+
+const categoryDocs = {}
+for (const [category, counts] of categoryCounts) {
+  categoryDocs[category] = [...counts.entries()]
+    .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
+    .slice(0, 4)
+    .map(([id]) => {
+      const doc = docsById.get(id)
+      return { url: doc.url, title: doc.title, description: doc.description }
+    })
+}
+
+const categoryBody = `${banner}
+export const CATEGORY_DOCS = ${JSON.stringify(categoryDocs, null, 2)}
+`
+writeFileSync(join(outDir, 'blog-category-docs.js'), categoryBody)
+
+console.log(
+  `Category guides: ${Object.keys(categoryDocs).length} topics, ` +
+    `${Object.values(categoryDocs).reduce((sum, entries) => sum + entries.length, 0)} guide links ` +
+    '-> src/generated/blog-category-docs.js',
+)
