@@ -60,9 +60,45 @@ JavaScript still receives headings, copy and internal links.
   so the title and canonical stay correct without a full page load.
 - The build emits `robots.txt`, `sitemap.xml`, a branded 1200x630
   `og-image.png`, a favicon set and JSON-LD (`Organization`, `WebSite`,
-  `WebPage`, `SoftwareApplication`, `FAQPage`, `BreadcrumbList`).
+  `WebPage`, `SoftwareApplication`, `FAQPage`, `BreadcrumbList`). The
+  `SoftwareApplication` node, with both `Offer`s, is emitted on the home page and
+  on `/pricing` under one `@id`, and the pricing page names it as its
+  `mainEntity`: the page a buyer reaches from "how much does this cost" states
+  the price to a crawler, not only in prose.
 - `npm run build` fails on duplicate titles or descriptions and on titles over
   62 characters or descriptions over 160, because search results truncate them.
+
+### Content checks
+
+Two checks read the prerendered HTML back and compare it against the source, so
+copy that only exists in one place cannot drift from the copy that exists in
+another:
+
+- **FAQ** (`scripts/check-faq.mjs`). The FAQ exists twice on a page: the text a
+  reader sees and the `FAQPage` markup a crawler reads, and Google requires the
+  markup to describe visible content. Every question *and answer* is compared
+  against the rendered text with the scripts stripped first — searching the raw
+  HTML would match the markup against itself and always pass. The same question
+  published with two different answers fails the build, and near-identical
+  questions on different pages are reported as warnings.
+- **Pricing facts** (`scripts/check-pricing-facts.mjs`). `src/pricing-facts.js`
+  holds the free-team limit, the per-user price and the annual discount once;
+  the footer, the pricing cards, the FAQ answers, the structured data and the
+  article CTAs read from it. The limit's word forms are keyed by the limit they
+  belong to, so changing the number and leaving the words behind fails at import
+  rather than shipping pages that say "6" beside prose that says "five". A large share of the articles states the free limit
+  in hand-written Markdown, which no import reaches, so this check reads every
+  rendered page and fails the build when one of them states a different number.
+  Changing a constant therefore updates the templated pages and names the
+  articles that still need editing.
+
+Both run as part of `npm run build` and on their own against any built directory
+or a live release (point them at a downloaded copy):
+
+```bash
+npm run check:faq       # node scripts/check-faq.mjs dist
+npm run check:pricing   # node scripts/check-pricing-facts.mjs dist
+```
 
 ### Canonical origin
 
@@ -122,10 +158,10 @@ found:
   in `llms.txt`. Aggregators and assistants that poll for new work have one URL
   to watch, and the build fails if the feed stops listing an article or stops
   being advertised.
-- An image sitemap: the pages sitemap carries `<image:image>` entries for the
-  screenshots each page actually displays. The check refuses an image a page does
-  not have and an image this build did not produce, because an image sitemap that
-  overstates what a page contains is a spam signal rather than a shortcut.
+- An image sitemap: the core and pages sitemaps carry `<image:image>` entries for
+  the screenshots each page actually displays. The check refuses an image a page
+  does not have and an image this build did not produce, because an image sitemap
+  that overstates what a page contains is a spam signal rather than a shortcut.
 
 ### Telling other engines (IndexNow)
 
@@ -148,6 +184,32 @@ secret by design: IndexNow fetches it over HTTP. The build fails if that file is
 missing, the deploy verification asserts the live site serves it, and the deploy
 job submits the URLs after the release is verified — with `continue-on-error`, so
 a rejected submission is a visible red step rather than a failed release.
+
+### Daily Cloudflare traffic report
+
+```bash
+node scripts/cloudflare-daily.mjs --dry-run          # print, write nothing
+node scripts/cloudflare-daily.mjs                    # yesterday (UTC), into Feishu
+node scripts/cloudflare-daily.mjs --date 2026-09-14  # a specific day
+```
+
+It writes one row per day into the `流量观测` table of the same Feishu base the
+download counts live in, through `lark-cli` and the operator's own
+authorization — so the only secret is the Cloudflare token, which is read from
+`seo/data/cloudflare-token.txt` (outside version control) and never stored
+anywhere else.
+
+**It has to run daily, and that is not a preference.** On the Free plan the
+per-request dataset is queryable for a **one-day window** and the daily
+aggregate returns **two days**: there is no history to back-fill, so a day that
+is not read is gone. Running twice is safe — the row is updated, not duplicated.
+
+The columns are chosen for what Search Console cannot say: which crawlers
+actually fetched the site, what they asked for, and which requests failed.
+`Googlebot` at zero for a day is a fact worth waking up to; a 404 that starts
+with `/docs` is a real broken link, while a 404 for `/.env` is a scanner. The
+"爬虫请求" column is a heuristic over the user-agent string, not a verified-bot
+count: the API field for that is not available on this plan.
 
 ### Pointing the product README at this site
 
@@ -396,10 +458,23 @@ The build fails if an id in it stops existing or if the link graph thins out.
 
 ### Sitemaps
 
-`sitemap.xml` is a `<sitemapindex>`. The URLs live in `sitemap-pages.xml`,
-`sitemap-blog.xml` and one `sitemap-docs-<language>.xml` per language, so Search
-Console reports index coverage per language instead of as one lump where a
-single broken translation is invisible.
+`sitemap.xml` is a `<sitemapindex>`. The commercial pages live in
+`sitemap-core.xml`, which is listed first so the first child a crawler fetches
+after the index is the set of pages that carry the search demand; the rest of the
+static pages are in `sitemap-pages.xml`, and there is one
+`sitemap-docs-<language>.xml` per language, so Search Console reports index
+coverage per language instead of as one lump where a single broken translation is
+invisible. The index cannot list pages itself: a sitemap index may only contain
+`<sitemap>` entries, and adding `<url>` to it invalidates the whole file.
+
+Every entry carries a `lastmod` from the date its content changed — the commit
+that last touched the guide Markdown for the documentation, `ROUTE_UPDATED` in
+`src/seo.js` for the static pages, front matter for the articles — never the
+build date. A lastmod that is always today is the same signal as no lastmod at
+all. The build fails if a date is missing, malformed, in the future, or if the
+whole site reports fewer than three distinct dates, which is what a build-clock
+lastmod produces. Both workflows check out with `fetch-depth: 0` so the history
+those dates come from is present.
 
 ## Publishing
 
