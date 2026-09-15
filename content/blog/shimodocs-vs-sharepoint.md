@@ -15,7 +15,7 @@ faq:
     answer: "Four places. The user experience is library-shaped, so real-time co-authoring happens through Office on the web rather than in a purpose-built collaborative editor. Administration depth is real: content types, term stores, permission inheritance and site governance need expertise, and many organisations run SharePoint below its potential for that reason. Licensing complexity means working out whether a specific retention or eDiscovery feature is available requires licence mapping rather than a feature list. And the modern experience is Microsoft 365, so organisations with data sovereignty requirements should confirm what control they actually retain."
   - question: "When is SharePoint the better choice?"
     answer: "When you are Microsoft-first and the integration is load-bearing, when you need records management, eDiscovery and DLP in one governance stack, when you want metadata-driven document management with content types, or when you have the administration expertise on staff or plan to buy it."
-  - question: "When is ShimoDocs the better fit?"
+  - question: "When is ShimoDocs the better fit than SharePoint?"
     answer: "When the binding constraint is where content and AI inference happen, when the primary work is editing documents, spreadsheets and presentations rather than governing a library, when you want a working collaborative workspace in days rather than a platform project in months, or when you need a configurable AI endpoint rather than a vendor assistant."
   - question: "Do organisations usually replace SharePoint entirely?"
     answer: "Rarely. A common pattern is SharePoint staying as the records and governance layer while a focused suite handles active collaborative work: documents are authored and reviewed in the suite, then published into SharePoint when they reach a retention-relevant state. That avoids trying to make one platform do both jobs, but it needs a rule about which system is authoritative at which stage, because without one teams keep two copies and trust neither."
@@ -167,7 +167,7 @@ Four places. The user experience is library-shaped, so real-time co-authoring ha
 
 When you are Microsoft-first and the integration is load-bearing, when you need records management, eDiscovery and DLP in one governance stack, when you want metadata-driven document management with content types, or when you have the administration expertise on staff or plan to buy it.
 
-### When is ShimoDocs the better fit?
+### When is ShimoDocs the better fit than SharePoint?
 
 When the binding constraint is where content and AI inference happen, when the primary work is editing documents, spreadsheets and presentations rather than governing a library, when you want a working collaborative workspace in days rather than a platform project in months, or when you need a configurable AI endpoint rather than a vendor assistant.
 
