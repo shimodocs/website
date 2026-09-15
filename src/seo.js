@@ -96,9 +96,14 @@ export const ROUTE_SEO = {
           'Only to the endpoints you configure. The AI capabilities — a base model, an image model, embeddings and an optional online search service — are connected in the operations platform. Online search is a separate, optional service: leave it unconfigured and no outbound retrieval happens at all.',
       },
       {
-        question: 'Does AI work in an air-gapped deployment?',
+        // This was "Does AI work in an air-gapped deployment?", which is the
+        // question /airgap exists to answer. The build reported the two pages as
+        // a near-duplicate pair, and a reader who lands on both should not read
+        // the same answer twice: the air-gap answer stays on /airgap, and this
+        // covers a capability neither page mentioned.
+        question: 'Can the agents use our own knowledge base?',
         answer:
-          'Yes, provided a model is served inside the enclave. Nothing in the collaboration core depends on AI, so a deployment with no model available still edits, comments, versions and searches normally. AI is an addition to the suite rather than a dependency of it.',
+          'Yes. Knowledge retrieval is one of the AI capabilities connected in the operations platform, alongside the base model, the image model and the optional online search service. It runs through an embeddings service you provide, so the index the agents retrieve from can live inside your own environment rather than being built by a vendor.',
       },
       {
         question: 'Does the free plan include AI?',

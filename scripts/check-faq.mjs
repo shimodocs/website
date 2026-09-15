@@ -140,6 +140,33 @@ function similarity(a, b) {
   return shared / (left.size + right.size - shared || 1)
 }
 
+// The competitors the site writes comparison pages about. A question that is
+// identical apart from which competitor it names is the shape those pages are
+// supposed to have — one comparison article per competitor, each answering the
+// question its own readers arrived with — so the duplicate pass normalises the
+// name away before deciding whether two questions are the same.
+const COMPETITORS = [
+  'Google Workspace',
+  'Google Docs',
+  'Microsoft 365',
+  'SharePoint',
+  'Confluence',
+  'Atlassian',
+  'Nextcloud',
+  'ONLYOFFICE',
+  'Notion',
+  'Slab',
+  'Coda',
+]
+
+function withoutCompetitor(question) {
+  let out = question
+  for (const name of COMPETITORS) {
+    out = out.replace(new RegExp(name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi'), '')
+  }
+  return out.replace(/\s+/g, ' ').replace(/\s+([?.!,])/g, '$1').trim().toLowerCase()
+}
+
 // Every page of a build. `pages` is [{ label, html, declared? }]. Returns the
 // per-page problems plus two site-wide findings: the same question published
 // with two different answers is a failure, because an answer engine quoting
@@ -178,6 +205,14 @@ export function auditFaqs(pages) {
     for (let j = i + 1; j < questions.length; j += 1) {
       const score = similarity(questions[i], questions[j])
       if (score < SIMILARITY_THRESHOLD || questions[i] === questions[j]) continue
+      // "When is ShimoDocs the better fit than Confluence?" and the same
+      // sentence with SharePoint are the intended pattern for a set of
+      // competitor pages: each answers the comparison its own readers arrived
+      // with. Once the competitor name is removed the two questions are the
+      // same, which is exactly what makes this pair legitimate rather than a
+      // duplicate — so the warning is skipped, and a real duplicate between two
+      // pages with no competitor in the question is still reported.
+      if (withoutCompetitor(questions[i]) === withoutCompetitor(questions[j])) continue
       warnings.push(
         `near-duplicate FAQ questions (${score.toFixed(2)}): ` +
           `"${questions[i]}" (${byQuestion.get(questions[i])[0].label}) vs ` +
