@@ -53,11 +53,16 @@ const dryRun = process.argv.includes('--dry-run')
 // Lets a dry run exercise the webhook without archiving a snapshot, which is
 // how the card is tested before the schedule is trusted with the real thing.
 const notifyInDryRun = process.argv.includes('--notify')
-const token = process.env.GITHUB_TOKEN || ''
+
+// GH_TOKEN is what the GitHub CLI exports; accepting both means a local run
+// picks up whichever token the developer already has.
+const token = process.env.GITHUB_TOKEN || process.env.GH_TOKEN || ''
 
 // --------------------------------------------------------------- GitHub API
 
-async function github(path) {
+const sleep = ms => new Promise(resolve => setTimeout(resolve, ms))
+
+async function github(path, attempt = 1) {
   const res = await fetch(`https://api.github.com${path}`, {
     headers: {
       accept: 'application/vnd.github+json',
@@ -65,8 +70,27 @@ async function github(path) {
       ...(token ? { authorization: `Bearer ${token}` } : {}),
     },
   })
-  if (!res.ok) throw new Error(`GitHub ${path} failed: ${res.status} ${res.statusText}`)
-  return res.json()
+  if (res.ok) return res.json()
+
+  // A scheduled job gets one chance a day. A transient 5xx or a secondary rate
+  // limit at 09:00 would otherwise cost that day permanently, because the
+  // counter is cumulative and the next snapshot can only measure from itself.
+  if ((res.status === 403 || res.status === 429 || res.status >= 500) && attempt < 3) {
+    const wait = 2000 * attempt
+    console.log(`GitHub ${path} returned ${res.status}; retrying in ${wait}ms (attempt ${attempt + 1}/3)`)
+    await sleep(wait)
+    return github(path, attempt + 1)
+  }
+
+  const remaining = res.headers.get('x-ratelimit-remaining')
+  const reset = Number(res.headers.get('x-ratelimit-reset') || 0) * 1000
+  const hint =
+    remaining === '0' && reset
+      ? ` — rate limit exhausted, resets at ${new Date(reset).toISOString()}${
+          token ? '' : '; set GITHUB_TOKEN to lift the 60-requests-per-hour anonymous limit'
+        }`
+      : ''
+  throw new Error(`GitHub ${path} failed: ${res.status} ${res.statusText}${hint}`)
 }
 
 async function fetchReleases() {

@@ -13,7 +13,7 @@
 // nothing to read, and because nothing hydrates an article there is no
 // possibility of a hydration mismatch.
 import { existsSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs'
-import { dirname, join, resolve } from 'node:path'
+import { dirname, join, resolve, sep } from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
 import { loadPosts, relatedPosts, toClientRecord } from './blog-content.mjs'
 import {
@@ -26,6 +26,7 @@ import {
   sortDocs,
   withNeighbours,
 } from './docs-content.mjs'
+import { ARTICLE_DOCS } from './article-docs.mjs'
 import { DOCS_DEFAULT_LANGUAGE, DOCS_LANGUAGES, docsBase } from '../src/docs-languages.js'
 
 const rootDir = resolve(dirname(fileURLToPath(import.meta.url)), '..')
@@ -181,13 +182,20 @@ for (const routePath of ROUTE_PATHS) {
 
 // ------------------------------------------------------------------ articles
 
+// Which guides each article links to. The mapping is editorial, so it is
+// validated in the verification pass rather than trusted: an id that no longer
+// exists upstream, or a slug that was renamed, would otherwise ship as a
+// silently missing block.
+const docsById = new Map(docs.map(doc => [doc.id, doc]))
+const relatedDocsFor = slug => (ARTICLE_DOCS[slug] || []).map(id => docsById.get(id)).filter(Boolean)
+
 const articles = []
 posts.forEach((post, index) => {
   const older = posts[index + 1] || null
   const newer = posts[index - 1] || null
   const related = relatedPosts(post, posts)
 
-  const body = renderBlogPost(post, related, older, newer)
+  const body = renderBlogPost(post, related, older, newer, relatedDocsFor(post.slug))
   const html = documentFrom(blogPostHead(post), body, { stripClientBundle: true })
   const file = writeHtml(`blog/${post.slug}/index.html`, html)
   articles.push({ post, file, bytes: Buffer.byteLength(html) })
@@ -671,7 +679,75 @@ for (const href of helpDocLinks) {
   if (!publishedDocUrls.has(href)) problems.push(`help-center: ${href} does not match any published guide`)
 }
 
+// ------------------------------------------------------ internal link crawl
+
+// Every internal link on every generated page has to resolve to a file this
+// build produced. The per-section checks above prove that guides link to
+// guides and that the indexes link everything; this is the net underneath them,
+// and it is what catches a footer, a hub page or a call to action pointing at a
+// page that was renamed or never existed. With 495 pages in eight languages a
+// dead link is otherwise found by a reader.
+const siteFiles = new Set()
+for (const entry of readdirSync(distDir, { recursive: true })) {
+  const relativePath = String(entry)
+  siteFiles.add(`/${relativePath.split(sep).join('/')}`)
+}
+
+function resolves(href) {
+  const path = href.split('#')[0].split('?')[0]
+  if (!path) return true
+  if (path.endsWith('/')) return siteFiles.has(`${path}index.html`) || siteFiles.has(path.slice(0, -1))
+  return siteFiles.has(path) || siteFiles.has(`${path}/index.html`)
+}
+
+const linkProblems = new Map()
+let linksChecked = 0
+let htmlPagesCrawled = 0
+for (const htmlFile of [...siteFiles].filter(file => file.endsWith('.html'))) {
+  const html = readFileSync(join(distDir, htmlFile.slice(1)), 'utf8')
+  htmlPagesCrawled += 1
+  for (const match of html.matchAll(/href="([^"]+)"/g)) {
+    const href = match[1]
+    if (/^(https?:|mailto:|tel:|data:|#|\/\/)/i.test(href)) continue
+    if (!href.startsWith('/')) continue
+    linksChecked += 1
+    if (resolves(href)) continue
+    // One line per distinct broken target rather than per page that links it:
+    // the footer alone would otherwise report the same dead link 495 times.
+    if (!linkProblems.has(href)) linkProblems.set(href, htmlFile)
+  }
+}
+for (const [href, source] of linkProblems) {
+  problems.push(`${source} links to ${href}, which this build did not produce`)
+}
+
 // ------------------------------------------------------ article verification
+
+// The editorial article → guide mapping has to keep pointing at real pages, and
+// the link graph has to stay worth having. Both are checked here because a
+// mapping that quietly emptied out would fail nothing else.
+for (const [slug, ids] of Object.entries(ARTICLE_DOCS)) {
+  if (!posts.some(post => post.slug === slug)) {
+    console.warn(`  warning: ARTICLE_DOCS has an entry for "${slug}", which is not a published article`)
+  }
+  for (const id of ids) {
+    if (!docsById.has(id)) problems.push(`ARTICLE_DOCS["${slug}"] points at "${id}", which is not a guide`)
+  }
+}
+
+const articlesLinkingDocs = articles.filter(entry => relatedDocsFor(entry.post.slug).length > 0)
+if (articlesLinkingDocs.length < posts.length * 0.8) {
+  problems.push(
+    `only ${articlesLinkingDocs.length}/${posts.length} articles link into the documentation; ` +
+      'the guides depend on that internal link graph for discovery',
+  )
+}
+const guidesLinkedFromArticles = new Set(
+  articles.flatMap(entry => relatedDocsFor(entry.post.slug).map(doc => doc.id)),
+)
+if (guidesLinkedFromArticles.size < 8) {
+  problems.push(`only ${guidesLinkedFromArticles.size} distinct guides are linked from articles`)
+}
 
 for (const { post, file } of articles) {
   const html = readFileSync(join(distDir, file), 'utf8')
@@ -889,5 +965,6 @@ console.log(
   `Prerender verification passed: ${ROUTE_PATHS.length} routes, ${posts.length} articles and ` +
     `${guides.length} guides in ${docsByLanguage.size} languages, unique titles per language, ` +
     `canonical links, hreflang, structured data, no client bundle. ` +
+    `${linksChecked} internal links resolved on ${htmlPagesCrawled} pages. ` +
     `Layouts: ${layoutSummary}. Distinct structures: ${signatures.size}.`,
 )

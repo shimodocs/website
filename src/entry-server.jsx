@@ -10,6 +10,7 @@ import Shell from './components/Shell'
 import BlogPost from './pages/BlogPost'
 import Doc from './pages/Doc'
 import DocsIndexStatic from './pages/DocsIndexStatic'
+import RelatedDocs from './components/article/RelatedDocs'
 
 export function renderRoute(url) {
   return renderToString(
@@ -21,11 +22,21 @@ export function renderRoute(url) {
 
 // Article pages are build-time only and never hydrated, so the body arrives as
 // a prop instead of from a client bundle.
-export function renderBlogPost(post, related = [], older = null, newer = null) {
+//
+// The related guides are rendered after the layout rather than inside it: all
+// four layouts end with their own call to action, and this is a different kind
+// of link (a runbook, not an offer), so it sits below them in its own page
+// container instead of being threaded through four templates.
+export function renderBlogPost(post, related = [], older = null, newer = null, docs = []) {
   return renderToString(
     <StaticRouter location={`/blog/${post.slug}`}>
       <Shell>
         <BlogPost post={post} related={related} older={older} newer={newer} />
+        {docs.length ? (
+          <div className="page">
+            <RelatedDocs links={docs} />
+          </div>
+        ) : null}
       </Shell>
     </StaticRouter>,
   )

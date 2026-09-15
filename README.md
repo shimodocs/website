@@ -257,6 +257,12 @@ paths, and a link to a guide this site does not publish is dropped rather than
 shipped as a dead anchor. GFM callouts (`> [!TIP]`) are rendered with their
 label as real text, so they survive into a search snippet.
 
+The direction that matters for ranking is the other one: every article points
+at the runbooks that prove it. That mapping is editorial, in
+`scripts/article-docs.mjs` — writing it beats matching on tags, which is how
+you end up recommending Kubernetes under an article about retention policy.
+The build fails if an id in it stops existing or if the link graph thins out.
+
 ### Sitemaps
 
 `sitemap.xml` is a `<sitemapindex>`. The URLs live in `sitemap-pages.xml`,
