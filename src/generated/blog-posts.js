@@ -640,8 +640,8 @@ export const BLOG_POSTS = [
       "document management",
       "microsoft"
     ],
-    "readingTime": 5,
-    "words": 1172,
+    "readingTime": 6,
+    "words": 1217,
     "featured": false
   },
   {
@@ -841,7 +841,7 @@ export const BLOG_POSTS = [
       "infrastructure"
     ],
     "readingTime": 6,
-    "words": 1351,
+    "words": 1387,
     "featured": true
   },
   {

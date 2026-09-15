@@ -136,3 +136,5 @@ Budget the archive decision separately. Most organisations discover that a large
 6. **Decide per document class.** The regulated tier and the general tier rarely need the same answer.
 
 Packaging, licensing and capability change often in this category. Confirm current specifics directly before committing; the architectural difference is the durable part. For the broader picture, see [what private cloud collaboration involves](/blog/what-is-private-cloud-document-collaboration) and [how it compares with Google Docs](/blog/shimodocs-vs-google-docs).
+
+A SharePoint move is decided by permissions and metadata columns rather than by document count. The [migration hub](/migration) covers what a platform can import, what has to be mapped and rebuilt by hand, and how to verify the result before the old site is retired.

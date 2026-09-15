@@ -152,3 +152,5 @@ Most stalled deployments are stuck on one of these rather than on the software. 
 Self-hosting is the right call when you have regulatory or contractual constraints a vendor cannot satisfy, existing infrastructure to absorb the workload, and an operations function that can own it. It is the wrong call when the driver is cost alone at small scale, or when nobody will own the pager.
 
 If you want the category-level picture first, start with [what private cloud document collaboration is](/blog/what-is-private-cloud-document-collaboration), then look at [how it compares with Google Docs](/blog/shimodocs-vs-google-docs) if you are weighing a specific replacement.
+
+When you reach the point of actually moving content across, the [migration hub](/migration) covers what imports, what has to be rebuilt rather than transferred, and how to verify the move before the old system is retired.
