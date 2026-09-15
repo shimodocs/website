@@ -378,6 +378,7 @@ function llmsTxt() {
     ['/ai-workspace', 'AI Workspace', 'AI agents that edit inside documents, with visible history and human review'],
     ['/on-premises', 'On-premises document collaboration', 'what running the suite on your own servers requires'],
     ['/airgap', 'Air-gapped document collaboration', 'offline installation and AI inference inside an isolated network'],
+    ['/security', 'Security and data control', 'where documents live, who can reach them, what leaves the network, and who owns each control'],
     ['/comparison', 'Platform comparison', 'ShimoDocs compared with Google Workspace, Microsoft 365, Nextcloud and ONLYOFFICE'],
     ['/pricing', 'Pricing', 'free for teams of up to five people; $5 per user per month above that'],
     ['/download', 'Download', 'self-hosted installer for Linux amd64 and arm64, plus the free licence request'],

@@ -174,4 +174,107 @@ export const HUBS = {
       ],
     },
   },
+  '/security': {
+    eyebrow: 'Security and data control',
+    h1: ['Security you can', 'describe to an auditor.'],
+    // A trust page earns nothing if its claims cannot be checked, so every
+    // control below links to the runbook or the admin surface that implements
+    // it, and the parts the operator owns say so rather than being implied away.
+    lead:
+      'Each control on this page links to the documentation or the administration surface that implements it. Where the responsibility is yours rather than ours, it says that too.',
+    sections: [
+      {
+        heading: 'Where the documents live',
+        body: [
+          'ShimoDocs runs inside your own Kubernetes cluster. Documents, metadata, permissions, version history and audit records are stored in your infrastructure, against your database and your object storage — there is no ShimoDocs tenancy holding a copy.',
+          'A single node is enough to evaluate the suite; production normally runs three or more control-plane nodes. Installation can run online, or from an offline image package on a network with no route to the internet.',
+        ],
+        links: [
+          ['/docs/deployment/getting-started/single-node-kubernetes', 'Single-node Kubernetes deployment'],
+          ['/docs/deployment/getting-started/high-availability-kubernetes', 'High availability Kubernetes deployment'],
+          ['/docs/deployment/system-requirements', 'System and network requirements'],
+          ['/airgap', 'Air-gapped and offline deployment'],
+        ],
+      },
+      {
+        heading: 'Who can reach it',
+        body: [
+          'Administration is a separate surface from the workspace. Tenants, users, licences, branding and AI configuration are managed in the operations platform, and those actions are recorded rather than being invisible.',
+          'The operation log is read-only by design: records cannot be created, edited or deleted from the product, including by an administrator. Each entry carries the event source, the operation type, the operating user, the object acted on and the timestamp.',
+        ],
+        links: [
+          ['/docs/deployment/operations-platform/system-services/system-management/audit-logs', 'Audit log reference'],
+          ['/docs/deployment/operations-platform/suite/user-management', 'Suite user management'],
+          ['/docs/deployment/operations-platform/suite/tenant-management', 'Tenant management'],
+        ],
+      },
+      {
+        heading: 'What leaves your network',
+        body: [
+          'AI is the part of a modern suite that usually means sending content to a vendor. Here the capabilities are endpoints you connect: a base model, an image model, embeddings, and optionally an online search service. Point them at a model inside your own boundary and the content stays there; point them at a provider you have approved and the data flow becomes a decision you made and can document.',
+          'Online search is a separate service and is not required. Left unconfigured, no outbound retrieval happens at all.',
+        ],
+        note:
+          'One network fact worth designing around rather than discovering: browsers read and write document content directly against the object storage endpoint, so that endpoint has to be reachable from the client network. Plan the path deliberately instead of exposing it by accident.',
+        links: [
+          ['/docs/deployment/operations-platform/suite/ai-configuration', 'AI configuration'],
+          ['/docs/deployment/middleware/object-storage/deployment', 'Object storage deployment'],
+          ['/blog/ai-training-content-control', 'Controlling what AI does with your content'],
+        ],
+      },
+      {
+        heading: 'Backups, retention and legal hold',
+        body: [
+          'Backups belong to the operator, and the runbook says which databases, buckets and configuration to capture — and which directories to leave alone. Retention and hold are workspace policy decisions that the deployment can enforce, rather than promises a vendor makes about data it holds.',
+        ],
+        links: [
+          ['/docs/deployment/troubleshooting/data-backup', 'Data backup runbook'],
+          ['/blog/document-retention-policy-guide', 'Retention policy guide'],
+          ['/blog/legal-hold-document-management', 'Legal hold in a document platform'],
+        ],
+      },
+      {
+        heading: 'Who owns which control',
+        body: [
+          'A private deployment splits responsibility, and a security review will ask which side each control sits on. The product ships the suite, the installer, the operations platform, the audit trail and the AI plumbing. Everything around it belongs to the operator:',
+        ],
+        list: [
+          'Servers, storage and the Kubernetes cluster',
+          'Network policy: firewall, ports, load balancer and the object storage path',
+          'Middleware, when you bring your own MySQL, Dameng, Redis, MongoDB, Kafka or object storage',
+          'Backups, and a restore that has actually been rehearsed',
+          'Licence activation, and who holds administrator and operator accounts',
+        ],
+        links: [
+          ['/docs/deployment/middleware/mysql/deployment', 'Bringing your own MySQL 8'],
+          ['/docs/deployment/middleware/redis/deployment', 'Bringing your own Redis'],
+          ['/docs/deployment/middleware/dameng/requirements', 'Dameng V8 requirements'],
+        ],
+      },
+      {
+        heading: 'The compliance questions teams ask',
+        body: [
+          'These are the long-form answers we publish: what a private deployment changes for each framework, and what an auditor will ask you to evidence. They are written for the person answering the questionnaire, not to claim a badge.',
+        ],
+        links: [
+          ['/blog/gdpr-compliant-document-collaboration', 'GDPR: document collaboration in your own cloud'],
+          ['/blog/hipaa-compliant-document-collaboration', 'HIPAA: what a private deployment changes'],
+          ['/blog/soc2-document-collaboration-controls', 'SOC 2: the controls a document platform touches'],
+          ['/blog/iso27001-document-management', 'ISO 27001: document management controls'],
+          ['/blog/data-residency-requirements-guide', 'Data residency requirements'],
+        ],
+      },
+    ],
+    checklist: {
+      heading: 'What a security review will ask for',
+      items: [
+        'The deployment shape: single node, high availability, or air-gapped',
+        'Which middleware you run yourself, and which the installer provides',
+        'The object storage endpoint, and the network path browsers take to it',
+        'Whether AI capabilities are enabled, and exactly which endpoints they point at',
+        'Backup schedule, retention period, and who holds the restore procedure',
+        'Who holds administrator and operator accounts, and how that is reviewed',
+      ],
+    },
+  },
 }

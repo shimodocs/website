@@ -22,6 +22,7 @@ const FOOTER_SECTIONS = [
     links: [
       ['/docs', 'Documentation: deploy and operate the suite'],
       ['/on-premises', 'On-premises document collaboration'],
+      ['/security', 'Security and data control'],
       ['/airgap', 'Air-gapped and offline deployment'],
       ['/resources', 'Guides, comparisons and downloads'],
       ['/help-center', 'Self-hosted deployment guides'],

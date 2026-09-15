@@ -38,6 +38,7 @@ export const ROUTES = [
   // page written for that decision rather than on the blog archive.
   { path: '/on-premises', label: 'On-Premises', Component: Hub },
   { path: '/airgap', label: 'Air-Gapped', Component: Hub },
+  { path: '/security', label: 'Security', Component: Hub },
   { path: '/pricing', label: 'Pricing', Component: Pricing },
   { path: '/contact-sales', label: 'Contact Sales', Component: ContactSales },
   // Addresses the previous site published and Google already indexed. They are

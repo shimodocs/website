@@ -192,6 +192,40 @@ export const ROUTE_SEO = {
       },
     ],
   },
+  '/security': {
+    changeFrequency: 'monthly',
+    priority: '0.8',
+    title: 'Security and Data Control | ShimoDocs Self-Hosted',
+    description:
+      'Where your documents live, who can reach them, what leaves your network and which controls the operator owns in a self-hosted ShimoDocs deployment.',
+    keywords:
+      'self-hosted document security, private cloud document security, audit log, air-gapped deployment, data control, deployment security review',
+    ogAlt: 'Security and data control in a self-hosted ShimoDocs deployment',
+    // The visible answers are rendered from this same array, so the text a
+    // reader sees and the text in the FAQPage markup cannot drift apart.
+    faqs: [
+      {
+        question: 'Can an administrator edit or delete the audit log?',
+        answer:
+          'No. The operation log is read-only in the product: records cannot be created, modified or deleted from it, and each entry carries the event source, operation type, operating user, the object acted on and the timestamp. That is what makes it usable as evidence rather than as a convenience feature.',
+      },
+      {
+        question: 'Does ShimoDocs send document content to an AI provider?',
+        answer:
+          'Only to endpoints you configure. The AI capabilities — a base model, an image model, embeddings and an optional online search service — are connected in the operations platform, so a deployment can point them at a model inside its own network and keep content there. Online search is a separate, optional service: leave it unconfigured and no outbound retrieval happens.',
+      },
+      {
+        question: 'Where is ShimoDocs data stored?',
+        answer:
+          'In your own infrastructure: the suite runs in your Kubernetes cluster and writes to your database and your S3-compatible object storage. There is no ShimoDocs tenancy holding documents, metadata, permissions or audit records.',
+      },
+      {
+        question: 'Do you publish certification status on this page?',
+        answer:
+          'No, deliberately. Certification is a fact about a company and a defined scope, not something a product page should improvise. Ask the team for the current status and the evidence pack your review requires; what is documented here is the control itself, and where you can check it.',
+      },
+    ],
+  },
   '/airgap': {
     changeFrequency: 'monthly',
     priority: '0.9',
