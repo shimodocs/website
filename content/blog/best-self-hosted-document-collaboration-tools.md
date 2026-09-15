@@ -8,6 +8,19 @@ date: 2026-02-20
 updated: 2026-09-15
 tags: [self-hosted, comparison, shortlist, deployment]
 keywords: "self-hosted document collaboration, best self-hosted collaboration tools, private cloud document tools"
+faq:
+  - question: "What does self-hosted actually mean?"
+    answer: "The term covers at least four deployment models and vendors are loose with it: vendor-managed in your cloud account, which gives data residency without plaintext control; an installable single node, which is simple but has no high availability; a Kubernetes deployment with rolling upgrades and node failure tolerance, which needs a platform team; and a fully air-gapped install with no internet access. Decide which one your requirement actually demands, because a surprising number of evaluations specify the fourth and need the second."
+  - question: "Which requirements most often kill a self-hosted deployment?"
+    answer: "Identity integration with group mapping and a tested restore, in that order. Both are process gaps rather than product gaps, which is why a feature matrix never flags them. File fidelity in both directions comes next, then structured file support, a configurable AI endpoint, and an upgrade path that can be staged under change control."
+  - question: "What counts as a tested restore?"
+    answer: "Not a backup job that runs. A restore that has actually been performed and timed, covering relational data, object storage and configuration together. Restoring one without the other produces documents with missing bodies."
+  - question: "Why does identity integration decide so many projects?"
+    answer: "Because most self-hosted deployments end up weaker than the service they replaced: users are provisioned but permissions are not, so every departure becomes a manual task. Group-to-role mapping has to be live before users are onboarded rather than retrofitted afterwards."
+  - question: "Is a configurable AI endpoint a real requirement?"
+    answer: "Increasingly it is the reason organisations self-host at all. If the AI layer cannot be pointed at an endpoint you nominate, the sovereignty benefit is partial, because document context still reaches a model that somebody else operates."
+  - question: "What monitoring matters for a self-hosted document platform?"
+    answer: "Not just node CPU. The signals that predict user-visible problems are websocket connection counts, coordination memory, database connection pool saturation, object storage latency, and save failures."
 ---
 
 Self-hosted document collaboration is a small category with a wide quality range. Some options are a file sync tool with a browser editor attached; others are a full suite with identity integration, retention and an AI layer.
@@ -162,3 +175,29 @@ Define them before the pilot starts: what operations hours per month would make 
 The sequence matters more than the shortlist. Most failed deployments picked a reasonable product and evaluated it in the wrong order, discovering a structural problem after the migration rather than before it. For the criteria in full, see the [self-hosted office suite comparison](/blog/self-hosted-office-suite-comparison), and for the decision about whether to self-host at all, start with [what private cloud document collaboration is](/blog/what-is-private-cloud-document-collaboration).
 
 Before any of that, the deployment requirements are worth reading once: middleware, sizing, and what has to run on your side are set out on the [on-premises deployment page](/on-premises).
+
+## Frequently asked questions
+
+### What does self-hosted actually mean?
+
+The term covers at least four deployment models and vendors are loose with it: vendor-managed in your cloud account, which gives data residency without plaintext control; an installable single node, which is simple but has no high availability; a Kubernetes deployment with rolling upgrades and node failure tolerance, which needs a platform team; and a fully air-gapped install with no internet access. Decide which one your requirement actually demands, because a surprising number of evaluations specify the fourth and need the second.
+
+### Which requirements most often kill a self-hosted deployment?
+
+Identity integration with group mapping and a tested restore, in that order. Both are process gaps rather than product gaps, which is why a feature matrix never flags them. File fidelity in both directions comes next, then structured file support, a configurable AI endpoint, and an upgrade path that can be staged under change control.
+
+### What counts as a tested restore?
+
+Not a backup job that runs. A restore that has actually been performed and timed, covering relational data, object storage and configuration together. Restoring one without the other produces documents with missing bodies.
+
+### Why does identity integration decide so many projects?
+
+Because most self-hosted deployments end up weaker than the service they replaced: users are provisioned but permissions are not, so every departure becomes a manual task. Group-to-role mapping has to be live before users are onboarded rather than retrofitted afterwards.
+
+### Is a configurable AI endpoint a real requirement?
+
+Increasingly it is the reason organisations self-host at all. If the AI layer cannot be pointed at an endpoint you nominate, the sovereignty benefit is partial, because document context still reaches a model that somebody else operates.
+
+### What monitoring matters for a self-hosted document platform?
+
+Not just node CPU. The signals that predict user-visible problems are websocket connection counts, coordination memory, database connection pool saturation, object storage latency, and save failures.

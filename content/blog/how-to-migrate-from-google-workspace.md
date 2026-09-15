@@ -8,6 +8,19 @@ date: 2026-01-26
 updated: 2026-09-15
 tags: [migration, google workspace, cutover, planning]
 keywords: "migrate from google workspace, google docs migration, document migration plan"
+faq:
+  - question: "What has to be true before starting a Google Workspace migration?"
+    answer: "Four things. You have a destination that is running and restore-tested, because you should not migrate onto an unproven system. Identity is connected, with group-to-role mapping live before users are onboarded. You know what counts as in scope, because all documents is not a scope. And a named person owns the end date, not a committee."
+  - question: "Why do document migrations fail?"
+    answer: "Most failures are organisational rather than technical. The export works and the import works, and then the project stalls because two systems are running in parallel and nobody agreed when the old one stops."
+  - question: "Where does fidelity risk actually sit?"
+    answer: "Not where people expect. Spreadsheets and Sites carry the highest risk, because a file that opens can still be wrong — formulas, named ranges and behaviour are what get lost. Documents, slides and forms lose comments, layout or response data rather than the content itself. Drive folder structure transfers easily, but the permissions attached to it do not."
+  - question: "Do Google permissions transfer to the target platform?"
+    answer: "No. Google permissions are per-file, per-user or per-group and inherited from the drive structure, while most target systems organise by workspace or space with group-based roles. It is a translation exercise with a written mapping table rather than a copy. Decide the default for anything that cannot be mapped, and failing closed is the safer choice."
+  - question: "Should dormant archives be migrated first?"
+    answer: "No. The active-versus-dormant split usually surprises people, and a common result is that under a third of documents have been touched this year. Migrating dormant archives is a separate, lower-priority problem, and doing it first is a good way to burn the momentum of the project."
+  - question: "In what order should document classes be migrated?"
+    answer: "Pick an order that builds confidence. Internal policies and procedures come first, because they are low controversy and high visibility. Meeting notes and decisions come next, which exercises search. Then project and team workspaces, which exercise permissions and collaboration. The regulated tier goes last, once the tooling is understood."
 ---
 
 Most document migrations fail for organisational reasons rather than technical ones. The export works, the import works, and then the project stalls because two systems are running in parallel and nobody agreed when the old one stops.
@@ -153,3 +166,29 @@ Two things determine whether the migration sticks.
 If you are still choosing a destination, start with [what private cloud document collaboration is](/blog/what-is-private-cloud-document-collaboration) and the [Google Docs alternative](/blog/google-docs-alternative-private-cloud) breakdown.
 
 Once the destination is settled, the [migration hub](/migration) covers what imports, what has to be rebuilt rather than transferred, and how to verify the move before the old system is retired.
+
+## Frequently asked questions
+
+### What has to be true before starting a Google Workspace migration?
+
+Four things. You have a destination that is running and restore-tested, because you should not migrate onto an unproven system. Identity is connected, with group-to-role mapping live before users are onboarded. You know what counts as in scope, because all documents is not a scope. And a named person owns the end date, not a committee.
+
+### Why do document migrations fail?
+
+Most failures are organisational rather than technical. The export works and the import works, and then the project stalls because two systems are running in parallel and nobody agreed when the old one stops.
+
+### Where does fidelity risk actually sit?
+
+Not where people expect. Spreadsheets and Sites carry the highest risk, because a file that opens can still be wrong — formulas, named ranges and behaviour are what get lost. Documents, slides and forms lose comments, layout or response data rather than the content itself. Drive folder structure transfers easily, but the permissions attached to it do not.
+
+### Do Google permissions transfer to the target platform?
+
+No. Google permissions are per-file, per-user or per-group and inherited from the drive structure, while most target systems organise by workspace or space with group-based roles. It is a translation exercise with a written mapping table rather than a copy. Decide the default for anything that cannot be mapped, and failing closed is the safer choice.
+
+### Should dormant archives be migrated first?
+
+No. The active-versus-dormant split usually surprises people, and a common result is that under a third of documents have been touched this year. Migrating dormant archives is a separate, lower-priority problem, and doing it first is a good way to burn the momentum of the project.
+
+### In what order should document classes be migrated?
+
+Pick an order that builds confidence. Internal policies and procedures come first, because they are low controversy and high visibility. Meeting notes and decisions come next, which exercises search. Then project and team workspaces, which exercise permissions and collaboration. The regulated tier goes last, once the tooling is understood.

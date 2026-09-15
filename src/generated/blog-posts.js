@@ -520,8 +520,8 @@ export const BLOG_POSTS = [
       "shortlist",
       "deployment"
     ],
-    "readingTime": 6,
-    "words": 1261,
+    "readingTime": 7,
+    "words": 1590,
     "featured": false
   },
   {
@@ -740,8 +740,8 @@ export const BLOG_POSTS = [
       "cutover",
       "planning"
     ],
-    "readingTime": 5,
-    "words": 1059,
+    "readingTime": 6,
+    "words": 1415,
     "featured": false
   },
   {
