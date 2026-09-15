@@ -5,8 +5,22 @@ description: "Enterprise evaluation of Google Workspace alternatives, covering d
 layout: feature
 category: comparisons
 date: 2026-02-25
+updated: 2026-09-15
 tags: [google workspace, enterprise, comparison, migration]
 keywords: "google workspace alternatives enterprise, enterprise google docs alternative, google workspace replacement"
+faq:
+  - question: "Why do enterprises look for a Google Workspace alternative?"
+    answer: "Rarely from dissatisfaction with the product. Evaluations start from a constraint that emerged after adoption: a regulatory obligation, a customer contract, an audit finding, or an AI initiative blocked on where content is processed."
+  - question: "Should an enterprise replace Google Workspace entirely?"
+    answer: "Almost never to satisfy a document-handling constraint. A wholesale migration is a multi-month programme touching mail, calendar, meetings, chat, drive, documents and identity, with productivity loss that is difficult to quantify and easy to underestimate. The constraint usually applies to a tier of content rather than to the whole tenant, so the practical move is to identify that tier and give it a different home."
+  - question: "What is a tiered operating model?"
+    answer: "A table that gives each class of content a home. Public and general material stays in Workspace. Internal team documents stay in Workspace, or move to the controlled suite if that is convenient. Confidential material such as client documents, contracts and financial models goes to a self-hosted suite. Restricted regulated records such as clinical, legal and personnel material go to a self-hosted suite with retention and audit configured. Writing it down converts a platform debate into a classification exercise, which is a task with an end."
+  - question: "How large does the migration end up being?"
+    answer: "Much smaller than a wholesale move. In most organisations the confidential and restricted tiers are a fraction of total document volume, which is what makes the project reachable in a quarter rather than a year."
+  - question: "What does the controlled tier actually require?"
+    answer: "Five things, each of which converts a vendor assurance into evidence you produce: identity lifecycle with group-to-role mapping and deprovisioning tested end to end; access evidence showing who could read a specific document on a specific date, from your own systems; retention and legal hold that survive user deletion and are verified rather than assumed; backup and restore proven by an actual restore that includes object storage; and AI governance covering where inference happens, what is retained, and whether retrieval respects permissions. If a row is missing, the tier is not actually controlled."
+  - question: "How should the business case be modelled?"
+    answer: "Enterprise business cases fail when they compare a whole-organisation subscription against a tier-sized deployment, or when they omit operations. Model it properly: scope to the tier rather than the tenant, measure infrastructure in a pilot rather than from a sizing table, cost operations hours at a real internal rate including upgrades, restore testing and on-call, treat migration cost as a one-off amortised over three to five years, and risk-adjust for the value of the constraint being satisfied, which is the actual justification. Presented this way the case is often modest in financial terms and strong in compliance terms."
 ---
 
 Enterprise evaluations of Google Workspace alternatives rarely start from dissatisfaction with the product. They start from a constraint that emerged after adoption — a regulatory obligation, a customer contract, an audit finding, or an AI initiative blocked on where content is processed.
@@ -144,3 +158,29 @@ The last two sections are what distinguish a case that gets approved from one th
 6. **Keep the general tier where it is.** Announce that explicitly, or the organisation will assume a full migration is coming and resist.
 
 Product capability and packaging change constantly across this category, so verify current specifics with each vendor. The structural point — that a tiered model satisfies most enterprise constraints at a fraction of the disruption — is the part that stays true.
+
+## Frequently asked questions
+
+### Why do enterprises look for a Google Workspace alternative?
+
+Rarely from dissatisfaction with the product. Evaluations start from a constraint that emerged after adoption: a regulatory obligation, a customer contract, an audit finding, or an AI initiative blocked on where content is processed.
+
+### Should an enterprise replace Google Workspace entirely?
+
+Almost never to satisfy a document-handling constraint. A wholesale migration is a multi-month programme touching mail, calendar, meetings, chat, drive, documents and identity, with productivity loss that is difficult to quantify and easy to underestimate. The constraint usually applies to a tier of content rather than to the whole tenant, so the practical move is to identify that tier and give it a different home.
+
+### What is a tiered operating model?
+
+A table that gives each class of content a home. Public and general material stays in Workspace. Internal team documents stay in Workspace, or move to the controlled suite if that is convenient. Confidential material such as client documents, contracts and financial models goes to a self-hosted suite. Restricted regulated records such as clinical, legal and personnel material go to a self-hosted suite with retention and audit configured. Writing it down converts a platform debate into a classification exercise, which is a task with an end.
+
+### How large does the migration end up being?
+
+Much smaller than a wholesale move. In most organisations the confidential and restricted tiers are a fraction of total document volume, which is what makes the project reachable in a quarter rather than a year.
+
+### What does the controlled tier actually require?
+
+Five things, each of which converts a vendor assurance into evidence you produce: identity lifecycle with group-to-role mapping and deprovisioning tested end to end; access evidence showing who could read a specific document on a specific date, from your own systems; retention and legal hold that survive user deletion and are verified rather than assumed; backup and restore proven by an actual restore that includes object storage; and AI governance covering where inference happens, what is retained, and whether retrieval respects permissions. If a row is missing, the tier is not actually controlled.
+
+### How should the business case be modelled?
+
+Enterprise business cases fail when they compare a whole-organisation subscription against a tier-sized deployment, or when they omit operations. Model it properly: scope to the tier rather than the tenant, measure infrastructure in a pilot rather than from a sizing table, cost operations hours at a real internal rate including upgrades, restore testing and on-call, treat migration cost as a one-off amortised over three to five years, and risk-adjust for the value of the constraint being satisfied, which is the actual justification. Presented this way the case is often modest in financial terms and strong in compliance terms.

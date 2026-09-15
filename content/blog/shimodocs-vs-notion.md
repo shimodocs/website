@@ -5,8 +5,22 @@ description: "Notion is a hosted workspace; ShimoDocs is a self-hosted suite. Ho
 layout: magazine
 category: comparisons
 date: 2026-01-23
+updated: 2026-09-15
 tags: [comparison, notion, workspace, self-hosted]
 keywords: "shimodocs vs notion, notion alternative self-hosted, notion private cloud"
+faq:
+  - question: "What is the main difference between Notion and ShimoDocs?"
+    answer: "They are built around different primitives, which is why the comparison gets muddled when both are described as workspaces. Notion is strongest at databases and views, flexible structure, and building a lightweight internal tool without code. ShimoDocs is strongest at file-type fidelity and real-time collaboration on structured files."
+  - question: "Where is Notion stronger?"
+    answer: "Linked databases with filters, sorts and multiple views over the same data, which have no direct equivalent in a document suite. Flexible structure for building a lightweight internal tool without code. A large ecosystem of shared templates. A writing experience for interconnected notes, with backlinks, nested pages and quick navigation. And the polish that comes from a mature, well-funded hosted product."
+  - question: "Where is ShimoDocs stronger?"
+    answer: "File-type fidelity, because a spreadsheet is a spreadsheet and a presentation is a presentation, and round-tripping against Office formats matters when the organisation exchanges files externally. Real-time collaboration on structured files, including concurrent editing of a large table or a shared deck with the review controls those formats need."
+  - question: "How should the decision be made?"
+    answer: "Ask three questions in order. Is there a requirement that content stays in your infrastructure? If yes, Notion is out and the rest is detail. Is the primary workload documents and structured files, or a custom knowledge structure? Documents point to ShimoDocs and custom structures point to Notion. And who carries operations? If nobody does, hosted wins by default."
+  - question: "Is there a case where both are reasonable?"
+    answer: "Yes. For a team whose primary need is a knowledge base with a few lightweight databases, both work and Notion will likely feel faster to set up, and self-hosting a suite to run a wiki is not obviously a good trade. The interesting middle case is a team using Notion for everything that now needs to move only the regulated subset, which usually resolves as a split: keep the internal wiki where it is and move the document tier."
+  - question: "How does the cost comparison work out?"
+    answer: "Notion is per-seat, with a free personal tier and higher tiers for teams needing SSO and admin controls. ShimoDocs is free for up to five users, then per seat, plus infrastructure and operations. The usual hosted-versus-self-hosted shape applies: at small scale the hosted product wins on total cost, and the crossover depends on how much the organisation already spends on infrastructure and operations."
 ---
 
 Notion and ShimoDocs are often shortlisted together because both are described as workspaces, and the comparison gets muddled as a result. They are built around different primitives.
@@ -127,3 +141,29 @@ Ask three questions in order:
 3. **Who carries operations?** If nobody does, hosted wins by default.
 
 If the answer to the first question is yes and the second is documents, the next useful reading is [what private cloud document collaboration involves](/blog/what-is-private-cloud-document-collaboration) and the [self-hosted collaboration guide](/blog/self-hosted-collaboration-guide).
+
+## Frequently asked questions
+
+### What is the main difference between Notion and ShimoDocs?
+
+They are built around different primitives, which is why the comparison gets muddled when both are described as workspaces. Notion is strongest at databases and views, flexible structure, and building a lightweight internal tool without code. ShimoDocs is strongest at file-type fidelity and real-time collaboration on structured files.
+
+### Where is Notion stronger?
+
+Linked databases with filters, sorts and multiple views over the same data, which have no direct equivalent in a document suite. Flexible structure for building a lightweight internal tool without code. A large ecosystem of shared templates. A writing experience for interconnected notes, with backlinks, nested pages and quick navigation. And the polish that comes from a mature, well-funded hosted product.
+
+### Where is ShimoDocs stronger?
+
+File-type fidelity, because a spreadsheet is a spreadsheet and a presentation is a presentation, and round-tripping against Office formats matters when the organisation exchanges files externally. Real-time collaboration on structured files, including concurrent editing of a large table or a shared deck with the review controls those formats need.
+
+### How should the decision be made?
+
+Ask three questions in order. Is there a requirement that content stays in your infrastructure? If yes, Notion is out and the rest is detail. Is the primary workload documents and structured files, or a custom knowledge structure? Documents point to ShimoDocs and custom structures point to Notion. And who carries operations? If nobody does, hosted wins by default.
+
+### Is there a case where both are reasonable?
+
+Yes. For a team whose primary need is a knowledge base with a few lightweight databases, both work and Notion will likely feel faster to set up, and self-hosting a suite to run a wiki is not obviously a good trade. The interesting middle case is a team using Notion for everything that now needs to move only the regulated subset, which usually resolves as a split: keep the internal wiki where it is and move the document tier.
+
+### How does the cost comparison work out?
+
+Notion is per-seat, with a free personal tier and higher tiers for teams needing SSO and admin controls. ShimoDocs is free for up to five users, then per seat, plus infrastructure and operations. The usual hosted-versus-self-hosted shape applies: at small scale the hosted product wins on total cost, and the crossover depends on how much the organisation already spends on infrastructure and operations.

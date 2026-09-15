@@ -5,8 +5,22 @@ description: "What data residency requirements actually cover, how they differ f
 layout: standard
 category: security
 date: 2026-03-09
+updated: 2026-09-15
 tags: [data residency, compliance, transfers, procurement]
 keywords: "data residency requirements, data residency vs sovereignty, cross border data transfer documents"
+faq:
+  - question: "What is the difference between data residency and data sovereignty?"
+    answer: "Residency asks where content is stored and processed. Sovereignty asks which legal authorities can compel access to it. A regional deployment usually means a regional instance of a globally operated service, and the operator remains subject to its own jurisdiction regardless of where the disks sit, which is why a residency clause should say what it means rather than relying on the word region."
+  - question: "What should a data residency requirement actually name?"
+    answer: "Six layers, not one. Storage at rest, which is the obvious one and where backups often sit in a different region than primary. Processing, meaning where computation happens, including search indexing. Access by staff, because support and engineering can reach content from anywhere. Logs and telemetry, since access logs frequently leave the region. Subprocessors, each with its own location and a list that changes without notice. And AI inference, which is frequently the least documented path. Most residency clauses name only the first."
+  - question: "Why is naming only the storage region not enough?"
+    answer: "Because it leaves four paths unexamined. A requirement that names only storage at rest stops before backups and snapshots, search indexes and caches, access and telemetry logs, and AI inference. The practical test is not where the data centre is, but tracing one document from creation to deletion and naming the jurisdiction at every hop."
+  - question: "Is a regional deployment the same as a residency guarantee?"
+    answer: "No, though it is a real improvement over no commitment at all. Three gaps appear repeatedly. Backups in a different region, because primary storage is pinned while the backup configuration defaults to somewhere else, often a cheaper region chosen by the vendor. Support outside the region, since a follow-the-sun model lets engineers in other jurisdictions reach the tenant. And analytics and error tracking, which routinely leave for analytics infrastructure the vendor operates, where error reports can contain fragments of user content."
+  - question: "Which data flows are most commonly missed?"
+    answer: "Backups are the single most common finding, and they are invisible from the architecture diagram. Support access and analytics or error-tracking pipelines come next, and both are usually enabled by default and rarely documented. AI inference is frequently the least documented path of all, because content is packaged into a prompt and sent to wherever the model runs."
+  - question: "What is the practical test for a residency requirement?"
+    answer: "Not asking where the data centre is, but tracing one document from creation to deletion and naming the jurisdiction at every hop. That converts a one-line contract clause into specific questions about storage, backups, search and caches, staff access, telemetry, subprocessors and AI inference, each of which has a different and often undocumented answer."
 ---
 
 Data residency requirements usually arrive as a single sentence in a contract or a policy: personal data must remain within a jurisdiction. Turning that sentence into a verifiable position is where the work sits, because "within" is doing a lot of unexamined work in that sentence.
@@ -134,3 +148,29 @@ caption: Figure 2. A regional deployment covers the left column. The right three
 6. **Re-verify annually**, or on any notification of change.
 
 For organisations whose requirement is architectural rather than contractual, our [self-hosted office suite comparison](/blog/self-hosted-office-suite-comparison) is the evaluation framework, and [GDPR document collaboration requirements](/blog/gdpr-compliant-document-collaboration) covers the transfer obligations in the European context.
+
+## Frequently asked questions
+
+### What is the difference between data residency and data sovereignty?
+
+Residency asks where content is stored and processed. Sovereignty asks which legal authorities can compel access to it. A regional deployment usually means a regional instance of a globally operated service, and the operator remains subject to its own jurisdiction regardless of where the disks sit, which is why a residency clause should say what it means rather than relying on the word region.
+
+### What should a data residency requirement actually name?
+
+Six layers, not one. Storage at rest, which is the obvious one and where backups often sit in a different region than primary. Processing, meaning where computation happens, including search indexing. Access by staff, because support and engineering can reach content from anywhere. Logs and telemetry, since access logs frequently leave the region. Subprocessors, each with its own location and a list that changes without notice. And AI inference, which is frequently the least documented path. Most residency clauses name only the first.
+
+### Why is naming only the storage region not enough?
+
+Because it leaves four paths unexamined. A requirement that names only storage at rest stops before backups and snapshots, search indexes and caches, access and telemetry logs, and AI inference. The practical test is not where the data centre is, but tracing one document from creation to deletion and naming the jurisdiction at every hop.
+
+### Is a regional deployment the same as a residency guarantee?
+
+No, though it is a real improvement over no commitment at all. Three gaps appear repeatedly. Backups in a different region, because primary storage is pinned while the backup configuration defaults to somewhere else, often a cheaper region chosen by the vendor. Support outside the region, since a follow-the-sun model lets engineers in other jurisdictions reach the tenant. And analytics and error tracking, which routinely leave for analytics infrastructure the vendor operates, where error reports can contain fragments of user content.
+
+### Which data flows are most commonly missed?
+
+Backups are the single most common finding, and they are invisible from the architecture diagram. Support access and analytics or error-tracking pipelines come next, and both are usually enabled by default and rarely documented. AI inference is frequently the least documented path of all, because content is packaged into a prompt and sent to wherever the model runs.
+
+### What is the practical test for a residency requirement?
+
+Not asking where the data centre is, but tracing one document from creation to deletion and naming the jurisdiction at every hop. That converts a one-line contract clause into specific questions about storage, backups, search and caches, staff access, telemetry, subprocessors and AI inference, each of which has a different and often undocumented answer.

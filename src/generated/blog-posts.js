@@ -373,15 +373,15 @@ export const BLOG_POSTS = [
     "layout": "standard",
     "figures": 2,
     "date": "2026-03-09",
-    "updated": null,
+    "updated": "2026-09-15",
     "tags": [
       "data residency",
       "compliance",
       "transfers",
       "procurement"
     ],
-    "readingTime": 5,
-    "words": 1167,
+    "readingTime": 7,
+    "words": 1622,
     "featured": false
   },
   {
@@ -473,15 +473,15 @@ export const BLOG_POSTS = [
     "layout": "feature",
     "figures": 2,
     "date": "2026-02-25",
-    "updated": null,
+    "updated": "2026-09-15",
     "tags": [
       "google workspace",
       "enterprise",
       "comparison",
       "migration"
     ],
-    "readingTime": 6,
-    "words": 1262,
+    "readingTime": 8,
+    "words": 1731,
     "featured": false
   },
   {
@@ -753,15 +753,15 @@ export const BLOG_POSTS = [
     "layout": "magazine",
     "figures": 2,
     "date": "2026-01-23",
-    "updated": null,
+    "updated": "2026-09-15",
     "tags": [
       "comparison",
       "notion",
       "workspace",
       "self-hosted"
     ],
-    "readingTime": 5,
-    "words": 1062,
+    "readingTime": 7,
+    "words": 1473,
     "featured": false
   },
   {
