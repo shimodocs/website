@@ -270,52 +270,6 @@ The build fails if an id in it stops existing or if the link graph thins out.
 Console reports index coverage per language instead of as a single 495-URL lump
 where one broken translation is invisible.
 
-## Download statistics
-
-GitHub exposes only a cumulative `download_count` per release asset, so a daily
-number exists only if something reads the counter every day and subtracts, and
-a day that is missed can never be reconstructed. Everything about the job
-follows from that:
-
-- It runs **twice** a day, at 09:00 and 21:00 Beijing time. The second run
-  rewrites the same day's entry with the same numbers rather than adding a
-  second one, and it is the retry window for a morning that failed.
-- Only the first successful run of the day sends the card. If that card was
-  rejected, the flag stays unset and the evening run sends it again
-  (`--force-notify` resends one on demand).
-- A 403, 429 or 5xx is retried twice with a backoff, and a failure for a day
-  that is **already archived** exits successfully with a warning instead of a
-  red run — the data is safe, so there is nothing to act on. A failure for a
-  day that is **not** archived fails loudly, because that day is at risk.
-- The archive is written before the webhook is called, never after: a hanging
-  bot must not be able to cost a day.
-
-It commits the result:
-
-| File | Purpose |
-| --- | --- |
-| `data/downloads-history.json` | every daily snapshot, the source of truth |
-| `data/downloads-latest.json` | the newest snapshot plus any anomaly |
-| `data/downloads-daily.csv` | one row per day, for a spreadsheet |
-| `reports/downloads/YYYY-MM.md` | the readable month digest |
-
-Assets are tracked by **asset id**, not by file name: a rebuilt installer is
-uploaded under the same name and GitHub restarts its counter at zero, which a
-name-based diff would report as one enormous negative day.
-
-```bash
-npm run stats:dry                                            # print, write nothing
-node scripts/download-stats.mjs                              # snapshot now
-node scripts/download-stats.mjs --print-payload --dry-run     # inspect the card
-node scripts/download-stats.mjs --dry-run --notify            # send a test card
-LARK_WEBHOOK=... node scripts/download-stats.mjs --force-notify   # resend today's
-```
-
-Each run also pushes a card to a Lark custom bot. That needs the repository
-secret `LARK_WEBHOOK`, and `LARK_WEBHOOK_SECRET` if the bot has signing turned
-on; without them the numbers are still archived and the run logs a warning
-instead of failing, so a broken webhook never costs a day of data.
-
 ## Publishing
 
 The canonical repository is [shimodocs/website](https://github.com/shimodocs/website).
