@@ -1,13 +1,15 @@
 #!/usr/bin/env node
-// Emits the client-side blog metadata module.
+// Emits the client-side content metadata modules.
 //
-// Runs as the `prebuild` and `predev` step so the listing always matches the
-// Markdown on disk. Only metadata lands in src/generated; article bodies are
-// rendered into static HTML by the prerenderer and never enter the bundle.
+// Runs as the `prebuild` and `predev` step so the listings always match the
+// Markdown on disk. Only metadata lands in src/generated; article and guide
+// bodies are rendered into static HTML by the prerenderer and never enter the
+// bundle.
 import { mkdirSync, writeFileSync } from 'node:fs'
 import { dirname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { CATEGORIES, loadPosts, toClientRecord } from './blog-content.mjs'
+import { buildNav, loadDocs, sortDocs, toDocClientRecord } from './docs-content.mjs'
 
 const rootDir = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const outDir = join(rootDir, 'src', 'generated')
@@ -46,4 +48,40 @@ console.log(
 )
 for (const category of categories) {
   console.log(`  ${category.label.padEnd(22)} ${String(category.count).padStart(3)}`)
+}
+
+// ------------------------------------------------------------ documentation
+
+const docs = loadDocs()
+const ordered = sortDocs(docs)
+const nav = buildNav(docs)
+
+const docsBody = `${banner}
+export const DOCS = ${JSON.stringify(ordered.map(toDocClientRecord), null, 2)}
+
+export const DOC_NAV = ${JSON.stringify(
+  nav.map(group => ({
+    id: group.id,
+    label: group.label,
+    docs: group.docs.map(doc => toDocClientRecord(doc)),
+    subgroups: group.subgroups.map(subgroup => ({
+      id: subgroup.id,
+      label: subgroup.label,
+      docs: subgroup.docs.map(doc => toDocClientRecord(doc)),
+    })),
+  })),
+  null,
+  2,
+)}
+`
+
+writeFileSync(join(outDir, 'docs-nav.js'), docsBody)
+
+const docWords = docs.reduce((sum, doc) => sum + doc.words, 0)
+console.log(
+  `Documentation: ${docs.length} guides, ${docWords.toLocaleString('en-US')} words, ` +
+    `${nav.length} sections -> src/generated/docs-nav.js`,
+)
+for (const group of nav) {
+  console.log(`  ${(group.label || 'Overview').padEnd(34)} ${String(group.docs.length).padStart(3)}`)
 }

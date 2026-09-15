@@ -8,8 +8,14 @@ Vite + React marketing site for ShimoDocs, prerendered to static HTML at build t
 - `/ai-workspace` — AI Workspace
 - `/blog` — Blog
 - `/help-center` — Help Center
+- `/docs` — Documentation index
+- `/on-premises`, `/airgap` — Commercial hubs
 - `/pricing` — Pricing
 - `/contact-sales` — Contact Sales
+
+The documentation is published in eight languages as well. English keeps the
+unprefixed tree (`/docs/deployment/...`); every translation sits under its own
+prefix (`/de/docs/...`, `/ja/docs/...`, and so on).
 
 ## Local development
 
@@ -209,6 +215,84 @@ page and hydrates normally.
 - At least five internal blog links, plus related articles and older/newer paging.
 - Presence in `sitemap.xml` and a link from the `/blog` archive.
 - A word count floor, so a stub cannot ship as an article.
+
+## Documentation
+
+The deployment, operations and troubleshooting guides are authored in
+[shimodocs/shimodocs](https://github.com/shimodocs/shimodocs) and mirrored into
+`content/docs` — 56 guides per language, eight languages, 440 published pages.
+The site is a consumer: nothing here edits a guide.
+
+```bash
+npm run sync:docs          # copy the published trees out of the product repo
+node scripts/sync-docs.mjs --check   # report drift and exit 1
+```
+
+`src/docs-languages.js` is the single switch: a language appears on the site only
+if it is listed there, and `scripts/sync-docs.mjs` copies exactly that list.
+`zh-CN` is deliberately absent — the Chinese documentation belongs to
+shimo.net, and publishing it here would have the two domains compete for the
+same queries.
+
+### What the build guarantees for every guide
+
+- A unique search title and description **within its language**. Comparing
+  across languages would only flag translation, which is not a build failure;
+  comparing within one is what stops two guides competing for the same query.
+- A self-referencing canonical and `TechArticle` + `BreadcrumbList` structured
+  data, with `inLanguage` set from the guide's own language.
+- `hreflang` for every language that publishes that guide, including a
+  self-reference and an `x-default` on the English version. The set is derived
+  from what was actually synced, so a language never points at a page that does
+  not exist.
+- `<html lang="...">`, and a visible language row linking the same guide in the
+  other languages.
+- No client bundle. Guide pages are static HTML; only the English index
+  hydrates, because it carries the search box.
+- A link from that language's documentation index, so the tree is crawlable
+  without going through a sitemap.
+
+Internal links inside a guide are rewritten from repository paths to site
+paths, and a link to a guide this site does not publish is dropped rather than
+shipped as a dead anchor. GFM callouts (`> [!TIP]`) are rendered with their
+label as real text, so they survive into a search snippet.
+
+### Sitemaps
+
+`sitemap.xml` is a `<sitemapindex>`. The URLs live in `sitemap-pages.xml`,
+`sitemap-blog.xml` and one `sitemap-docs-<language>.xml` per language, so Search
+Console reports index coverage per language instead of as a single 495-URL lump
+where one broken translation is invisible.
+
+## Download statistics
+
+GitHub exposes only a cumulative `download_count` per release asset, so a daily
+number exists only if something reads the counter every day and subtracts.
+`.github/workflows/download-stats.yml` does that at 09:00 Beijing time, and
+commits the result:
+
+| File | Purpose |
+| --- | --- |
+| `data/downloads-history.json` | every daily snapshot, the source of truth |
+| `data/downloads-latest.json` | the newest snapshot plus any anomaly |
+| `data/downloads-daily.csv` | one row per day, for a spreadsheet |
+| `reports/downloads/YYYY-MM.md` | the readable month digest |
+
+Assets are tracked by **asset id**, not by file name: a rebuilt installer is
+uploaded under the same name and GitHub restarts its counter at zero, which a
+name-based diff would report as one enormous negative day.
+
+```bash
+npm run stats:dry                                            # print, write nothing
+node scripts/download-stats.mjs                              # snapshot now
+node scripts/download-stats.mjs --dry-run --print-payload    # inspect the card
+LARK_WEBHOOK=... node scripts/download-stats.mjs --dry-run --notify   # test the card
+```
+
+Each run also pushes a card to a Lark custom bot. That needs the repository
+secret `LARK_WEBHOOK`, and `LARK_WEBHOOK_SECRET` if the bot has signing turned
+on; without them the numbers are still archived and the run logs a warning
+instead of failing, so a broken webhook never costs a day of data.
 
 ## Publishing
 

@@ -326,21 +326,21 @@ export const BLOG_POSTS = [
   {
     "slug": "best-google-docs-alternatives",
     "title": "The Best Google Docs Alternatives, by What You Need",
-    "description": "A shortlist of Google Docs alternatives organised by what actually drives the decision: control, cost, capability or collaboration depth.",
+    "description": "Eight Google Docs alternatives named and compared on control, cost and capability, plus how to tell which one your team actually needs.",
     "category": "comparisons",
     "categoryLabel": "Comparisons",
     "layout": "feature",
     "figures": 2,
     "date": "2026-02-18",
-    "updated": null,
+    "updated": "2026-09-15",
     "tags": [
       "google docs alternative",
       "comparison",
       "shortlist",
       "evaluation"
     ],
-    "readingTime": 5,
-    "words": 1209,
+    "readingTime": 10,
+    "words": 2203,
     "featured": true
   },
   {

@@ -472,3 +472,413 @@
    header and 23px in the footer — the sizes the typeset brand used. */
 .brand img{display:block;height:36px;width:auto}
 .footer-brand .footer-logo img{display:block;height:32px;width:auto}
+
+/* ============================================================ documentation
+
+   The guide tree lives at /docs. Every guide ships its full sidebar in the
+   static HTML, so the whole tree is one hop from any entry point and the
+   navigation works with no JavaScript at all. */
+
+.doc-page{padding-top:26px;padding-bottom:70px}
+.doc-layout{
+  display:grid;
+  grid-template-columns:246px minmax(0,1fr) 208px;
+  gap:38px;
+  align-items:start;
+  margin-top:22px;
+  padding-top:26px;
+  border-top:1px solid var(--line);
+}
+
+/* ------------------------------------------------------------------ sidebar */
+.doc-nav-rail{position:sticky;top:20px;max-height:calc(100vh - 44px);overflow-y:auto;overscroll-behavior:contain}
+.doc-nav{font-size:13px;line-height:1.35}
+.doc-nav-home{
+  display:block;
+  padding:9px 11px;
+  margin-bottom:14px;
+  border:1px solid var(--line);
+  border-radius:8px;
+  color:#cdc7dd;
+  text-decoration:none;
+  font-weight:600;
+}
+.doc-nav-home:hover,.doc-nav-home.active{border-color:var(--cyan);color:#fff}
+.doc-nav-group{margin-bottom:20px}
+.doc-nav-group>b{
+  display:block;
+  font:600 10.5px 'DM Sans';
+  letter-spacing:.13em;
+  text-transform:uppercase;
+  color:var(--cyan);
+  margin-bottom:8px;
+}
+.doc-nav-subgroup{margin-top:12px}
+.doc-nav-subgroup>span{
+  display:block;
+  font:600 11px 'DM Sans';
+  letter-spacing:.06em;
+  text-transform:uppercase;
+  color:#7d769a;
+  margin-bottom:6px;
+  padding-left:11px;
+}
+.doc-nav ul{list-style:none;margin:0;padding:0}
+.doc-nav li{margin:0}
+.doc-nav li a{
+  display:block;
+  padding:6px 11px;
+  border-left:2px solid transparent;
+  color:#a8a3c2;
+  text-decoration:none;
+}
+.doc-nav li a:hover{color:#fff;background:#ffffff0a}
+.doc-nav li a.active{
+  color:#fff;
+  border-left-color:var(--cyan);
+  background:linear-gradient(90deg,#00f0ff1f,transparent);
+}
+
+/* --------------------------------------------------------------------- body */
+.doc-body{min-width:0;max-width:78ch}
+.doc-head{margin-bottom:30px}
+.doc-kicker{
+  font:600 10.5px 'DM Sans';
+  letter-spacing:.13em;
+  text-transform:uppercase;
+  color:var(--cyan);
+  margin:0 0 12px;
+}
+.doc-head h1{
+  font:600 clamp(30px,3.4vw,43px)/1.1 'Space Grotesk';
+  letter-spacing:-.045em;
+  margin:0 0 14px;
+  color:var(--ink);
+}
+.doc-meta{margin:0;color:#8f89a6;font-size:12.5px}
+.doc-meta a{color:#b9ddff;text-decoration:none}
+.doc-meta a:hover{color:#fff}
+
+/* ------------------------------------------------------------------- pager */
+.doc-pager{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:12px;
+  margin:52px 0 0;
+  padding-top:26px;
+  border-top:1px solid var(--line);
+}
+.doc-pager a{
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+  padding:15px 17px;
+  border:1px solid var(--line);
+  border-radius:12px;
+  color:var(--ink);
+  text-decoration:none;
+}
+.doc-pager a:hover{border-color:#ffffff55;background:#ffffff08}
+.doc-pager small{color:#8f89a6;font-size:11px;text-transform:uppercase;letter-spacing:.1em}
+.doc-pager-next{text-align:right}
+
+/* ---------------------------------------------------------------------- cta */
+.doc-cta,.docs-cta{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:26px;
+  margin-top:36px;
+  padding:26px 28px;
+  border:1px solid var(--line);
+  border-radius:18px;
+  background:linear-gradient(135deg,#5d34d03d,#ffffff08);
+}
+.doc-cta h2,.docs-cta h2{font:600 23px/1.2 'Space Grotesk';letter-spacing:-.03em;margin:0 0 8px}
+.doc-cta p,.docs-cta p{margin:0;color:var(--muted);font-size:14px;line-height:1.5;max-width:56ch}
+.doc-cta-kicker,.docs-cta-kicker{
+  font:600 10.5px 'DM Sans';
+  letter-spacing:.13em;
+  text-transform:uppercase;
+  color:var(--cyan);
+  margin:0 0 8px;
+}
+.doc-cta-actions,.docs-cta-actions{display:flex;gap:12px;flex-wrap:wrap;flex-shrink:0}
+
+/* ---------------------------------------------------------------- toc rail */
+.doc-toc-rail{position:sticky;top:20px;max-height:calc(100vh - 44px);overflow-y:auto}
+.doc-toc{font-size:12.5px;line-height:1.4}
+.doc-toc b{
+  display:block;
+  font:600 10.5px 'DM Sans';
+  letter-spacing:.13em;
+  text-transform:uppercase;
+  color:#7d769a;
+  margin-bottom:10px;
+}
+.doc-toc ol{list-style:none;margin:0;padding:0;border-left:1px solid var(--line)}
+.doc-toc li{margin:0}
+.doc-toc a{
+  display:block;
+  padding:5px 0 5px 12px;
+  margin-left:-1px;
+  border-left:2px solid transparent;
+  color:#9490ab;
+  text-decoration:none;
+}
+.doc-toc a:hover{color:#fff;border-left-color:var(--cyan)}
+
+/* ---------------------------------------------------------------- callouts
+
+   GitHub-flavoured alert blocks in the source markdown. The label is real text
+   rather than a CSS ::before, so it survives into the crawled page. */
+.post-body .doc-callout{
+  margin:26px 0;
+  padding:16px 20px;
+  border-radius:0 10px 10px 0;
+  border-left:3px solid var(--cyan);
+  background:#00f0ff0f;
+  color:#d5cfe6;
+}
+.post-body .doc-callout>*:last-child{margin-bottom:0}
+.post-body .doc-callout-title{
+  display:block;
+  font:600 11px 'DM Sans';
+  letter-spacing:.13em;
+  text-transform:uppercase;
+  margin-bottom:7px;
+}
+.post-body .doc-callout-note{border-left-color:#7fb2ff;background:#7fb2ff14}
+.post-body .doc-callout-note .doc-callout-title{color:#9cc4ff}
+.post-body .doc-callout-tip{border-left-color:#3fd6a8;background:#3fd6a814}
+.post-body .doc-callout-tip .doc-callout-title{color:#63e0b8}
+.post-body .doc-callout-important{border-left-color:#b48cff;background:#b48cff14}
+.post-body .doc-callout-important .doc-callout-title{color:#c9adff}
+.post-body .doc-callout-warning{border-left-color:#ffc857;background:#ffc85714}
+.post-body .doc-callout-warning .doc-callout-title{color:#ffd47a}
+.post-body .doc-callout-caution{border-left-color:var(--pink);background:#ff006e14}
+.post-body .doc-callout-caution .doc-callout-title{color:#ff6ba6}
+
+/* Long command lines and wide tables must scroll rather than widen the page. */
+.doc-prose{max-width:100%}
+
+/* ======================================================= documentation index */
+
+.docs-hero{padding:66px 0 48px;max-width:820px}
+.docs-hero h1{
+  font:600 clamp(38px,5vw,64px)/1.02 'Space Grotesk';
+  letter-spacing:-.055em;
+  margin:0 0 20px;
+}
+.docs-hero p{color:var(--muted);font-size:17px;line-height:1.6;margin:0;max-width:66ch}
+.docs-hero-actions{display:flex;gap:14px;flex-wrap:wrap;align-items:center;margin-top:28px}
+
+.docs-section{padding:34px 0;border-top:1px solid var(--line)}
+.docs-section-head h2{font:600 27px/1.2 'Space Grotesk';letter-spacing:-.035em;margin:0 0 20px}
+.docs-subgroup{margin-top:26px}
+.docs-subgroup h3{
+  font:600 12px 'DM Sans';
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  color:var(--cyan);
+  margin:0 0 12px;
+}
+.docs-guide-grid{
+  list-style:none;
+  margin:0;
+  padding:0;
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
+  gap:12px;
+}
+.docs-guide-grid li{
+  padding:15px 17px;
+  border:1px solid var(--line);
+  border-radius:12px;
+  background:#ffffff08;
+}
+.docs-guide-grid a{color:var(--ink);text-decoration:none;font-weight:600;font-size:14.5px;line-height:1.3}
+.docs-guide-grid a:hover{color:#b9ddff}
+.docs-guide-grid small{display:block;margin-top:8px;color:#8f89a6;font-size:12.5px;line-height:1.5}
+.docs-cta{margin-top:26px}
+
+/* ------------------------------------------------------------- responsive */
+@media(max-width:1100px){
+  .doc-layout{grid-template-columns:220px minmax(0,1fr);gap:28px}
+  .doc-toc-rail{display:none}
+}
+@media(max-width:860px){
+  .doc-layout{grid-template-columns:minmax(0,1fr);gap:22px}
+  .doc-nav-rail{position:static;max-height:300px;padding:14px;border:1px solid var(--line);border-radius:12px}
+  .doc-body{max-width:100%}
+  .doc-pager{grid-template-columns:minmax(0,1fr)}
+  .doc-pager-next{text-align:left}
+  .doc-cta,.docs-cta{flex-direction:column;align-items:flex-start}
+  .docs-guide-grid{grid-template-columns:minmax(0,1fr)}
+}
+
+/* ========================================================== commercial hubs
+
+   /on-premises and /airgap. These are the pages a buyer lands on from a search
+   rather than from the blog, so they read as a document: one question, answered
+   in order, with links into the guides that prove each claim. */
+
+.hub-page{padding-bottom:76px}
+.hub-hero{padding:70px 0 46px;max-width:840px}
+.hub-hero h1{
+  font:600 clamp(40px,5.4vw,70px)/1.02 'Space Grotesk';
+  letter-spacing:-.058em;
+  margin:0 0 22px;
+}
+.hub-hero p{color:var(--muted);font-size:17.5px;line-height:1.6;margin:0;max-width:68ch}
+.hub-actions{display:flex;gap:14px;flex-wrap:wrap;align-items:center;margin-top:30px}
+
+.hub-section{padding:38px 0;border-top:1px solid var(--line);max-width:820px}
+.hub-section h2{font:600 30px/1.18 'Space Grotesk';letter-spacing:-.04em;margin:0 0 18px;scroll-margin-top:28px}
+.hub-section p{color:var(--muted);font-size:16px;line-height:1.7;margin:0 0 18px}
+.hub-list{margin:0 0 20px;padding-left:22px;color:var(--muted);font-size:16px;line-height:1.65}
+.hub-list li{margin:0 0 11px}
+.hub-list li::marker{color:var(--cyan)}
+.hub-note{
+  padding:16px 20px;
+  border-left:3px solid var(--cyan);
+  border-radius:0 10px 10px 0;
+  background:#00f0ff0f;
+  color:#d5cfe6;
+  font-size:15.5px;
+}
+.hub-links{list-style:none;margin:22px 0 0;padding:0;display:grid;gap:9px}
+.hub-links a{
+  display:inline-block;
+  color:#b9ddff;
+  text-decoration:none;
+  border-bottom:1px solid #b9ddff4d;
+  font-size:15px;
+}
+.hub-links a:hover{color:#fff;border-bottom-color:#fff}
+.hub-links a::after{content:" ↗";color:#6f6a86}
+
+.hub-checklist{
+  margin:34px 0;
+  padding:28px 30px;
+  border:1px solid var(--line);
+  border-radius:18px;
+  background:#ffffff08;
+  max-width:820px;
+}
+.hub-checklist h2{font:600 22px/1.2 'Space Grotesk';letter-spacing:-.03em;margin:0 0 16px}
+.hub-checklist ul{list-style:none;margin:0;padding:0;display:grid;gap:11px}
+.hub-checklist li{
+  position:relative;
+  padding-left:26px;
+  color:var(--muted);
+  font-size:15px;
+  line-height:1.55;
+}
+.hub-checklist li::before{
+  content:"";
+  position:absolute;
+  left:0;
+  top:7px;
+  width:11px;
+  height:6px;
+  border-left:2px solid var(--cyan);
+  border-bottom:2px solid var(--cyan);
+  transform:rotate(-45deg);
+}
+
+.hub-faq{max-width:820px;padding-top:38px;border-top:1px solid var(--line)}
+.hub-faq h2{font:600 30px/1.18 'Space Grotesk';letter-spacing:-.04em;margin:0 0 24px}
+.hub-faq article{margin-bottom:26px}
+.hub-faq h3{font:600 18px/1.35 'Space Grotesk';letter-spacing:-.02em;margin:0 0 9px;color:var(--ink)}
+.hub-faq p{margin:0;color:var(--muted);font-size:15.5px;line-height:1.65}
+
+.hub-cta{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:26px;
+  margin-top:42px;
+  padding:28px 30px;
+  border:1px solid var(--line);
+  border-radius:18px;
+  background:linear-gradient(135deg,#5d34d03d,#ffffff08);
+}
+.hub-cta h2{font:600 24px/1.2 'Space Grotesk';letter-spacing:-.03em;margin:0 0 8px}
+.hub-cta p{margin:0;color:var(--muted);font-size:14.5px;line-height:1.55;max-width:56ch}
+.hub-cta-kicker{
+  font:600 10.5px 'DM Sans';
+  letter-spacing:.13em;
+  text-transform:uppercase;
+  color:var(--cyan);
+  margin:0 0 8px;
+}
+.hub-cta-actions{display:flex;gap:12px;flex-wrap:wrap;flex-shrink:0}
+
+@media(max-width:860px){
+  .hub-section,.hub-faq,.hub-checklist,.hub-hero{max-width:100%}
+  .hub-cta{flex-direction:column;align-items:flex-start}
+}
+
+/* ------------------------------------------------------------------
+   Documentation languages.
+   The translated trees add a language row to every guide header and to
+   every translated documentation index, plus a guide-count line under
+   the index hero. Appended so these rules win over the earlier minified
+   block, same as the SEO pass above.
+   ------------------------------------------------------------------ */
+.doc-languages{
+  display:flex;
+  flex-wrap:wrap;
+  align-items:center;
+  gap:6px 10px;
+  margin:16px 0 0;
+  font-size:12.5px;
+}
+.doc-languages>span{
+  color:#6f6a86;
+  text-transform:uppercase;
+  letter-spacing:.12em;
+  font:600 10px 'DM Sans';
+  margin-right:2px;
+}
+.doc-languages a{
+  color:var(--muted);
+  text-decoration:none;
+  padding:3px 9px;
+  border:1px solid transparent;
+  border-radius:999px;
+}
+.doc-languages a:hover{color:#fff;border-color:#ffffff3d;background:#ffffff0d}
+.doc-languages a.active{color:#fff;border-color:var(--cyan);background:#00f0ff14}
+.docs-index .doc-languages{margin-top:24px}
+.docs-count{
+  margin:10px 0 0 !important;
+  color:#8f89a6 !important;
+  font-size:13.5px !important;
+  letter-spacing:.01em;
+}
+/* Japanese, Korean, Thai and Vietnamese guides are set in the reader's own
+   script: the two Latin display faces carry no glyphs for them, so the stack
+   has to hand off to a font that does rather than falling back to boxes. */
+.doc-page:lang(ja) .doc-body h1,
+.doc-page:lang(ja) .doc-prose h2,
+.doc-page:lang(ja) .doc-prose h3,
+.doc-page:lang(ko) .doc-body h1,
+.doc-page:lang(ko) .doc-prose h2,
+.doc-page:lang(ko) .doc-prose h3,
+.doc-page:lang(th) .doc-body h1,
+.doc-page:lang(th) .doc-prose h2,
+.doc-page:lang(th) .doc-prose h3,
+.doc-page:lang(vi) .doc-body h1,
+.doc-page:lang(vi) .doc-prose h2,
+.doc-page:lang(vi) .doc-prose h3{
+  font-family:'Space Grotesk','Hiragino Sans','Noto Sans JP','Noto Sans KR','Noto Sans Thai',system-ui,sans-serif;
+}
+.doc-page:lang(th) .doc-prose{line-height:1.85}
+
+/* The translated documentation index is the same layout as the English one,
+   with the language row and the guide count added under the hero. */
+.docs-index .docs-hero .doc-languages{margin-top:26px}
+.docs-index .docs-hero h1{font:600 clamp(40px,5.2vw,68px)/1.02 'Space Grotesk';letter-spacing:-.05em;margin:0 0 16px}
+.docs-index .docs-hero>p{max-width:70ch}

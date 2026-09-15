@@ -20,6 +20,9 @@ const FOOTER_SECTIONS = [
   {
     heading: 'Resources',
     links: [
+      ['/docs', 'Documentation: deploy and operate the suite'],
+      ['/on-premises', 'On-premises document collaboration'],
+      ['/airgap', 'Air-gapped and offline deployment'],
       ['/resources', 'Guides, comparisons and downloads'],
       ['/help-center', 'Self-hosted deployment guides'],
       ['/blog', 'Private cloud collaboration blog'],

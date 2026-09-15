@@ -6,6 +6,8 @@ import Home from './pages/Home'
 import AIWorkspace from './pages/AIWorkspace'
 import Blog from './pages/Blog'
 import HelpCenter from './pages/HelpCenter'
+import DocsIndex from './pages/DocsIndex'
+import Hub from './pages/Hub'
 import Pricing from './pages/Pricing'
 import ContactSales from './pages/ContactSales'
 import About from './pages/About'
@@ -21,6 +23,12 @@ export const ROUTES = [
   { path: '/ai-workspace', label: 'AI Workspace', Component: AIWorkspace },
   { path: '/blog', label: 'Blog', Component: Blog },
   { path: '/help-center', label: 'Help Center', Component: HelpCenter },
+  { path: '/docs', label: 'Documentation', Component: DocsIndex },
+  // Commercial hubs. Each answers one deployment question and links into the
+  // guides that prove the answer, so a buyer arriving from a search lands on a
+  // page written for that decision rather than on the blog archive.
+  { path: '/on-premises', label: 'On-Premises', Component: Hub },
+  { path: '/airgap', label: 'Air-Gapped', Component: Hub },
   { path: '/pricing', label: 'Pricing', Component: Pricing },
   { path: '/contact-sales', label: 'Contact Sales', Component: ContactSales },
   // Addresses the previous site published and Google already indexed. They are

@@ -1,0 +1,66 @@
+name: Sync product documentation
+
+# The guides are authored in shimodocs/shimodocs and mirrored into content/docs.
+# Nothing copies them automatically, because a documentation change should not
+# be able to publish itself onto the marketing site unreviewed. This runs the
+# mirror weekly, and opens a pull request when the upstream tree has moved.
+
+on:
+  schedule:
+    # Mondays at 02:00 UTC, an hour before the working day in Shanghai.
+    - cron: '0 2 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: docs-sync
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: 22
+
+      # The script has no dependencies, so there is nothing to install: it reads
+      # the product repository's tree and copies the published languages.
+      - name: Mirror the documentation
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: node scripts/sync-docs.mjs
+
+      # A pull request rather than a push: a guide change reaches production
+      # when someone merges this and tags a release, which is when the prerender
+      # checks run against it.
+      - name: Open a pull request if anything moved
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          if [ -z "$(git status --porcelain content/docs)" ]; then
+            echo "Documentation matches the product repository."
+            exit 0
+          fi
+          branch="docs/sync-$(date -u +%Y%m%d)"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -b "$branch"
+          git add content/docs
+          git commit -m "Sync the product documentation"
+          git push -u origin "$branch"
+          gh pr create \
+            --base main \
+            --head "$branch" \
+            --title "Sync the product documentation" \
+            --body "The product repository's documentation changed. This pull request is the mirror of it.
+
+          Merging does not deploy: production moves on a \`v*\` tag. Tag a release after merging and the prerender checks run against the new guides."

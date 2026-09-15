@@ -134,7 +134,13 @@ export default function Home() {
               ))}
             </div>
             <div className="scene-screen">
-              <img src={`/assets/${scenes[scene][2]}`} alt={`ShimoDocs workflow preview: ${scenes[scene][1]}`} />
+              {/* The scene frame is the hero visual, so it stays eager and
+                  decodes off the main thread rather than blocking paint. */}
+              <img
+                src={`/assets/${scenes[scene][2]}`}
+                alt={`ShimoDocs workflow preview: ${scenes[scene][1]}`}
+                decoding="async"
+              />
               <div className="scene-caption">
                 <Eyebrow>Live workflow preview</Eyebrow>
                 <h3>{scenes[scene][1]}</h3>
@@ -179,7 +185,15 @@ export default function Home() {
         <div className="cap-grid">
           {caps.map(([title, desc, img], i) => (
             <article className="cap-card" key={title}>
-              <img src={`/assets/${img}`} alt={`ShimoDocs ${title} interface in a private cloud deployment`} />
+              {/* Six capability cards sit well below the fold. Loading them
+                  lazily keeps the initial viewport from competing with a
+                  megabyte of screenshots for bandwidth. */}
+              <img
+                src={`/assets/${img}`}
+                alt={`ShimoDocs ${title} interface in a private cloud deployment`}
+                loading="lazy"
+                decoding="async"
+              />
               <div className="cap-overlay">
                 <span>0{i + 1}</span>
                 <h3>{title}</h3>

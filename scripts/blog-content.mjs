@@ -253,11 +253,30 @@ function loadPost(fileName) {
     )
   }
 
+  // Frequently asked questions. Written in the frontmatter so one source feeds
+  // both the visible FAQ section and the FAQPage structured data. The questions
+  // are still ordinary markdown in the body; the loop below refuses a build
+  // where the frontmatter and the body have drifted apart.
+  const faq = Array.isArray(data.faq)
+    ? data.faq.map((entry, index) => ({
+        question: requireString(entry || {}, 'question', `${fileName} faq entry ${index + 1}`),
+        answer: requireString(entry || {}, 'answer', `${fileName} faq entry ${index + 1}`),
+      }))
+    : []
+  for (const entry of faq) {
+    if (!html.includes(entry.question)) {
+      throw new Error(
+        `${fileName}: the faq question "${entry.question}" is in the frontmatter but not in the article body`,
+      )
+    }
+  }
+
   return {
     slug,
     file: `content/blog/${fileName}`,
     title,
     seoTitle,
+    faq,
     description,
     category,
     categoryLabel: categoryById(category).label,

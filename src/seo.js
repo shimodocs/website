@@ -5,6 +5,7 @@
 // build-time prerenderer, and by the sitemap/robots generators. Keeping one
 // table means a route can never drift between the router and the crawler.
 import { DOWNLOADS } from './downloads'
+import { DOCS_DEFAULT_LANGUAGE, LANGUAGE_META, docsBase, docsUi } from './docs-languages'
 
 const FALLBACK_SITE_URL = 'http://43.172.115.22'
 
@@ -76,6 +77,93 @@ export const ROUTE_SEO = {
     keywords:
       'ShimoDocs documentation, self-hosted deployment guide, Kubernetes deployment, private cloud installation, middleware configuration, backup and incident response',
     ogAlt: 'ShimoDocs deployment documentation index',
+  },
+  '/docs': {
+    changeFrequency: 'weekly',
+    priority: '0.9',
+    title: 'ShimoDocs Documentation | Self-Hosted Deployment Guides',
+    description:
+      'Official ShimoDocs documentation: plan, install, operate and troubleshoot a self-hosted document collaboration suite in your own Kubernetes cluster.',
+    keywords:
+      'ShimoDocs documentation, self-hosted document collaboration deployment, Kubernetes installation guide, MySQL Redis MongoDB Kafka configuration, private cloud operations, backup and incident response',
+    ogAlt: 'The ShimoDocs documentation index',
+  },
+  // Commercial hubs. These are the pages a buyer lands on from a search rather
+  // than a page an editor writes for its own sake: each one answers one
+  // deployment question and links into the guides that prove the answer.
+  '/on-premises': {
+    changeFrequency: 'monthly',
+    priority: '0.9',
+    title: 'On-Premises Document Collaboration | ShimoDocs',
+    description:
+      'Run docs, sheets, slides and forms on your own servers. What on-premises document collaboration actually requires, and how ShimoDocs deploys into it.',
+    keywords:
+      'on-premises document collaboration, on-prem document management, self-hosted office suite, on-premise collaboration software, private cloud documents, air-gapped alternative',
+    ogAlt: 'On-premises document collaboration deployed into infrastructure you control',
+    faqs: [
+      {
+        question: 'What does on-premises document collaboration mean?',
+        answer:
+          'It means the document editor, the file storage, the permissions model and the audit trail all run on servers your organisation controls, rather than on a vendor service. Users still open a browser and edit together in real time; what changes is where the content and the metadata live.',
+      },
+      {
+        question: 'Can on-premises document collaboration work without internet access?',
+        answer:
+          'Yes, if the deployment supports offline installation and does not depend on an external model endpoint. ShimoDocs ships offline image packages for isolated networks, and its AI layer can be pointed at a model running inside the same boundary.',
+      },
+      {
+        question: 'How long does an on-premises deployment take?',
+        answer:
+          'A single-node installation on prepared infrastructure is a matter of hours. A high-availability Kubernetes deployment with external MySQL, Redis, MongoDB, Kafka and object storage is a project measured in weeks, most of which is middleware preparation rather than the suite itself.',
+      },
+      {
+        question: 'What infrastructure does ShimoDocs need on-premises?',
+        answer:
+          'For high availability, three or more servers with at least 16 cores and 32 GB of memory each, a separately mounted data disk of 300 GB or more, synchronised clocks, and either bundled or external middleware. The system requirements guide lists every prerequisite.',
+      },
+      {
+        question: 'Is on-premises the same as private cloud?',
+        answer:
+          'They are close but not identical. On-premises describes whose hardware it runs on; private cloud describes who can reach it. A private cloud deployment is usually on-premises or in a dedicated tenant, and the important property in both cases is that the network boundary and the keys are yours.',
+      },
+    ],
+  },
+  '/airgap': {
+    changeFrequency: 'monthly',
+    priority: '0.9',
+    title: 'Air-Gapped Document Collaboration | ShimoDocs',
+    description:
+      'Document collaboration for isolated networks: install offline, keep AI inference inside the boundary, and run the whole suite with no outbound access.',
+    keywords:
+      'air-gapped document collaboration, air gap office suite, offline document collaboration, isolated network collaboration software, no internet document platform, classified network documents',
+    ogAlt: 'Air-gapped document collaboration installed from an offline image package',
+    faqs: [
+      {
+        question: 'Can you run document collaboration in an air-gapped network?',
+        answer:
+          'Yes. It requires a deployment that can be installed from offline image packages, performs no licence call-out at runtime, and does not depend on a hosted model endpoint. ShimoDocs documents the offline installation path and supports external middleware on the isolated side.',
+      },
+      {
+        question: 'How does AI work in an air-gapped deployment?',
+        answer:
+          'The AI configuration layer points at a model endpoint you choose. In an isolated network that means a model served inside the boundary, so no prompt or document context leaves the enclave. If no model is available, the collaboration features work without it.',
+      },
+      {
+        question: 'What has to be transferred across the air gap?',
+        answer:
+          'The installation package, the offline image tarball, the licence file and any middleware you run externally. All four are ordinary files, which is why the deployment can be built and refreshed through a controlled transfer process rather than a network connection.',
+      },
+      {
+        question: 'Does an air-gapped deployment lose any features?',
+        answer:
+          'You lose the features that are inherently online: third-party integrations that call out, public link sharing to the internet, and any AI model that is only available as a hosted API. Real-time editing, comments, version history, permissions, audit logs and search all work normally.',
+      },
+      {
+        question: 'How are upgrades handled without internet access?',
+        answer:
+          'The operations platform accepts an uploaded installation package and runs its compatibility checks before applying it. On an isolated network the package is brought across by the same controlled transfer used for the original installation, so upgrades follow a reviewable process rather than an automatic one.',
+      },
+    ],
   },
   '/pricing': {
     changeFrequency: 'monthly',
@@ -239,6 +327,9 @@ function breadcrumbLabel(pathname) {
     '/ai-workspace': 'AI Workspace',
     '/blog': 'Blog',
     '/help-center': 'Help Center',
+    '/docs': 'Documentation',
+    '/on-premises': 'On-Premises Deployment',
+    '/airgap': 'Air-Gapped Deployment',
     '/pricing': 'Pricing',
     '/contact-sales': 'Contact Sales',
     '/about': 'About',
@@ -374,6 +465,22 @@ export function jsonLdFor(pathname) {
     })
   }
 
+  // A route can declare its own questions in ROUTE_SEO. Emitting them here is
+  // what turns a written FAQ section into the rich result and into an answer an
+  // assistant can quote.
+  if (!isHome && meta.faqs?.length) {
+    graph.push({
+      '@type': 'FAQPage',
+      '@id': `${meta.canonical}#faq`,
+      isPartOf: { '@id': pageId },
+      mainEntity: meta.faqs.map(faq => ({
+        '@type': 'Question',
+        name: faq.question,
+        acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+      })),
+    })
+  }
+
   return { '@context': 'https://schema.org', '@graph': graph }
 }
 
@@ -386,6 +493,9 @@ export function headFor(pathname, options = {}) {
     `<meta name="keywords" content="${esc(meta.keywords)}"/>`,
     `<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"/>`,
     `<link rel="canonical" href="${esc(meta.canonical)}"/>`,
+    // Only the documentation routes are translated, so only they receive
+    // hreflang links; the rest of the site is English and has nothing to pair.
+    ...alternateTags(options.alternates, ''),
     `<meta property="og:type" content="website"/>`,
     `<meta property="og:site_name" content="${esc(SITE_NAME)}"/>`,
     `<meta property="og:locale" content="en_US"/>`,
@@ -419,17 +529,7 @@ export function robotsTxt() {
   ].join('\n')
 }
 
-export function sitemapXml(lastmod = new Date().toISOString().slice(0, 10), extras = []) {
-  const entries = [
-    ...ROUTE_PATHS.map(path => ({
-      loc: canonicalFor(path),
-      lastmod,
-      changefreq: ROUTE_SEO[path].changeFrequency,
-      priority: ROUTE_SEO[path].priority,
-    })),
-    ...extras,
-  ]
-
+export function sitemapUrlsetXml(entries, lastmod = new Date().toISOString().slice(0, 10)) {
   const rows = entries.map(entry =>
     [
       '  <url>',
@@ -441,7 +541,26 @@ export function sitemapXml(lastmod = new Date().toISOString().slice(0, 10), extr
     ].join('\n'),
   )
 
-  return ['<?xml version="1.0" encoding="UTF-8"?>', '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">', ...rows, '</urlset>', ''].join('\n')
+  return [
+    '<?xml version="1.0" encoding="UTF-8"?>',
+    '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
+    ...rows,
+    '</urlset>',
+    '',
+  ].join('\n')
+}
+
+export function sitemapXml(lastmod = new Date().toISOString().slice(0, 10), extras = []) {
+  const entries = [
+    ...ROUTE_PATHS.map(path => ({
+      loc: canonicalFor(path),
+      lastmod,
+      changefreq: ROUTE_SEO[path].changeFrequency,
+      priority: ROUTE_SEO[path].priority,
+    })),
+    ...extras,
+  ]
+  return sitemapUrlsetXml(entries, lastmod)
 }
 
 export function escapeHtml(value) {
@@ -514,65 +633,80 @@ export function blogPostJsonLd(post) {
   const articleId = `${canonical}#article`
   const breadcrumbId = `${canonical}#breadcrumb`
 
-  return {
-    '@context': 'https://schema.org',
-    '@graph': [
-      {
-        '@type': 'Organization',
-        '@id': ORGANIZATION_ID,
-        name: SITE_NAME,
-        alternateName: SITE_ALTERNATE_NAME,
-        url: canonicalFor('/'),
-        logo: { '@type': 'ImageObject', url: LOGO_URL, width: 512, height: 512 },
-        sameAs: [GITHUB_URL],
-      },
-      {
-        '@type': 'WebSite',
-        '@id': WEBSITE_ID,
-        url: canonicalFor('/'),
-        name: SITE_NAME,
-        inLanguage: 'en',
-        publisher: { '@id': ORGANIZATION_ID },
-      },
-      {
-        '@type': 'WebPage',
-        '@id': pageId,
-        url: canonical,
-        name: post.seoTitle,
-        description: post.description,
-        isPartOf: { '@id': WEBSITE_ID },
-        breadcrumb: { '@id': breadcrumbId },
-        inLanguage: 'en',
-      },
-      {
-        '@type': 'BlogPosting',
-        '@id': articleId,
-        headline: post.title,
-        description: post.description,
-        url: canonical,
-        mainEntityOfPage: { '@id': pageId },
-        datePublished: post.date,
-        dateModified: post.updated || post.date,
-        author: { '@type': 'Organization', name: SITE_NAME, url: canonicalFor('/') },
-        publisher: { '@id': ORGANIZATION_ID },
-        image: [post.image ? absoluteUrl(post.image) : OG_IMAGE_URL],
-        articleSection: post.categoryLabel,
-        keywords: post.keywords || post.tags.join(', '),
-        wordCount: post.words,
-        inLanguage: 'en',
-        isPartOf: { '@id': WEBSITE_ID },
-      },
-      {
-        '@type': 'BreadcrumbList',
-        '@id': breadcrumbId,
-        itemListElement: [
-          { '@type': 'ListItem', position: 1, name: 'Home', item: canonicalFor('/') },
-          { '@type': 'ListItem', position: 2, name: 'Blog', item: canonicalFor('/blog') },
-          { '@type': 'ListItem', position: 3, name: post.title, item: canonical },
-        ],
-      },
-    ],
+  const graph = [
+    {
+      '@type': 'Organization',
+      '@id': ORGANIZATION_ID,
+      name: SITE_NAME,
+      alternateName: SITE_ALTERNATE_NAME,
+      url: canonicalFor('/'),
+      logo: { '@type': 'ImageObject', url: LOGO_URL, width: 512, height: 512 },
+      sameAs: [GITHUB_URL],
+    },
+    {
+      '@type': 'WebSite',
+      '@id': WEBSITE_ID,
+      url: canonicalFor('/'),
+      name: SITE_NAME,
+      inLanguage: 'en',
+      publisher: { '@id': ORGANIZATION_ID },
+    },
+    {
+      '@type': 'WebPage',
+      '@id': pageId,
+      url: canonical,
+      name: post.seoTitle,
+      description: post.description,
+      isPartOf: { '@id': WEBSITE_ID },
+      breadcrumb: { '@id': breadcrumbId },
+      inLanguage: 'en',
+    },
+    {
+      '@type': 'BlogPosting',
+      '@id': articleId,
+      headline: post.title,
+      description: post.description,
+      url: canonical,
+      mainEntityOfPage: { '@id': pageId },
+      datePublished: post.date,
+      dateModified: post.updated || post.date,
+      author: { '@type': 'Organization', name: SITE_NAME, url: canonicalFor('/') },
+      publisher: { '@id': ORGANIZATION_ID },
+      image: [post.image ? absoluteUrl(post.image) : OG_IMAGE_URL],
+      articleSection: post.categoryLabel,
+      keywords: post.keywords || post.tags.join(', '),
+      wordCount: post.words,
+      inLanguage: 'en',
+      isPartOf: { '@id': WEBSITE_ID },
+    },
+    {
+      '@type': 'BreadcrumbList',
+      '@id': breadcrumbId,
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Home', item: canonicalFor('/') },
+        { '@type': 'ListItem', position: 2, name: 'Blog', item: canonicalFor('/blog') },
+        { '@type': 'ListItem', position: 3, name: post.title, item: canonical },
+      ],
+    },
+  ]
+
+  // An article that answers questions in its body should say so in its
+  // structured data. The visible FAQ section and this node come from the same
+  // frontmatter, and the build refuses to ship a page where they disagree.
+  if (post.faq?.length) {
+    graph.push({
+      '@type': 'FAQPage',
+      '@id': `${canonical}#faq`,
+      isPartOf: { '@id': pageId },
+      mainEntity: post.faq.map(entry => ({
+        '@type': 'Question',
+        name: entry.question,
+        acceptedAnswer: { '@type': 'Answer', text: entry.answer },
+      })),
+    })
   }
+
+  return { '@context': 'https://schema.org', '@graph': graph }
 }
 
 // The blog index describes the collection and lists every article, giving a
@@ -597,4 +731,239 @@ export function blogIndexJsonLd(posts) {
       articleSection: post.categoryLabel,
     })),
   }
+}
+
+// ----------------------------------------------------------- documentation
+
+// Structured data for a single guide. TechArticle is the type Google documents
+// for technical documentation, and it is what lets a guide appear in the
+// technical-article rich result rather than as an anonymous page.
+export function docJsonLd(doc, trail = []) {
+  const canonical = absoluteUrl(doc.url)
+  const pageId = `${canonical}#webpage`
+  const articleId = `${canonical}#article`
+  const breadcrumbId = `${canonical}#breadcrumb`
+  const language = doc.language || DOCS_DEFAULT_LANGUAGE
+  const ui = docsUi(language)
+
+  return {
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': 'Organization',
+        '@id': ORGANIZATION_ID,
+        name: SITE_NAME,
+        alternateName: SITE_ALTERNATE_NAME,
+        url: canonicalFor('/'),
+        logo: { '@type': 'ImageObject', url: LOGO_URL, width: 512, height: 512 },
+        sameAs: [GITHUB_URL],
+      },
+      {
+        '@type': 'WebSite',
+        '@id': WEBSITE_ID,
+        url: canonicalFor('/'),
+        name: SITE_NAME,
+        inLanguage: language,
+        publisher: { '@id': ORGANIZATION_ID },
+      },
+      {
+        '@type': 'WebPage',
+        '@id': pageId,
+        url: canonical,
+        name: doc.seoTitle,
+        description: doc.description,
+        isPartOf: { '@id': WEBSITE_ID },
+        breadcrumb: { '@id': breadcrumbId },
+        inLanguage: language,
+      },
+      {
+        '@type': 'TechArticle',
+        '@id': articleId,
+        headline: doc.title,
+        description: doc.description,
+        url: canonical,
+        mainEntityOfPage: { '@id': pageId },
+        author: { '@type': 'Organization', name: SITE_NAME, url: canonicalFor('/') },
+        publisher: { '@id': ORGANIZATION_ID },
+        image: [OG_IMAGE_URL],
+        wordCount: doc.words,
+        inLanguage: language,
+        isPartOf: { '@id': WEBSITE_ID },
+        proficiencyLevel: 'Expert',
+      },
+      {
+        '@type': 'BreadcrumbList',
+        '@id': breadcrumbId,
+        itemListElement: [
+          { '@type': 'ListItem', position: 1, name: ui.home, item: canonicalFor('/') },
+          { '@type': 'ListItem', position: 2, name: ui.docs, item: canonicalFor(docsBase(language)) },
+          ...trail.map((item, index) => ({
+            '@type': 'ListItem',
+            position: index + 3,
+            name: item.name,
+            item: item.url,
+          })),
+          { '@type': 'ListItem', position: trail.length + 3, name: doc.title, item: canonical },
+        ],
+      },
+    ],
+  }
+}
+
+// hreflang pairs. Google wants every page of a translation set to name every
+// other page including itself, and to name exactly the pages that exist: a
+// pointer at a translation that was never published is reported as an error, so
+// the caller only passes the languages that really carry the page.
+//
+// x-default points at English, which is the version shown to a reader whose
+// language is not in the set.
+function alternateTags(alternates, indent) {
+  if (!alternates?.length) return []
+  return alternates.map(
+    alternate =>
+      `${indent}<link rel="alternate" hreflang="${escapeHtml(alternate.hreflang)}" href="${escapeHtml(
+        alternate.href,
+      )}"/>`,
+  )
+}
+
+export function docHead(doc, trail = [], options = {}) {
+  const canonical = absoluteUrl(doc.url)
+  const language = doc.language || DOCS_DEFAULT_LANGUAGE
+  const locale = (LANGUAGE_META[language] || LANGUAGE_META[DOCS_DEFAULT_LANGUAGE]).ogLocale
+  const esc = escapeHtml
+  const tags = [
+    `<title>${esc(doc.seoTitle)}</title>`,
+    `<meta name="description" content="${esc(doc.description)}"/>`,
+    `<meta name="robots" content="${ROBOTS_CONTENT}"/>`,
+    `<link rel="canonical" href="${esc(canonical)}"/>`,
+    ...alternateTags(options.alternates, ''),
+    `<meta property="og:type" content="article"/>`,
+    `<meta property="og:site_name" content="${esc(SITE_NAME)}"/>`,
+    `<meta property="og:locale" content="${locale}"/>`,
+    ...(options.alternates || [])
+      .filter(alternate => alternate.hreflang !== language && alternate.hreflang !== 'x-default')
+      .map(
+        alternate =>
+          `<meta property="og:locale:alternate" content="${
+            (LANGUAGE_META[alternate.hreflang] || {}).ogLocale || alternate.hreflang
+          }"/>`,
+      ),
+    `<meta property="og:title" content="${esc(doc.seoTitle)}"/>`,
+    `<meta property="og:description" content="${esc(doc.description)}"/>`,
+    `<meta property="og:url" content="${esc(canonical)}"/>`,
+    `<meta property="og:image" content="${esc(OG_IMAGE_URL)}"/>`,
+    `<meta property="og:image:width" content="${OG_IMAGE_WIDTH}"/>`,
+    `<meta property="og:image:height" content="${OG_IMAGE_HEIGHT}"/>`,
+    `<meta property="og:image:alt" content="${esc(doc.title)}"/>`,
+    `<meta name="twitter:card" content="summary_large_image"/>`,
+    `<meta name="twitter:title" content="${esc(doc.seoTitle)}"/>`,
+    `<meta name="twitter:description" content="${esc(doc.description)}"/>`,
+    `<meta name="twitter:image" content="${esc(OG_IMAGE_URL)}"/>`,
+    `<script type="application/ld+json" id="structured-data">${serialiseJsonLd(docJsonLd(doc, trail))}</script>`,
+  ]
+  return (options.indent || '    ') + tags.join('\n' + (options.indent || '    ')) + '\n  '
+}
+
+// Structured data for the landing page of one language's guide tree.
+export function docsIndexJsonLd(index, entries = []) {
+  const canonical = absoluteUrl(index.url)
+  const breadcrumbId = `${canonical}#breadcrumb`
+  const ui = docsUi(index.language)
+
+  return {
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': 'Organization',
+        '@id': ORGANIZATION_ID,
+        name: SITE_NAME,
+        alternateName: SITE_ALTERNATE_NAME,
+        url: canonicalFor('/'),
+        logo: { '@type': 'ImageObject', url: LOGO_URL, width: 512, height: 512 },
+        sameAs: [GITHUB_URL],
+      },
+      {
+        '@type': 'WebSite',
+        '@id': WEBSITE_ID,
+        url: canonicalFor('/'),
+        name: SITE_NAME,
+        inLanguage: index.language,
+        publisher: { '@id': ORGANIZATION_ID },
+      },
+      {
+        '@type': 'CollectionPage',
+        '@id': `${canonical}#webpage`,
+        url: canonical,
+        name: index.seoTitle,
+        description: index.description,
+        isPartOf: { '@id': WEBSITE_ID },
+        inLanguage: index.language,
+        breadcrumb: { '@id': breadcrumbId },
+        hasPart: entries.map(entry => ({
+          '@type': 'TechArticle',
+          headline: entry.title,
+          url: absoluteUrl(entry.url),
+          description: entry.description,
+        })),
+      },
+      {
+        '@type': 'BreadcrumbList',
+        '@id': breadcrumbId,
+        itemListElement: [
+          { '@type': 'ListItem', position: 1, name: ui.home, item: canonicalFor('/') },
+          { '@type': 'ListItem', position: 2, name: ui.docs, item: canonical },
+        ],
+      },
+    ],
+  }
+}
+
+export function docsIndexHead(index, entries = [], options = {}) {
+  const canonical = absoluteUrl(index.url)
+  const locale = (LANGUAGE_META[index.language] || LANGUAGE_META[DOCS_DEFAULT_LANGUAGE]).ogLocale
+  const esc = escapeHtml
+  const tags = [
+    `<title>${esc(index.seoTitle)}</title>`,
+    `<meta name="description" content="${esc(index.description)}"/>`,
+    `<meta name="robots" content="${ROBOTS_CONTENT}"/>`,
+    `<link rel="canonical" href="${esc(canonical)}"/>`,
+    ...alternateTags(options.alternates, ''),
+    `<meta property="og:type" content="website"/>`,
+    `<meta property="og:site_name" content="${esc(SITE_NAME)}"/>`,
+    `<meta property="og:locale" content="${locale}"/>`,
+    `<meta property="og:title" content="${esc(index.seoTitle)}"/>`,
+    `<meta property="og:description" content="${esc(index.description)}"/>`,
+    `<meta property="og:url" content="${esc(canonical)}"/>`,
+    `<meta property="og:image" content="${esc(OG_IMAGE_URL)}"/>`,
+    `<meta property="og:image:width" content="${OG_IMAGE_WIDTH}"/>`,
+    `<meta property="og:image:height" content="${OG_IMAGE_HEIGHT}"/>`,
+    `<meta property="og:image:alt" content="${esc(index.title)}"/>`,
+    `<meta name="twitter:card" content="summary_large_image"/>`,
+    `<meta name="twitter:title" content="${esc(index.seoTitle)}"/>`,
+    `<meta name="twitter:description" content="${esc(index.description)}"/>`,
+    `<meta name="twitter:image" content="${esc(OG_IMAGE_URL)}"/>`,
+    `<script type="application/ld+json" id="structured-data">${serialiseJsonLd(
+      docsIndexJsonLd(index, entries),
+    )}</script>`,
+  ]
+  return (options.indent || '    ') + tags.join('\n' + (options.indent || '    ')) + '\n  '
+}
+
+// The index points at one urlset per content type and language. Kept separate
+// so Search Console reports index coverage per language instead of as one
+// 450-URL lump where a single broken translation is invisible.
+export function sitemapIndexXml(files, lastmod = new Date().toISOString().slice(0, 10)) {
+  const rows = files.map(file =>
+    ['  <sitemap>', `    <loc>${escapeHtml(file.loc)}</loc>`, `    <lastmod>${lastmod}</lastmod>`, '  </sitemap>'].join(
+      '\n',
+    ),
+  )
+  return [
+    '<?xml version="1.0" encoding="UTF-8"?>',
+    '<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
+    ...rows,
+    '</sitemapindex>',
+    '',
+  ].join('\n')
 }
