@@ -67,6 +67,27 @@ JavaScript still receives headings, copy and internal links.
   the price to a crawler, not only in prose.
 - `npm run build` fails on duplicate titles or descriptions and on titles over
   62 characters or descriptions over 160, because search results truncate them.
+- The commercial facts — the free limit, the per-user price and the annual
+  discount — are written once in `src/pricing-facts.js`, and
+  `scripts/check-pricing-facts.mjs` reads every rendered page and fails when one
+  of them states a different number. The articles state the free limit in
+  hand-written Markdown, which no import can reach; this is what keeps them
+  honest. `npm run check:pricing` runs it alone.
+- Every FAQ answer in the structured data has to be the same string a reader
+  sees. `scripts/check-faq.mjs` strips the markup first and compares, so an
+  answer that was rewritten in one place and not the other fails the build
+  instead of shipping. `npm run check:faq` runs it alone.
+- Sitemap `lastmod` is the date of the commit that last changed the file behind
+  each URL, not the build date (`scripts/content-dates.mjs`). A build stamp would
+  claim all 235 URLs changed on every deploy, which teaches Google the field
+  carries nothing here — worse than omitting it. It is why the workflows check
+  out the full history.
+- `sitemap.xml` is an index and `sitemap-core.xml` comes first, so a crawler that
+  reads one child after the index gets the commercial pages rather than the legal
+  notices. The deploy asserts both that order and that the release serves real
+  content dates.
+
+For the conventions an editing agent has to respect, see [AGENTS.md](AGENTS.md).
 
 ### Content checks
 
