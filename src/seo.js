@@ -57,6 +57,36 @@ export const ROUTE_SEO = {
     keywords:
       'AI workspace, AI agents for documents, private cloud AI, self-hosted AI assistant, AI document collaboration, enterprise AI data control, bring your own AI',
     ogAlt: 'ShimoDocs AI Workspace showing an agent editing a shared launch brief',
+    // The page demonstrates the agent visually; these answer the four things a
+    // buyer asks about it, using only what the product documentation and the
+    // pricing page already state.
+    faqs: [
+      {
+        question: 'What do the AI agents actually do?',
+        answer:
+          'Agents work inside the document people are already editing rather than in a separate chat window. Each action appears with the agent identity, a live cursor and an entry in the edit history, so a reviewer can see exactly what changed and take over at any point.',
+      },
+      {
+        question: 'Can we use our own AI model?',
+        answer:
+          'Yes. The AI configuration layer points at a model endpoint you choose. Point it at a model running inside your own infrastructure and prompts and document context stay there; point it at a provider you have approved and that data flow becomes a decision you made and can document.',
+      },
+      {
+        question: 'Is document content sent to an AI provider?',
+        answer:
+          'Only to the endpoints you configure. The AI capabilities — a base model, an image model, embeddings and an optional online search service — are connected in the operations platform. Online search is a separate, optional service: leave it unconfigured and no outbound retrieval happens at all.',
+      },
+      {
+        question: 'Does AI work in an air-gapped deployment?',
+        answer:
+          'Yes, provided a model is served inside the enclave. Nothing in the collaboration core depends on AI, so a deployment with no model available still edits, comments, versions and searches normally. AI is an addition to the suite rather than a dependency of it.',
+      },
+      {
+        question: 'Does the free plan include AI?',
+        answer:
+          'The free plan for teams of up to five people includes an AI workspace preview. AI assistance across the workspace is part of the paid Team plan, alongside advanced permissions, single sign-on and audit logs.',
+      },
+    ],
   },
   '/blog': {
     changeFrequency: 'weekly',
@@ -392,6 +422,42 @@ export const ROUTE_SEO = {
     keywords:
       'ShimoDocs pricing, private cloud document collaboration pricing, self-hosted office suite cost, free document collaboration, enterprise document platform pricing',
     ogAlt: 'ShimoDocs pricing plans for free and team deployments',
+    // The pricing page is the thinnest commercial page on the site, and the two
+    // questions it exists to answer — what it costs, and how many people are
+    // free — were only implied by the plan cards. These answers restate what the
+    // cards and the licence model already say and add nothing that is not
+    // already published elsewhere on the site.
+    faqs: [
+      {
+        question: 'How much does ShimoDocs cost?',
+        answer:
+          'ShimoDocs is free for teams of up to five people, with no time limit. Teams larger than five pay $5 per user per month for advanced permissions, single sign-on, audit logs and AI assistance, and annual billing reduces that by 20%. The servers the suite runs on are separate from the licence.',
+      },
+      {
+        question: 'Is there a free plan?',
+        answer:
+          'Yes. Teams of five or fewer people get the complete workspace at no cost: documents, writers, spreadsheets, presentations, tables, shared workspaces, comments and version history. The licence is perpetual, so it does not expire.',
+      },
+      {
+        question: 'What does the paid Team plan add?',
+        answer:
+          'Unlimited team members, advanced permissions and administrative controls, single sign-on, audit logs, and AI assistance across the workspace. Everything in the free plan is included in it.',
+      },
+      {
+        question: 'Does the price include the servers?',
+        answer:
+          'No. ShimoDocs is deployed into infrastructure you control — a single-node or high-availability Kubernetes cluster — so the servers, storage and network are yours and sit outside the per-user price. Where private cloud infrastructure is provided for you, it is quoted separately.',
+      },
+      {
+        question: 'How is the licence delivered?',
+        answer:
+          'As a licence file that is activated from the operations platform. Because it is a file rather than a call-out to a licensing service at runtime, the suite can be licensed on a network with no route to the internet, including an air-gapped one.',
+      },
+      {
+        question: 'Is there a discount for paying annually?',
+        answer: 'Yes. Annual billing reduces the per-user price by 20% compared with monthly billing.',
+      },
+    ],
   },
   '/contact-sales': {
     changeFrequency: 'monthly',
