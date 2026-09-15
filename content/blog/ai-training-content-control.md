@@ -174,4 +174,4 @@ ShimoDocs is built for teams that want real-time document collaboration while ke
 
 As AI becomes part of more workflows, having a clear document layer underneath it matters more than ever. When ownership is unambiguous and permissions are enforced by the platform rather than described in a policy, the question of what an AI assistant may read has an answer you can point at.
 
-Explore ShimoDocs →
+[See where document content actually lives, and what leaves the network →](/security)

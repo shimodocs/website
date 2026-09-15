@@ -150,8 +150,6 @@ The interaction with legal hold is worth noting in the other direction: a backup
 
 ## What to do first
 
-## What to do first
-
 If you have no restore capability today, the sequence is: enable object storage versioning, confirm log retention meets your stated objective, back up configuration and secrets somewhere independent, write the consistency check, and run one drill. That is a day of work and it changes your position more than any tuning exercise.
 
 Our [database tuning article](/blog/database-tuning-document-collaboration) covers the point-in-time recovery configuration this depends on, [disaster recovery](/blog/disaster-recovery-document-platform) covers the wider design including site loss, and [monitoring](/blog/monitoring-self-hosted-document-platform) covers how you would know a backup had stopped working.

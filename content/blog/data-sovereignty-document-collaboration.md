@@ -142,4 +142,4 @@ Then map each to the deployment model. "We cannot evidence this with the current
 
 For most organisations the outcome is a split: commodity documents stay in a public cloud suite, and the sensitive tier moves to infrastructure they control. That is a reasonable destination, and it is easier to reach than a wholesale migration.
 
-If that is the direction, the [self-hosted collaboration guide](/blog/self-hosted-collaboration-guide) covers what running the controlled tier involves, and [what private cloud document collaboration means](/blog/what-is-private-cloud-document-collaboration) covers the architecture in more detail.
+If that is the direction, the [self-hosted collaboration guide](/blog/self-hosted-collaboration-guide) covers what running the controlled tier involves, and [what private cloud document collaboration means](/blog/what-is-private-cloud-document-collaboration) covers the architecture in more detail. For the controls a reviewer will ask you to evidence in that tier — where documents live, who can reach them, and what leaves the network — see [security and data control](/security).

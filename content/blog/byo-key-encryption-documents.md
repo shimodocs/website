@@ -95,8 +95,6 @@ The honest summary is that key custody narrows who can reach plaintext, and it d
 
 ## The trade-offs nobody mentions in the sales cycle
 
-## The trade-offs nobody mentions in the sales cycle
-
 **Availability becomes your problem.** Once your KMS is in the request path, a KMS outage is a document outage. That needs to be in the availability model, not discovered during an incident.
 
 **Rotation is real work.** Rotating a KEK means rewrapping every data key. Ask how the platform performs it, whether it is online, and how long it takes at your content volume.

@@ -85,8 +85,6 @@ A useful test: can you draw the whole model on one slide and have a new team lea
 
 ## Privileged access
 
-## Privileged access
-
 Two distinct concerns.
 
 **Administrators can read everything.** A platform administrator can usually access any document. That is inherent to administration and needs compensating controls: access reviews for the admin role, logging of administrative access, and a small population holding it.

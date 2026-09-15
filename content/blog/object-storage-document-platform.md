@@ -129,8 +129,6 @@ These four measurements belong alongside the platform's other monitoring rather 
 
 ## A configuration checklist
 
-## A configuration checklist
-
 Before putting content in a bucket:
 
 1. **Versioning enabled**, with a deliberate answer on non-current version retention.

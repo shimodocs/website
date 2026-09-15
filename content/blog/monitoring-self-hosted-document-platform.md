@@ -147,8 +147,6 @@ The test of a monitoring setup is not whether it looks comprehensive. It is whet
 
 ## The minimum viable setup
 
-## The minimum viable setup
-
 If you are starting from nothing: build the synthetic check first, alert on it, then add database throughput and coordination memory. Those three cover the majority of incidents in a document platform, and the check is the one that will tell you about the failures you did not anticipate.
 
 For what to do when the alert fires, [backup and restore](/blog/backup-and-restore-document-platform) and [disaster recovery](/blog/disaster-recovery-document-platform) cover the recovery side, and [hardware sizing](/blog/hardware-sizing-self-hosted-document-platform) explains what the memory and throughput numbers mean.

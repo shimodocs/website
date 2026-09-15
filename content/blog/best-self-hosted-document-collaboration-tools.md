@@ -159,3 +159,5 @@ Define them before the pilot starts: what operations hours per month would make 
 6. **Reference-check** with an organisation running it at your scale.
 
 The sequence matters more than the shortlist. Most failed deployments picked a reasonable product and evaluated it in the wrong order, discovering a structural problem after the migration rather than before it. For the criteria in full, see the [self-hosted office suite comparison](/blog/self-hosted-office-suite-comparison), and for the decision about whether to self-host at all, start with [what private cloud document collaboration is](/blog/what-is-private-cloud-document-collaboration).
+
+Before any of that, the deployment requirements are worth reading once: middleware, sizing, and what has to run on your side are set out on the [on-premises deployment page](/on-premises).

@@ -100,8 +100,6 @@ Establishing which component is actually slow is the first step, and it is the o
 
 ## Where tuning goes wrong
 
-## Where tuning goes wrong
-
 **Tuning before measuring.** Changing buffer sizes on the basis of a blog post rather than an observation usually moves the bottleneck rather than removing it. Get a baseline first.
 
 **Scaling the database horizontally too early.** Sharding a document platform's metadata is a significant engineering project and is rarely justified before the application tier and the query patterns have been optimised.

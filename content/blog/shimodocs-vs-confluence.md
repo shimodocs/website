@@ -136,4 +136,6 @@ Do not compare feature lists. Run these instead:
 5. **Test the AI path.** Where does inference happen in each option, and can it be pointed at an endpoint you approve? Our [AI agents checklist](/blog/ai-agents-in-documents-security) lists what to ask.
 6. **Price the operations.** Self-hosting moves the pager to your team. The [self-hosted collaboration guide](/blog/self-hosted-collaboration-guide) covers what that involves.
 
+If that evaluation concludes you are replacing Confluence rather than comparing it, the [Confluence alternative page](/solutions/confluence-alternative) sets out the hosting options and the migration sequence, and the [Atlassian alternative page](/solutions/atlassian-alternative) covers the 2026 data contribution default and the Data Center end-of-life schedule.
+
 Competitor capabilities and packaging change frequently. Verify current specifics with each vendor before you commit; the structural differences above are the part that stays stable.

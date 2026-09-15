@@ -132,8 +132,6 @@ Together these address most of what a full failover would reveal, at a fraction 
 
 ## Where most deployments actually are
 
-## Where most deployments actually are
-
 A realistic assessment for a self-hosted document platform is usually: backups exist and have not been restored, redundancy covers the application tier only, and the recovery plan is a document that has not been exercised.
 
 The highest-value improvements, in order: enable object versioning and log retention so point-in-time recovery is possible, write the consistency check, run one restore drill, then decide about sites. That sequence addresses the scenarios that actually occur before spending on the ones that rarely do.

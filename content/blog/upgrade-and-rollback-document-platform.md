@@ -142,8 +142,6 @@ The post-upgrade checklist is short and frequently skipped, which is how subtle 
 
 ## What to do this quarter
 
-## What to do this quarter
-
 If upgrades have been deferred, do not attempt to jump several versions at once. Upgrade to the next release, verify, and repeat on a short cycle until current. Then stay current, because the value of the whole pipeline is proportional to how small each delta is.
 
 For the components involved, [backup and restore](/blog/backup-and-restore-document-platform) covers the real rollback mechanism, [database tuning](/blog/database-tuning-document-collaboration) covers the migration-affected layer, and [monitoring](/blog/monitoring-self-hosted-document-platform) covers how you would know an upgrade had gone subtly wrong rather than obviously wrong.

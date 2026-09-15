@@ -140,8 +140,6 @@ The reason to be conservative about adding nodes is operational rather than fina
 
 ## Growth planning
 
-## Growth planning
-
 Two rules of thumb that hold up better than most.
 
 First, **provision the database for three years and the application tier for six months**. The database is painful to resize; the application tier is not.

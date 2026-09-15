@@ -189,3 +189,5 @@ Whatever the shortlist, run the same five tests on each candidate:
 5. **A restore from backup**, timed, end to end.
 
 Product packaging changes constantly in this category, so confirm current capability with each vendor rather than relying on any comparison article, including this one. The tests above produce answers that stay valid longer than a feature list does.
+
+If self-hosting is on the shortlist, the [on-premises deployment page](/on-premises) sets out what running the suite on your own servers actually requires, and the [platform comparison](/comparison) puts the hosted and self-hosted options side by side.

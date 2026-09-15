@@ -130,8 +130,6 @@ In all three cases, the lifecycle test matters more than in a conventional deplo
 
 ## Where to start
 
-## Where to start
-
 If the deployment currently uses local accounts, the sequence is: connect the directory for authentication first, then group mapping, then deprovisioning, then test the lifecycle end to end. Doing it in that order means each step is independently verifiable.
 
 The reason this matters beyond convenience is that identity is what makes every other control scoped. Retention rules, access reviews and audit reporting all assume the platform knows who belongs where. Our [access control article](/blog/access-control-best-practices-documents) covers using that model, and [air-gapped deployments](/blog/air-gapped-document-collaboration) covers the constrained case where a conventional identity provider is not available.

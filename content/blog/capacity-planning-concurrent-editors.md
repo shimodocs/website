@@ -134,8 +134,6 @@ The fix is procedural and cheap: assign an owner, agree a review cadence, and pu
 
 ## When to add capacity
 
-## When to add capacity
-
 Two signals, and neither is a threshold on a single metric.
 
 **Sustained resource pressure at peak**, across more than one node, for more than a few days. A single node spiking is normal; every node spiking consistently is a capacity signal.
