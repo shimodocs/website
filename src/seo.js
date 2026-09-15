@@ -513,6 +513,9 @@ export function headFor(pathname, options = {}) {
     `<meta name="twitter:description" content="${esc(meta.description)}"/>`,
     `<meta name="twitter:image" content="${esc(OG_IMAGE_URL)}"/>`,
     `<meta name="twitter:image:alt" content="${esc(meta.ogAlt)}"/>`,
+    // Only the archive advertises the feed; every article carries it too, a few
+    // lines up, so a reader can subscribe from wherever they landed.
+    ...(pathname === '/blog' ? [feedLinkTag('')] : []),
     `<script type="application/ld+json" id="structured-data">${serialiseJsonLd(jsonLdFor(meta.path))}</script>`,
   ]
   return (options.indent || '    ') + tags.join('\n' + (options.indent || '    ')) + '\n  '
@@ -575,6 +578,10 @@ export function robotsTxt() {
 }
 
 export function sitemapUrlsetXml(entries, lastmod = new Date().toISOString().slice(0, 10)) {
+  // Image entries are inline extensions rather than a separate sitemap, so a
+  // page and its screenshots stay one record. Google reads them for image
+  // search, which is where the product shots can compete on their own.
+  const usesImages = entries.some(entry => entry.images?.length)
   const rows = entries.map(entry =>
     [
       '  <url>',
@@ -582,13 +589,19 @@ export function sitemapUrlsetXml(entries, lastmod = new Date().toISOString().sli
       `    <lastmod>${entry.lastmod || lastmod}</lastmod>`,
       `    <changefreq>${entry.changefreq || 'monthly'}</changefreq>`,
       `    <priority>${entry.priority || '0.6'}</priority>`,
+      ...(entry.images || []).map(
+        image =>
+          `    <image:image><image:loc>${escapeHtml(image)}</image:loc></image:image>`,
+      ),
       '  </url>',
     ].join('\n'),
   )
 
   return [
     '<?xml version="1.0" encoding="UTF-8"?>',
-    '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
+    `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"${
+      usesImages ? ' xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"' : ''
+    }>`,
     ...rows,
     '</urlset>',
     '',
@@ -636,6 +649,14 @@ export function blogPostPath(slug) {
 
 // Article head follows the same tag set as a static route, plus the Open Graph
 // article namespace so shares carry a publication date and section.
+// Feed autodiscovery. A reader pointed at any article can subscribe without
+// hunting for the URL.
+function feedLinkTag(indent) {
+  return `${indent}<link rel="alternate" type="application/rss+xml" title="${escapeHtml(
+    SITE_NAME,
+  )} Blog" href="${escapeHtml(absoluteUrl('/blog/feed.xml'))}"/>`
+}
+
 export function blogPostHead(post, options = {}) {
   const canonical = absoluteUrl(blogPostPath(post.slug))
   const esc = escapeHtml
@@ -667,6 +688,7 @@ export function blogPostHead(post, options = {}) {
     `<meta name="twitter:title" content="${esc(post.seoTitle)}"/>`,
     `<meta name="twitter:description" content="${esc(post.description)}"/>`,
     `<meta name="twitter:image" content="${esc(card)}"/>`,
+    feedLinkTag(''),
     `<script type="application/ld+json" id="structured-data">${serialiseJsonLd(blogPostJsonLd(post))}</script>`,
   ]
   return (options.indent || '    ') + tags.join('\n' + (options.indent || '    ')) + '\n  '
@@ -752,6 +774,49 @@ export function blogPostJsonLd(post) {
   }
 
   return { '@context': 'https://schema.org', '@graph': graph }
+}
+
+// The blog as a feed, for the readers and the crawlers that prefer one.
+//
+// Google discovers the archive through the index and the sitemap, but a feed is
+// how an aggregator, a newsletter tool or an assistant that polls for new work
+// follows a site without being told to come back. It is also the only surface
+// here that states what changed recently in a form a machine can diff.
+export function blogFeedXml(posts, options = {}) {
+  const esc = escapeHtml
+  const updated = posts[0]?.updated || posts[0]?.date || new Date().toISOString().slice(0, 10)
+  const items = posts.map(post => {
+    const url = absoluteUrl(blogPostPath(post.slug))
+    return [
+      '    <item>',
+      `      <title>${esc(post.title)}</title>`,
+      `      <link>${esc(url)}</link>`,
+      // isPermaLink="true" because the guid is the article URL, not an opaque id.
+      `      <guid isPermaLink="true">${esc(url)}</guid>`,
+      `      <pubDate>${new Date(`${post.date}T00:00:00Z`).toUTCString()}</pubDate>`,
+      `      <description>${esc(post.description)}</description>`,
+      `      <category>${esc(post.categoryLabel)}</category>`,
+      ...post.tags.map(tag => `      <category>${esc(tag)}</category>`),
+      `      <author>${esc(options.authorEmail || CONTACT_EMAIL)} (${esc(SITE_NAME)})</author>`,
+      '    </item>',
+    ].join('\n')
+  })
+
+  return [
+    '<?xml version="1.0" encoding="UTF-8"?>',
+    '<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">',
+    '  <channel>',
+    `    <title>${esc(SITE_NAME)} Blog</title>`,
+    `    <link>${esc(canonicalFor('/blog'))}</link>`,
+    `    <description>${esc(ROUTE_SEO['/blog'].description)}</description>`,
+    '    <language>en</language>',
+    `    <lastBuildDate>${new Date(`${updated}T00:00:00Z`).toUTCString()}</lastBuildDate>`,
+    `    <atom:link href="${esc(absoluteUrl('/blog/feed.xml'))}" rel="self" type="application/rss+xml"/>`,
+    ...items,
+    '  </channel>',
+    '</rss>',
+    '',
+  ].join('\n')
 }
 
 // The blog index describes the collection and lists every article, giving a

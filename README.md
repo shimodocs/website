@@ -112,6 +112,37 @@ To see the real policy:
 curl -s https://shimodocs.com/robots.txt | grep -n "BEGIN Cloudflare Managed" -A 40
 ```
 
+### Discovery surfaces
+
+Beside `sitemap.xml`, the build produces two things whose only job is to be
+found:
+
+- `/blog/feed.xml`, an RSS 2.0 feed of the archive, advertised with
+  `<link rel="alternate">` from the blog index and from every article, and listed
+  in `llms.txt`. Aggregators and assistants that poll for new work have one URL
+  to watch, and the build fails if the feed stops listing an article or stops
+  being advertised.
+- An image sitemap: the pages sitemap carries `<image:image>` entries for the
+  screenshots each page actually displays. The check refuses an image a page does
+  not have and an image this build did not produce, because an image sitemap that
+  overstates what a page contains is a spam signal rather than a shortcut.
+
+### Telling other engines (IndexNow)
+
+```bash
+npm run indexnow -- --dry-run   # print what would be sent
+npm run indexnow                # submit every URL in the built sitemaps
+```
+
+Google does not support IndexNow. Bing, Yandex, Seznam and Naver do, and Bing's
+index is what grounds several assistants — so this is the shortest path from a
+published guide to an answer that can cite it. Ownership is proved by
+`public/9f2a7c41d6b84e0fa3c5e18b7d60a294.txt`, which is a key rather than a
+secret by design: IndexNow fetches it over HTTP. The build fails if that file is
+missing, the deploy verification asserts the live site serves it, and the deploy
+job submits the URLs after the release is verified — with `continue-on-error`, so
+a rejected submission is a visible red step rather than a failed release.
+
 ### Regenerating brand assets
 
 ```bash

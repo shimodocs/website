@@ -271,6 +271,14 @@ jobs:
           const missing = await get('/not-a-real-shimodocs-page');
           assert.equal(missing.status, 404, 'unknown paths must 404 instead of serving the app shell');
 
+          // IndexNow proves ownership by fetching this file. If it stops being
+          // served, every submission is rejected with a 403 nobody reads, and
+          // the only symptom is that new pages take longer to reach Bing.
+          const indexNowKey = '9f2a7c41d6b84e0fa3c5e18b7d60a294';
+          const keyFile = await get(`/${indexNowKey}.txt`);
+          assert.equal(keyFile.status, 200, `/${indexNowKey}.txt returned ${keyFile.status}`);
+          assert.equal(keyFile.body.trim(), indexNowKey, 'the IndexNow key file has the wrong contents');
+
           // The homepage download CTA points at a release asset whose file name
           // embeds the installer version. If a future release renames that
           // asset the button breaks silently, so resolve it here. A ranged
@@ -348,6 +356,15 @@ jobs:
               `robots.txt, a real 404 and ${installerLinks.length} installer links.`,
           );
           NODE
+
+      # Google does not support IndexNow, but Bing, Yandex, Seznam and Naver do,
+      # and Bing's index is what grounds several assistants. The release is
+      # already verified and live by this point, so a rejected submission must
+      # not fail the deploy: continue-on-error keeps the job green while leaving
+      # the step visibly red.
+      - name: Tell IndexNow about the new URLs
+        continue-on-error: true
+        run: node scripts/indexnow.mjs
 
       # Activation happens before verification, so by the time anything above
       # fails the broken release is already serving production. Putting the

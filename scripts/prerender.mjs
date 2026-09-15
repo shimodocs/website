@@ -28,6 +28,7 @@ import {
   withNeighbours,
 } from './docs-content.mjs'
 import { ARTICLE_DOCS } from './article-docs.mjs'
+import { INDEXNOW_KEY, keyFileProblem } from './indexnow.mjs'
 import { DOCS_DEFAULT_LANGUAGE, DOCS_LANGUAGES, docsBase } from '../src/docs-languages.js'
 
 const rootDir = resolve(dirname(fileURLToPath(import.meta.url)), '..')
@@ -56,6 +57,7 @@ const {
   sitemapIndexXml,
   SITE_URL,
   blogPostHead,
+  blogFeedXml,
   blogIndexJsonLd,
   docHead,
   docsIndexHead,
@@ -285,6 +287,11 @@ writeHtml('404.html', notFoundHtml)
 
 writeFileSync(join(distDir, 'robots.txt'), robotsTxt())
 
+// The blog feed. Discoverable from the archive and from every article, and
+// listed in llms.txt, so an aggregator or an assistant polling for new work has
+// one URL to watch.
+writeFileSync(join(distDir, 'blog', 'feed.xml'), blogFeedXml(posts))
+
 // ------------------------------------------------------------- sitemaps
 //
 // One urlset per content type, with the guides split again per language, and
@@ -303,6 +310,18 @@ const sitemapFiles = [
       lastmod: today,
       changefreq: ROUTE_SEO[path].changeFrequency,
       priority: ROUTE_SEO[path].priority,
+      // The product screenshots, listed against the pages that display them, so
+      // image search has a reason to index them under this domain. Only the
+      // pages that really show them carry them: an image sitemap that claims
+      // images a page does not have is a spam signal, not a shortcut.
+      images:
+        path === '/'
+          ? Array.from({ length: 7 }, (unused, index) => absoluteUrl(`/assets/extract-${index + 1}.webp`))
+          : path === '/download'
+            ? [absoluteUrl('/assets/workspace-recent-files.png')]
+            : path === '/ai-workspace'
+              ? [absoluteUrl('/assets/workspace-collaboration.png')]
+              : [],
     })),
   },
   {
@@ -400,6 +419,7 @@ function llmsTxt() {
     '## Optional',
     '',
     render([`${SITE_URL}/sitemap.xml`, 'XML sitemap', 'every indexable URL on this site']),
+    render([`${SITE_URL}/blog/feed.xml`, 'Blog feed', 'RSS, newest first']),
     render([`${SITE_URL}/about`, 'About ShimoDocs', 'company background']),
     render([GITHUB_REPO, 'ShimoDocs on GitHub', 'product repository and issue tracker']),
     '',
@@ -887,11 +907,48 @@ const publishedUrls = new Set([
   ...posts.map(post => absoluteUrl(`/blog/${post.slug}`)),
   ...docs.map(doc => absoluteUrl(doc.url)),
   `${SITE_URL}/sitemap.xml`,
+  `${SITE_URL}/blog/feed.xml`,
   'https://github.com/shimodocs/shimodocs',
 ])
 for (const link of llmsLinks) {
   if (!publishedUrls.has(link)) problems.push(`llms.txt links to ${link}, which is not a published page`)
 }
+
+// --------------------------------------------------------------- feed check
+
+// A feed that silently stops updating, or that points at an article that was
+// renamed, is worse than no feed: readers and aggregators keep polling it.
+const feed = readFileSync(join(distDir, 'blog', 'feed.xml'), 'utf8')
+if (!feed.includes('<rss version="2.0"')) problems.push('blog/feed.xml is not an RSS 2.0 document')
+const feedItems = (feed.match(/<item>/g) || []).length
+if (feedItems !== posts.length) {
+  problems.push(`blog/feed.xml lists ${feedItems} items, expected ${posts.length}`)
+}
+for (const post of posts) {
+  const url = absoluteUrl(`/blog/${post.slug}`)
+  if (!feed.includes(`<link>${url}</link>`)) problems.push(`blog/feed.xml is missing ${post.slug}`)
+}
+const blogIndexForFeed = readFileSync(join(distDir, 'blog', 'index.html'), 'utf8')
+if (!blogIndexForFeed.includes('type="application/rss+xml"')) {
+  problems.push('the blog index does not advertise the feed')
+}
+for (const { post, file } of articles) {
+  const html = readFileSync(join(distDir, file), 'utf8')
+  if (!html.includes('type="application/rss+xml"')) {
+    problems.push(`${post.slug}: the article does not advertise the feed`)
+  }
+}
+
+// --------------------------------------------------------------- indexnow key
+
+// IndexNow proves domain ownership by fetching /<key>.txt and comparing it with
+// the key in the submission. If that file stops being published, every future
+// submission is rejected with a 403 that nobody reads, and the only symptom is
+// that new pages take longer to appear in Bing.
+const indexNowProblem = keyFileProblem()
+if (indexNowProblem) problems.push(`${indexNowProblem} (expected ${INDEXNOW_KEY})`)
+
+// ------------------------------------------------------------------ sitemap
 
 // sitemap.xml is an index now, so every URL lives in a child sitemap. Checking
 // the index alone would pass while a child was empty.
@@ -908,6 +965,16 @@ for (const file of sitemapFiles) {
   if (!xml.includes('<urlset')) problems.push(`${file.name} is not a urlset`)
   for (const entry of file.entries) {
     if (!xml.includes(`<loc>${escapeHtml(entry.loc)}</loc>`)) problems.push(`${file.name} is missing ${entry.loc}`)
+    // An image listed for a page has to be a file this build produced and an
+    // entry in the same sitemap, or image search is being told about a 404.
+    for (const image of entry.images || []) {
+      if (!xml.includes(`<image:loc>${escapeHtml(image)}</image:loc>`)) {
+        problems.push(`${file.name} does not list ${image} as an image of ${entry.loc}`)
+      }
+      if (!existsSync(join(distDir, image.replace(SITE_URL, '')))) {
+        problems.push(`${entry.loc} claims an image this build did not produce: ${image}`)
+      }
+    }
   }
 }
 for (const routePath of ROUTE_PATHS) {

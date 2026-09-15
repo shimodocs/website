@@ -83,6 +83,7 @@ export {
   resolveSeo,
   blogPostHead,
   blogPostJsonLd,
+  blogFeedXml,
   blogIndexJsonLd,
   docHead,
   docJsonLd,
