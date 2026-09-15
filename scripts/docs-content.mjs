@@ -482,6 +482,59 @@ function titleFrom(source, fallback) {
   return match ? match[1].trim() : fallback
 }
 
+// Known damage in the upstream translations.
+//
+// The translated trees are complete mirrors, but they are machine output and
+// one class of character survived the trip badly: a "+" inside an inline code
+// span was dropped in the German and Japanese copies of the high-availability
+// topology line, so both read `3 master   N worker`. A code span is precisely
+// the place a translator must not touch, and a wrong topology is a wrong
+// instruction, so the string is corrected rather than published.
+//
+// This table is a workaround, not a design: it exists only because
+// shimodocs/shimodocs is read-only from here and the correction has to land
+// upstream. A character-level comparison against the English source found no
+// other damage across the other 55 guides — every fenced block, YAML sample,
+// SQL statement and shell command is otherwise identical.
+//
+// The entry cannot go stale: the loader counts its applications and the build
+// fails if a listed string no longer appears, which is what will happen the day
+// someone fixes the source.
+export const UPSTREAM_REPAIRS = [
+  {
+    id: 'deployment/getting-started/high-availability-kubernetes',
+    from: '`3 master   N worker`',
+    to: '`3 master + N worker`',
+  },
+]
+
+const repairApplications = new Map()
+
+export function repairUpstream(language, source) {
+  if (language === DOCS_DEFAULT_LANGUAGE) return source
+  let result = source
+  for (const repair of UPSTREAM_REPAIRS) {
+    if (!result.includes(repair.from)) continue
+    const { id } = repair
+    result = result.split(repair.from).join(repair.to)
+    repairApplications.set(id, (repairApplications.get(id) || 0) + 1)
+  }
+  return result
+}
+
+export function assertRepairsApplied() {
+  const problems = []
+  for (const repair of UPSTREAM_REPAIRS) {
+    if (!repairApplications.has(repair.id)) {
+      problems.push(
+        `UPSTREAM_REPAIRS entry for "${repair.id}" no longer matches anything. ` +
+          'If the source has been corrected upstream, delete the entry.',
+      )
+    }
+  }
+  return problems
+}
+
 // Removes the leading H1 so the page can render its own heading, avoiding two
 // H1s in one document.
 //
@@ -731,7 +784,7 @@ export function loadDocs(language = DOCS_DEFAULT_LANGUAGE) {
     if (id === '') continue
 
     const raw = loadRaw(file)
-    const source = stripLanguageSwitcher(raw)
+    const source = repairUpstream(language, stripLanguageSwitcher(raw))
     const fallbackTitle = id ? titleCase(id.split('/').pop().replace(/-/g, ' ')) : 'Documentation'
     const title = titleFrom(source, fallbackTitle)
     const body = stripTitleAndNormaliseHeadings(source)

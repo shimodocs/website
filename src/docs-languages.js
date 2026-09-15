@@ -12,9 +12,17 @@
 // zh-CN is authored upstream but deliberately not published: shimodocs.com is
 // the international site and the Chinese documentation belongs to shimo.net,
 // so publishing both would have the two domains compete for the same queries.
+//
+// Only German and Japanese are published, and that is a deliberate pilot rather
+// than a limit of the pipeline: the translations are complete mirrors but they
+// are machine output, and no reader has been through them. Two markets with the
+// strongest self-hosting demand and the thinnest English-language competition
+// are enough to measure whether translated documentation earns traffic before
+// another six are switched on. The interface strings for the other five are
+// kept below so enabling one is a change to this array and nothing else.
 export const DOCS_DEFAULT_LANGUAGE = 'en'
 
-export const DOCS_LANGUAGES = ['en', 'de', 'es', 'fr', 'ja', 'ko', 'th', 'vi']
+export const DOCS_LANGUAGES = ['en', 'de', 'ja']
 
 export const LANGUAGE_META = {
   en: { label: 'English', ogLocale: 'en_US' },

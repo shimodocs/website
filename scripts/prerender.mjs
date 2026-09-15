@@ -17,6 +17,7 @@ import { dirname, join, resolve, sep } from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
 import { loadPosts, relatedPosts, toClientRecord } from './blog-content.mjs'
 import {
+  assertRepairsApplied,
   buildNav,
   docsIndexJsonLd,
   languagesByDocId,
@@ -50,6 +51,7 @@ const {
   ROUTE_SEO,
   headFor,
   robotsTxt,
+  AI_AND_SEARCH_CRAWLERS,
   sitemapUrlsetXml,
   sitemapIndexXml,
   SITE_URL,
@@ -462,6 +464,11 @@ const ALL_LAYOUTS = ['standard', 'feature', 'briefing', 'magazine']
 
 const problems = []
 
+// The upstream-repair table is a workaround for damage in the translated source.
+// It must actually be doing something, or it is either stale or silently failing
+// to protect the pages it was written for.
+problems.push(...assertRepairsApplied())
+
 // Articles must not all share one template. Enforced rather than trusted.
 const layoutCounts = new Map()
 for (const post of posts) layoutCounts.set(post.layout, (layoutCounts.get(post.layout) || 0) + 1)
@@ -850,6 +857,17 @@ for (const post of posts) {
 
 const robots = readFileSync(join(distDir, 'robots.txt'), 'utf8')
 if (!robots.includes(`Sitemap: ${SITE_URL}/sitemap.xml`)) problems.push('robots.txt is missing the sitemap directive')
+// The crawl policy is a deliberate decision, and the CDN has already overridden
+// it once with a managed default that disallowed every AI crawler. The file this
+// build emits must still carry the allowances and the retrieval signal, so a
+// regression in either place fails here rather than going unnoticed.
+for (const agent of AI_AND_SEARCH_CRAWLERS) {
+  if (!robots.includes(`User-agent: ${agent}\nAllow: /`)) {
+    problems.push(`robots.txt no longer allows ${agent}`)
+  }
+}
+if (!robots.includes('ai-input=yes')) problems.push('robots.txt lost the ai-input=yes retrieval signal')
+if (!robots.includes('ai-train=no')) problems.push('robots.txt lost the ai-train=no signal')
 
 // The AI-crawler index has to name every guide and every article, and may only
 // point at pages that exist, or an assistant quoting it hands out dead links.

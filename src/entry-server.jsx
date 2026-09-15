@@ -75,6 +75,7 @@ export {
   headFor,
   jsonLdFor,
   robotsTxt,
+  AI_AND_SEARCH_CRAWLERS,
   sitemapXml,
   sitemapUrlsetXml,
   sitemapIndexXml,

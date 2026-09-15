@@ -13,9 +13,11 @@ Vite + React marketing site for ShimoDocs, prerendered to static HTML at build t
 - `/pricing` — Pricing
 - `/contact-sales` — Contact Sales
 
-The documentation is published in eight languages as well. English keeps the
-unprefixed tree (`/docs/deployment/...`); every translation sits under its own
-prefix (`/de/docs/...`, `/ja/docs/...`, and so on).
+The documentation is published in German and Japanese as well. English keeps
+the unprefixed tree (`/docs/deployment/...`); a translation sits under its own
+prefix (`/de/docs/...`, `/ja/docs/...`). `src/docs-languages.js` is the switch
+that decides which languages exist, and the build fails if one is listed with
+no content to render.
 
 ## Local development
 
@@ -220,8 +222,8 @@ page and hydrates normally.
 
 The deployment, operations and troubleshooting guides are authored in
 [shimodocs/shimodocs](https://github.com/shimodocs/shimodocs) and mirrored into
-`content/docs` — 56 guides per language, eight languages, 440 published pages.
-The site is a consumer: nothing here edits a guide.
+`content/docs` — 56 guides per language. The site is a consumer: nothing here
+edits a guide.
 
 ```bash
 npm run sync:docs          # copy the published trees out of the product repo
@@ -230,9 +232,26 @@ node scripts/sync-docs.mjs --check   # report drift and exit 1
 
 `src/docs-languages.js` is the single switch: a language appears on the site only
 if it is listed there, and `scripts/sync-docs.mjs` copies exactly that list.
+Today that list is **English, German and Japanese** — a deliberate pilot rather
+than a limit of the pipeline. The upstream translations are complete mirrors but
+they are machine output, and at least one of them had damaged an instruction: a
+dropped `+` inside an inline code span turned a topology line into
+`3 master N worker` in the German and Japanese copies. Two markets with strong
+self-hosting demand and thin English-language competition are enough to measure
+whether translated documentation earns traffic before the other five are
+switched on. Turning one on is a change to that array followed by
+`npm run sync:docs`; the trees are not kept here while they are unpublished, so
+they cannot silently rot.
+
 `zh-CN` is deliberately absent — the Chinese documentation belongs to
 shimo.net, and publishing it here would have the two domains compete for the
 same queries.
+
+Damage found in a translation that has to be published anyway is corrected in
+`UPSTREAM_REPAIRS` (in `scripts/docs-content.mjs`) rather than by editing the
+mirror, because the mirror is overwritten on the next sync. An entry that no
+longer matches anything fails the build, so the table cannot outlive the bug it
+works around.
 
 ### What the build guarantees for every guide
 
@@ -267,8 +286,8 @@ The build fails if an id in it stops existing or if the link graph thins out.
 
 `sitemap.xml` is a `<sitemapindex>`. The URLs live in `sitemap-pages.xml`,
 `sitemap-blog.xml` and one `sitemap-docs-<language>.xml` per language, so Search
-Console reports index coverage per language instead of as a single 495-URL lump
-where one broken translation is invisible.
+Console reports index coverage per language instead of as one lump where a
+single broken translation is invisible.
 
 ## Publishing
 

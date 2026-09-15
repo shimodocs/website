@@ -518,11 +518,56 @@ export function headFor(pathname, options = {}) {
   return (options.indent || '    ') + tags.join('\n' + (options.indent || '    ')) + '\n  '
 }
 
+// Crawler policy.
+//
+// This site is early: it needs to be *found*, and in 2026 a large share of
+// "which tool should we use" answers are produced by assistants rather than by
+// a list of blue links. A crawler that is refused cannot cite us, so every
+// crawler that might quote the documentation is named and allowed explicitly.
+//
+// The distinction that matters is retrieval versus training, and it is expressed
+// with Content Signals rather than by blocking anyone: `ai-input=yes` permits
+// grounding an answer in this content, `ai-train=no` declines to contribute it
+// as training data. Blocking a crawler outright would give up the citation to
+// avoid the training, which is the wrong trade for a site with no brand
+// recognition yet.
+//
+// The allowances are written out per crawler rather than left to `User-agent: *`
+// because Cloudflare prepends a managed block to this file, and a managed
+// default has silently disallowed every one of these before. Naming them here
+// means the policy survives whatever the CDN decides the default should be.
+export const AI_AND_SEARCH_CRAWLERS = [
+  // Search indexes.
+  'Googlebot',
+  'Bingbot',
+  'DuckDuckBot',
+  'Applebot',
+  // Assistants and answer engines that cite their sources.
+  'OAI-SearchBot',
+  'ChatGPT-User',
+  'PerplexityBot',
+  'ClaudeBot',
+  'Claude-User',
+  'Google-Extended',
+  'Applebot-Extended',
+  'meta-externalagent',
+  'Amazonbot',
+]
+
 export function robotsTxt() {
+  const groups = AI_AND_SEARCH_CRAWLERS.flatMap(agent => [`User-agent: ${agent}`, 'Allow: /', ''])
   return [
     '# ShimoDocs — https://github.com/shimodocs/website',
+    '#',
+    '# Retrieval is welcome; training is not. The Content-Signal below is what',
+    '# expresses that, so the named crawlers are allowed through rather than',
+    '# blocked: a refused crawler cannot cite the documentation.',
+    '',
+    ...groups,
     'User-agent: *',
     'Allow: /',
+    '',
+    'Content-Signal: search=yes, ai-input=yes, ai-train=no, use=reference',
     '',
     `Sitemap: ${SITE_URL}/sitemap.xml`,
     '',
