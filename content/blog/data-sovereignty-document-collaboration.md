@@ -8,6 +8,19 @@ date: 2026-01-16
 tags: [data sovereignty, compliance, governance, security]
 keywords: "data sovereignty, data residency, document collaboration compliance, cross-border data access"
 featured: true
+faq:
+  - question: "Is data sovereignty the same as data residency?"
+    answer: "No. Residency is about where the bytes sit. Sovereignty is about who can be compelled to produce them. A document platform can satisfy residency completely and fail sovereignty entirely, and the gap between the two is where most procurement surprises live."
+  - question: "Can a vendor meet data residency and still fail on sovereignty?"
+    answer: "Yes. A vendor can run a region in your country, on your country soil, staffed by local employees, and still be a subsidiary of a foreign parent. Lawful-access requests can reach the parent, and depending on the jurisdiction and the corporate structure the local region may not be a meaningful barrier. Residency answers where data is stored and processed; sovereignty answers which authorities can compel access and through what process."
+  - question: "Why are document platforms especially exposed?"
+    answer: "Because they hold unstructured content. Structured systems hold fields you can classify, while a document repository holds everything that did not fit anywhere else. Content is heterogeneous, so you cannot enumerate what is sensitive in advance; access is broad, because collaboration means many people read many things; and search indexes and caches duplicate content with weaker controls than the source."
+  - question: "How many copies of a deleted document still exist?"
+    answer: "More than most reviews assume. Deleting from primary storage leaves point-in-time backups, a full-text search index, hot caches with their own expiry, and in a self-hosted deployment the AI retrieval layer as well. Each is a separate deletion problem, and sovereignty reviews routinely find at least one copy the organisation had forgotten."
+  - question: "Does encryption answer the data sovereignty question?"
+    answer: "No. Encryption at rest and in transit are standard, and they protect against media theft and network interception rather than against the operator decrypting what it serves. Customer-managed keys are meaningful only if the vendor genuinely cannot decrypt without you; if the service runs normally while your key is unavailable, you hold a key-shaped object rather than a control."
+  - question: "Which deployment approaches actually give you sovereignty?"
+    answer: "Only the last two of the usual options. Global multi-tenant SaaS leaves sovereignty in the vendor jurisdiction, a regional deployment depends on the corporate structure, and running a vendor product in your own cloud account leaves the vendor with plaintext access. A self-hosted application puts sovereignty in your infrastructure, and self-hosting with a local model endpoint extends that to inference."
 ---
 
 Data residency and data sovereignty are used interchangeably in procurement conversations, and the gap between them is where most surprises live.
@@ -143,3 +156,29 @@ Then map each to the deployment model. "We cannot evidence this with the current
 For most organisations the outcome is a split: commodity documents stay in a public cloud suite, and the sensitive tier moves to infrastructure they control. That is a reasonable destination, and it is easier to reach than a wholesale migration.
 
 If that is the direction, the [self-hosted collaboration guide](/blog/self-hosted-collaboration-guide) covers what running the controlled tier involves, and [what private cloud document collaboration means](/blog/what-is-private-cloud-document-collaboration) covers the architecture in more detail. For the controls a reviewer will ask you to evidence in that tier — where documents live, who can reach them, and what leaves the network — see [security and data control](/security).
+
+## Frequently asked questions
+
+### Is data sovereignty the same as data residency?
+
+No. Residency is about where the bytes sit. Sovereignty is about who can be compelled to produce them. A document platform can satisfy residency completely and fail sovereignty entirely, and the gap between the two is where most procurement surprises live.
+
+### Can a vendor meet data residency and still fail on sovereignty?
+
+Yes. A vendor can run a region in your country, on your country soil, staffed by local employees, and still be a subsidiary of a foreign parent. Lawful-access requests can reach the parent, and depending on the jurisdiction and the corporate structure the local region may not be a meaningful barrier. Residency answers where data is stored and processed; sovereignty answers which authorities can compel access and through what process.
+
+### Why are document platforms especially exposed?
+
+Because they hold unstructured content. Structured systems hold fields you can classify, while a document repository holds everything that did not fit anywhere else. Content is heterogeneous, so you cannot enumerate what is sensitive in advance; access is broad, because collaboration means many people read many things; and search indexes and caches duplicate content with weaker controls than the source.
+
+### How many copies of a deleted document still exist?
+
+More than most reviews assume. Deleting from primary storage leaves point-in-time backups, a full-text search index, hot caches with their own expiry, and in a self-hosted deployment the AI retrieval layer as well. Each is a separate deletion problem, and sovereignty reviews routinely find at least one copy the organisation had forgotten.
+
+### Does encryption answer the data sovereignty question?
+
+No. Encryption at rest and in transit are standard, and they protect against media theft and network interception rather than against the operator decrypting what it serves. Customer-managed keys are meaningful only if the vendor genuinely cannot decrypt without you; if the service runs normally while your key is unavailable, you hold a key-shaped object rather than a control.
+
+### Which deployment approaches actually give you sovereignty?
+
+Only the last two of the usual options. Global multi-tenant SaaS leaves sovereignty in the vendor jurisdiction, a regional deployment depends on the corporate structure, and running a vendor product in your own cloud account leaves the vendor with plaintext access. A self-hosted application puts sovereignty in your infrastructure, and self-hosting with a local model endpoint extends that to inference.

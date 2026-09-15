@@ -8,6 +8,19 @@ date: 2026-01-12
 tags: [private cloud, self-hosted, architecture, data sovereignty]
 keywords: "private cloud document collaboration, self-hosted document collaboration, what is private cloud collaboration"
 featured: true
+faq:
+  - question: "What is private cloud document collaboration?"
+    answer: "It means running the collaboration software itself — the editor, the real-time sync service, storage, search and the AI features — inside a network boundary you govern, rather than subscribing to a multi-tenant service. The editing experience can look identical. What changes is who holds the keys, who can be compelled to produce the data, and who decides when the product changes underneath you."
+  - question: "Does self-hosting storage alone make a deployment private?"
+    answer: "No. Self-hosting storage while leaving the editor and the AI features in a vendor cloud leaves the plaintext inside a process you do not control, because the editor is where the plaintext lives. A complete deployment also covers the application tier, the real-time collaboration service, the relational database, object storage, the AI layer and identity."
+  - question: "Which layers have to be self-hosted for the boundary to hold?"
+    answer: "The application tier, the real-time collaboration service, the relational database, object storage, the AI layer and identity. If any of those stays with a third party, that party sits inside your trust boundary whether or not it appears on the architecture diagram."
+  - question: "What do you give up when you move to a private cloud?"
+    answer: "Uptime becomes your operations problem, upgrades land on your schedule, some vendor integrations are unavailable, and you still pay for infrastructure. For most organisations the staffing cost of operations is the largest real cost of the move, and it is larger than the change in licence spend."
+  - question: "When is private cloud document collaboration the wrong choice?"
+    answer: "When nobody owns operations and there is no on-call rotation, when the team is under ten people and saving money is the main driver, when the only requirement is encryption that every serious vendor already provides, or when deep integration with an ecosystem you cannot replace is load-bearing. Self-hosting concentrates risk rather than removing it."
+  - question: "How does ShimoDocs deploy?"
+    answer: "As a self-hosted suite covering documents, writers, spreadsheets, presentations, forms and tables, with the AI workspace included. It runs on a single node or a high-availability Kubernetes cluster, connects to your MySQL, Redis and object storage, and runs AI against the model endpoint you nominate."
 ---
 
 Most teams never choose where their documents live. They inherit a decision made years ago by whoever picked the productivity suite, and the files, comments, version history and search indexes have been accumulating inside someone else's data centre ever since.
@@ -126,3 +139,29 @@ Before you commit, get specific answers to these:
 - What does the backup and restore story look like, and has it been tested?
 
 The answers separate products that were designed to be self-hosted from products that were designed to be hosted and happen to have a deployment option.
+
+## Frequently asked questions
+
+### What is private cloud document collaboration?
+
+It means running the collaboration software itself — the editor, the real-time sync service, storage, search and the AI features — inside a network boundary you govern, rather than subscribing to a multi-tenant service. The editing experience can look identical. What changes is who holds the keys, who can be compelled to produce the data, and who decides when the product changes underneath you.
+
+### Does self-hosting storage alone make a deployment private?
+
+No. Self-hosting storage while leaving the editor and the AI features in a vendor cloud leaves the plaintext inside a process you do not control, because the editor is where the plaintext lives. A complete deployment also covers the application tier, the real-time collaboration service, the relational database, object storage, the AI layer and identity.
+
+### Which layers have to be self-hosted for the boundary to hold?
+
+The application tier, the real-time collaboration service, the relational database, object storage, the AI layer and identity. If any of those stays with a third party, that party sits inside your trust boundary whether or not it appears on the architecture diagram.
+
+### What do you give up when you move to a private cloud?
+
+Uptime becomes your operations problem, upgrades land on your schedule, some vendor integrations are unavailable, and you still pay for infrastructure. For most organisations the staffing cost of operations is the largest real cost of the move, and it is larger than the change in licence spend.
+
+### When is private cloud document collaboration the wrong choice?
+
+When nobody owns operations and there is no on-call rotation, when the team is under ten people and saving money is the main driver, when the only requirement is encryption that every serious vendor already provides, or when deep integration with an ecosystem you cannot replace is load-bearing. Self-hosting concentrates risk rather than removing it.
+
+### How does ShimoDocs deploy?
+
+As a self-hosted suite covering documents, writers, spreadsheets, presentations, forms and tables, with the AI workspace included. It runs on a single node or a high-availability Kubernetes cluster, connects to your MySQL, Redis and object storage, and runs AI against the model endpoint you nominate.

@@ -820,8 +820,8 @@ export const BLOG_POSTS = [
       "governance",
       "security"
     ],
-    "readingTime": 6,
-    "words": 1300,
+    "readingTime": 8,
+    "words": 1703,
     "featured": true
   },
   {
@@ -860,8 +860,8 @@ export const BLOG_POSTS = [
       "architecture",
       "data sovereignty"
     ],
-    "readingTime": 5,
-    "words": 1113,
+    "readingTime": 7,
+    "words": 1486,
     "featured": true
   }
 ]
