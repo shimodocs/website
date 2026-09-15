@@ -8,6 +8,19 @@ date: 2026-02-06
 updated: 2026-09-15
 tags: [comparison, sharepoint, document management, microsoft]
 keywords: "shimodocs vs sharepoint, sharepoint alternative, self-hosted sharepoint alternative"
+faq:
+  - question: "What is SharePoint genuinely good at?"
+    answer: "Document libraries with versioning, plus retention labels and records management where the compliance features are licensed. Deep Microsoft integration with Teams, Outlook, Office desktop applications and Entra ID. Metadata and content types that build structured document management without custom code. Workflow and automation through Power Automate. And a governance surface where retention policies, eDiscovery and DLP sit inside the broader Microsoft compliance stack. For an organisation already committed to Microsoft 365, SharePoint is the path of least resistance."
+  - question: "Where does SharePoint create friction?"
+    answer: "Four places. The user experience is library-shaped, so real-time co-authoring happens through Office on the web rather than in a purpose-built collaborative editor. Administration depth is real: content types, term stores, permission inheritance and site governance need expertise, and many organisations run SharePoint below its potential for that reason. Licensing complexity means working out whether a specific retention or eDiscovery feature is available requires licence mapping rather than a feature list. And the modern experience is Microsoft 365, so organisations with data sovereignty requirements should confirm what control they actually retain."
+  - question: "When is SharePoint the better choice?"
+    answer: "When you are Microsoft-first and the integration is load-bearing, when you need records management, eDiscovery and DLP in one governance stack, when you want metadata-driven document management with content types, or when you have the administration expertise on staff or plan to buy it."
+  - question: "When is ShimoDocs the better fit?"
+    answer: "When the binding constraint is where content and AI inference happen, when the primary work is editing documents, spreadsheets and presentations rather than governing a library, when you want a working collaborative workspace in days rather than a platform project in months, or when you need a configurable AI endpoint rather than a vendor assistant."
+  - question: "Do organisations usually replace SharePoint entirely?"
+    answer: "Rarely. A common pattern is SharePoint staying as the records and governance layer while a focused suite handles active collaborative work: documents are authored and reviewed in the suite, then published into SharePoint when they reach a retention-relevant state. That avoids trying to make one platform do both jobs, but it needs a rule about which system is authoritative at which stage, because without one teams keep two copies and trust neither."
+  - question: "What most often disappoints people about SharePoint?"
+    answer: "Not a missing feature, but a library nobody can navigate. SharePoint supplies the primitives for good information architecture — content types, metadata columns, managed terms and views — and no opinion about how to use them, so without a deliberate design a tenant accumulates sites created by whoever needed one, with inconsistent column names and permission inheritance nobody has audited since launch."
 ---
 
 SharePoint is not really a document collaboration product. It is a platform that includes document libraries, sites, lists, workflows and an identity model, and document collaboration is one thing built on top of it.
@@ -139,3 +152,29 @@ Budget the archive decision separately. Most organisations discover that a large
 Packaging, licensing and capability change often in this category. Confirm current specifics directly before committing; the architectural difference is the durable part. For the broader picture, see [what private cloud collaboration involves](/blog/what-is-private-cloud-document-collaboration) and [how it compares with Google Docs](/blog/shimodocs-vs-google-docs).
 
 A SharePoint move is decided by permissions and metadata columns rather than by document count. The [migration hub](/migration) covers what a platform can import, what has to be mapped and rebuilt by hand, and how to verify the result before the old site is retired.
+
+## Frequently asked questions
+
+### What is SharePoint genuinely good at?
+
+Document libraries with versioning, plus retention labels and records management where the compliance features are licensed. Deep Microsoft integration with Teams, Outlook, Office desktop applications and Entra ID. Metadata and content types that build structured document management without custom code. Workflow and automation through Power Automate. And a governance surface where retention policies, eDiscovery and DLP sit inside the broader Microsoft compliance stack. For an organisation already committed to Microsoft 365, SharePoint is the path of least resistance.
+
+### Where does SharePoint create friction?
+
+Four places. The user experience is library-shaped, so real-time co-authoring happens through Office on the web rather than in a purpose-built collaborative editor. Administration depth is real: content types, term stores, permission inheritance and site governance need expertise, and many organisations run SharePoint below its potential for that reason. Licensing complexity means working out whether a specific retention or eDiscovery feature is available requires licence mapping rather than a feature list. And the modern experience is Microsoft 365, so organisations with data sovereignty requirements should confirm what control they actually retain.
+
+### When is SharePoint the better choice?
+
+When you are Microsoft-first and the integration is load-bearing, when you need records management, eDiscovery and DLP in one governance stack, when you want metadata-driven document management with content types, or when you have the administration expertise on staff or plan to buy it.
+
+### When is ShimoDocs the better fit?
+
+When the binding constraint is where content and AI inference happen, when the primary work is editing documents, spreadsheets and presentations rather than governing a library, when you want a working collaborative workspace in days rather than a platform project in months, or when you need a configurable AI endpoint rather than a vendor assistant.
+
+### Do organisations usually replace SharePoint entirely?
+
+Rarely. A common pattern is SharePoint staying as the records and governance layer while a focused suite handles active collaborative work: documents are authored and reviewed in the suite, then published into SharePoint when they reach a retention-relevant state. That avoids trying to make one platform do both jobs, but it needs a rule about which system is authoritative at which stage, because without one teams keep two copies and trust neither.
+
+### What most often disappoints people about SharePoint?
+
+Not a missing feature, but a library nobody can navigate. SharePoint supplies the primitives for good information architecture — content types, metadata columns, managed terms and views — and no opinion about how to use them, so without a deliberate design a tenant accumulates sites created by whoever needed one, with inconsistent column names and permission inheritance nobody has audited since launch.

@@ -640,8 +640,8 @@ export const BLOG_POSTS = [
       "document management",
       "microsoft"
     ],
-    "readingTime": 6,
-    "words": 1217,
+    "readingTime": 8,
+    "words": 1666,
     "featured": false
   },
   {
@@ -793,15 +793,15 @@ export const BLOG_POSTS = [
     "layout": "standard",
     "figures": 2,
     "date": "2026-01-19",
-    "updated": null,
+    "updated": "2026-09-15",
     "tags": [
       "google docs alternative",
       "private cloud",
       "migration",
       "comparison"
     ],
-    "readingTime": 6,
-    "words": 1277,
+    "readingTime": 8,
+    "words": 1864,
     "featured": false
   },
   {
