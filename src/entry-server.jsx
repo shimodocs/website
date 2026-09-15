@@ -72,6 +72,7 @@ export { ROUTES } from './routes'
 export {
   ROUTE_PATHS,
   ROUTE_SEO,
+  ROUTE_UPDATED,
   headFor,
   jsonLdFor,
   robotsTxt,

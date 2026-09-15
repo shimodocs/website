@@ -8,6 +8,7 @@
 // the same string by construction.
 import { useLocation } from 'react-router-dom'
 import { Eyebrow } from '../components/Section'
+import { FREE_TEAM_LIMIT_WORD } from '../pricing-facts.js'
 import { HUBS } from '../hubs'
 import { ROUTE_SEO, normalisePath } from '../seo'
 import { DOWNLOADS, LICENSE_REQUEST_URL } from '../downloads'
@@ -141,7 +142,7 @@ export default function Hub() {
 
       <aside className="hub-cta">
         <div>
-          <p className="hub-cta-kicker">Free for teams of up to five people</p>
+          <p className="hub-cta-kicker">Free for teams of up to {FREE_TEAM_LIMIT_WORD} people</p>
           <h2>Bring the deployment questions to us</h2>
           <p>
             Send us your topology and middleware decisions and we will tell you what the deployment looks like — or

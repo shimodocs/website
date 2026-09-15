@@ -8,6 +8,8 @@
 // content/docs, which is synced from the product repository — so the hub and the
 // guide it links to cannot describe the product differently.
 
+import { FREE_TEAM_LIMIT_WORD } from './pricing-facts.js'
+
 export const HUBS = {
   '/on-premises': {
     eyebrow: 'On-premises deployment',
@@ -123,7 +125,7 @@ export const HUBS = {
           'Any external middleware packages, if you are running MySQL, Redis, MongoDB or Kafka yourself',
         ],
         note:
-          'Because a licence is a file rather than a phone-home check, enabling the suite on an isolated network does not require a temporary connection. The free perpetual licence for teams of up to five people is issued the same way.',
+          `Because a licence is a file rather than a phone-home check, enabling the suite on an isolated network does not require a temporary connection. The free perpetual licence for teams of up to ${FREE_TEAM_LIMIT_WORD} people is issued the same way.`,
       },
       {
         heading: 'AI without outbound access',

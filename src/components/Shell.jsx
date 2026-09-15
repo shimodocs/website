@@ -2,6 +2,7 @@ import { Link, NavLink } from 'react-router-dom'
 import { DOWNLOADS, LICENSE_EMAIL, LICENSE_REQUEST_URL } from '../downloads'
 import { NAV_LINKS } from '../routes'
 import { GITHUB_URL } from '../seo'
+import { FREE_TEAM_LIMIT } from '../pricing-facts.js'
 
 // Descriptive anchor text and a full site footer give crawlers an internal
 // link graph. The previous shell exposed only six nav labels and no footer
@@ -87,7 +88,7 @@ export default function Shell({ children }) {
           </span>
           <p>Self-hosted document collaboration with AI agents, in your private cloud.</p>
           <p className="footer-contact">
-            Free for up to 5 users · License requests &amp; support:{' '}
+            Free for up to {FREE_TEAM_LIMIT} users · License requests &amp; support:{' '}
             <a href={LICENSE_REQUEST_URL}>{LICENSE_EMAIL}</a>
           </p>
         </div>

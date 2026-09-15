@@ -12,6 +12,11 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v5
+        with:
+          # The sitemaps date every URL from the commit that last changed its
+          # content, so the build needs the history. A shallow clone collapses
+          # those dates onto one day and the prerenderer fails the build over it.
+          fetch-depth: 0
       - name: Set up Node.js
         uses: actions/setup-node@v5
         with:

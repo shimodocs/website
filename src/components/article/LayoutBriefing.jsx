@@ -11,6 +11,7 @@ import {
   splitIntoSections,
 } from './shared'
 import { DOWNLOADS } from '../../downloads'
+import { FREE_TEAM_LIMIT_WORD } from '../../pricing-facts.js'
 
 export default function LayoutBriefing({ post, related, older, newer }) {
   const { preamble, sections } = splitIntoSections(post.html)
@@ -55,7 +56,7 @@ export default function LayoutBriefing({ post, related, older, newer }) {
           </nav>
 
           <aside className="brief-cta">
-            <p>Free for up to five users</p>
+            <p>Free for up to {FREE_TEAM_LIMIT_WORD} users</p>
             <a className="button" href={DOWNLOADS.amd64.url}>
               Download installer
             </a>

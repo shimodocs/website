@@ -4,6 +4,7 @@
 // guides is linked from here with descriptive anchor text, so nothing depends
 // on a sitemap alone for discovery.
 import { DOC_NAV } from '../generated/docs-nav'
+import { FREE_TEAM_LIMIT_WORD } from '../pricing-facts.js'
 import { Eyebrow } from '../components/Section'
 
 const TOTAL = DOC_NAV.reduce(
@@ -74,7 +75,7 @@ export default function DocsIndex() {
 
       <aside className="docs-cta">
         <div>
-          <p className="docs-cta-kicker">Free for teams of up to five people</p>
+          <p className="docs-cta-kicker">Free for teams of up to {FREE_TEAM_LIMIT_WORD} people</p>
           <h2>Run it, then decide</h2>
           <p>
             Download the self-hosted installer, request the free perpetual licence, and bring the deployment questions

@@ -28,6 +28,9 @@ import {
   withNeighbours,
 } from './docs-content.mjs'
 import { ARTICLE_DOCS } from './article-docs.mjs'
+import { auditFaqsInDirectory } from './check-faq.mjs'
+import { auditPricingFactsInDirectory } from './check-pricing-facts.mjs'
+import { contentDate } from './content-dates.mjs'
 import { INDEXNOW_KEY, keyFileProblem } from './indexnow.mjs'
 import { DOCS_DEFAULT_LANGUAGE, DOCS_LANGUAGES, docsBase } from '../src/docs-languages.js'
 
@@ -50,6 +53,7 @@ const {
   renderDocsIndex,
   ROUTE_PATHS,
   ROUTE_SEO,
+  ROUTE_UPDATED,
   headFor,
   robotsTxt,
   AI_AND_SEARCH_CRAWLERS,
@@ -299,34 +303,116 @@ writeFileSync(join(distDir, 'blog', 'feed.xml'), blogFeedXml(posts))
 // coverage per language: with all 500 URLs in one file, a language whose
 // translations Google refuses to index is invisible until the traffic numbers
 // fail to appear.
+//
+// The commercial pages are their own file and the first <sitemap> in the index,
+// so the first child a crawler fetches after the index is the set of pages that
+// carry the site's search demand rather than the legal notices and the archive.
+// They cannot be listed in sitemap.xml directly: a sitemap index may only
+// contain <sitemap> entries, and mixing <url> into it makes the whole file
+// invalid, which is how a site ends up with no sitemap at all.
 const today = new Date().toISOString().slice(0, 10)
 const postsLastmod = posts[0]?.date || today
 
+// The pages that answer a buying question: what the product is, whether it runs
+// where the reader needs it, what it replaces, how to move, and what it costs.
+// Everything else on the site — the archive, its topic pages, the legal notices
+// — is navigation or housekeeping and belongs in the file that follows.
+const CORE_PATHS = [
+  '/',
+  '/ai-workspace',
+  '/on-premises',
+  '/airgap',
+  '/security',
+  '/solutions/atlassian-alternative',
+  '/solutions/confluence-alternative',
+  '/migration',
+  '/pricing',
+  '/download',
+  '/comparison',
+  '/docs',
+  '/contact-sales',
+  '/about',
+]
+for (const path of CORE_PATHS) {
+  if (!ROUTE_PATHS.includes(path)) {
+    console.error(`CORE_PATHS lists ${path}, which is not a declared route. Fix the list or the route table.`)
+    process.exit(1)
+  }
+}
+// A date for a route that no longer exists is a sign the table was not updated
+// when the route went away. Every route being dated is checked below, where the
+// entries are built.
+for (const path of Object.keys(ROUTE_UPDATED)) {
+  if (!ROUTE_PATHS.includes(path)) {
+    console.error(`ROUTE_UPDATED dates ${path}, which is not a declared route. Remove the entry in src/seo.js.`)
+    process.exit(1)
+  }
+}
+
+// lastmod is the date the content changed, never the build date. The build date
+// would claim all ~240 URLs changed on every deploy, which is the one thing a
+// crawler cannot use.
+//
+// Checked as a real calendar date, not just the shape: "2026-02-31" matches the
+// pattern and would be published as-is.
+function isIsoDate(value) {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(value || '')) return false
+  const parsed = new Date(`${value}T00:00:00Z`)
+  return !Number.isNaN(parsed.valueOf()) && parsed.toISOString().slice(0, 10) === value
+}
+
+function routeEntry(path) {
+  const lastmod = ROUTE_UPDATED[path]
+  if (!isIsoDate(lastmod)) {
+    console.error(`ROUTE_UPDATED has no YYYY-MM-DD date for ${path}. Add one in src/seo.js.`)
+    process.exit(1)
+  }
+  return {
+    loc: absoluteUrl(path),
+    lastmod,
+    changefreq: ROUTE_SEO[path].changeFrequency,
+    priority: ROUTE_SEO[path].priority,
+    // The product screenshots, listed against the pages that display them, so
+    // image search has a reason to index them under this domain. Only the
+    // pages that really show them carry them: an image sitemap that claims
+    // images a page does not have is a spam signal, not a shortcut.
+    //
+    // Six, not seven. The seventh screenshot belongs to the workflow carousel,
+    // which renders one scene at a time, so it is not in the served HTML and
+    // listing it would be the overstatement this rule exists to prevent.
+    images:
+      path === '/'
+        ? Array.from({ length: 6 }, (unused, index) => absoluteUrl(`/assets/extract-${index + 1}.webp`))
+        : path === '/download'
+          ? [absoluteUrl('/assets/workspace-recent-files.webp')]
+          : path === '/comparison'
+            ? [absoluteUrl('/assets/workspace-collaboration.webp')]
+            : [],
+  }
+}
+
+// A guide's date is the date of the commit that last changed that Markdown file,
+// including the translation: the German page changed when the German page
+// changed, not when the English one did.
+function docLastmod(doc) {
+  const date = contentDate(doc.file)
+  if (!date) {
+    console.error(`${doc.file} has no lastmod date: the file is missing, or the build has no git history`)
+    process.exit(1)
+  }
+  return date
+}
+
 const sitemapFiles = [
   {
+    // First in the index on purpose. Keep it that way: this is the file the
+    // crawler reads first after the index.
+    name: 'sitemap-core.xml',
+    entries: CORE_PATHS.map(routeEntry),
+  },
+  {
     name: 'sitemap-pages.xml',
-    entries: ROUTE_PATHS.map(path => ({
-      loc: absoluteUrl(path),
-      lastmod: today,
-      changefreq: ROUTE_SEO[path].changeFrequency,
-      priority: ROUTE_SEO[path].priority,
-      // The product screenshots, listed against the pages that display them, so
-      // image search has a reason to index them under this domain. Only the
-      // pages that really show them carry them: an image sitemap that claims
-      // images a page does not have is a spam signal, not a shortcut.
-      //
-      // Six, not seven. The seventh screenshot belongs to the workflow carousel,
-      // which renders one scene at a time, so it is not in the served HTML and
-      // listing it would be the overstatement this rule exists to prevent.
-      images:
-        path === '/'
-          ? Array.from({ length: 6 }, (unused, index) => absoluteUrl(`/assets/extract-${index + 1}.webp`))
-          : path === '/download'
-            ? [absoluteUrl('/assets/workspace-recent-files.webp')]
-            : path === '/comparison'
-              ? [absoluteUrl('/assets/workspace-collaboration.webp')]
-              : [],
-    })),
+    entries: ROUTE_PATHS.filter(path => !CORE_PATHS.includes(path)).map(routeEntry),
   },
   {
     name: 'sitemap-blog.xml',
@@ -344,10 +430,17 @@ const sitemapFiles = [
       // The English one is a route and is already in sitemap-pages.xml.
       ...(language === DOCS_DEFAULT_LANGUAGE
         ? []
-        : [{ loc: absoluteUrl(docsBase(language)), lastmod: today, changefreq: 'monthly', priority: '0.9' }]),
+        : [
+            {
+              loc: absoluteUrl(docsBase(language)),
+              lastmod: docLastmod(loadDocsIndex(language)),
+              changefreq: 'monthly',
+              priority: '0.9',
+            },
+          ]),
       ...sortDocs(docsByLanguage.get(language)).map(doc => ({
         loc: absoluteUrl(doc.url),
-        lastmod: today,
+        lastmod: docLastmod(doc),
         changefreq: 'monthly',
         // The overview and the deployment index are the doorways into the
         // guide tree; individual runbooks are supporting pages.
@@ -357,14 +450,21 @@ const sitemapFiles = [
   })),
 ]
 
+// The index reports each child's own newest date, so it does not claim the blog
+// changed when only a guide did.
+function newestLastmod(entries) {
+  return entries.reduce((newest, entry) => (entry.lastmod > newest ? entry.lastmod : newest), '')
+}
+
 for (const file of sitemapFiles) {
-  writeFileSync(join(distDir, file.name), sitemapUrlsetXml(file.entries, today))
+  file.lastmod = newestLastmod(file.entries)
+  writeFileSync(join(distDir, file.name), sitemapUrlsetXml(file.entries, file.lastmod))
 }
 
 writeFileSync(
   join(distDir, 'sitemap.xml'),
   sitemapIndexXml(
-    sitemapFiles.map(file => ({ loc: absoluteUrl(`/${file.name}`) })),
+    sitemapFiles.map(file => ({ loc: absoluteUrl(`/${file.name}`), lastmod: file.lastmod })),
     today,
   ),
 )
@@ -523,18 +623,11 @@ for (const routePath of ROUTE_PATHS) {
   if (!html.includes(`<title>${escapeHtml(meta.title)}</title>`)) problems.push(`${routePath}: title not injected`)
   if (!html.includes('rel="canonical"')) problems.push(`${routePath}: no canonical link`)
   if (!html.includes('application/ld+json')) problems.push(`${routePath}: no structured data`)
-  // A route that declares questions must publish them as a FAQPage, and the
-  // visible answer must be the same string the crawler reads.
-  if (meta.faqs?.length) {
-    if (!html.includes('"FAQPage"')) {
-      problems.push(`${routePath}: declares ${meta.faqs.length} FAQs but ships no FAQPage structured data`)
-    }
-    for (const faq of meta.faqs) {
-      if (!html.includes(escapeHtml(faq.question))) {
-        problems.push(`${routePath}: FAQ "${faq.question}" is not rendered on the page`)
-      }
-    }
-  }
+  // The FAQ surface is verified once, for every page, by scripts/check-faq.mjs
+  // after the build has written them all. It checks the questions *and* the
+  // answers against the rendered text, which is the half a check inside this
+  // loop cannot do safely: the answer also exists in the JSON-LD of this same
+  // document, so searching the raw HTML for it would always succeed.
   const titleTags = html.match(/<title>/g)
   if (!titleTags || titleTags.length !== 1) problems.push(`${routePath}: expected exactly one <title>`)
 }
@@ -816,11 +909,10 @@ for (const { post, file } of articles) {
   }
   if (!html.includes('"BlogPosting"')) problems.push(`${post.slug}: no BlogPosting structured data`)
   if (!html.includes('"BreadcrumbList"')) problems.push(`${post.slug}: no breadcrumb structured data`)
-  // An article that declares FAQs must publish them as structured data too —
-  // that is the whole reason the frontmatter exists.
-  if (post.faq?.length && !html.includes('"FAQPage"')) {
-    problems.push(`${post.slug}: declares ${post.faq.length} FAQs but ships no FAQPage structured data`)
-  }
+  // An article that declares FAQs is checked with every other page by
+  // scripts/check-faq.mjs, which also proves each answer is the string the
+  // reader can see. Asking only whether "FAQPage" appears here was the weaker
+  // half of that check and hid the failure it was meant to catch.
   // Only the layouts that ship a table of contents are expected to link their
   // headings. Feature and magazine deliberately have none, which is the point
   // of having more than one layout.
@@ -1040,6 +1132,48 @@ for (const { doc } of guides) {
   }
 }
 
+// lastmod has to be a real date, and the site cannot report one single date for
+// every URL: that is the defect these dates were added to remove, and the build
+// clock produces exactly it. Three distinct dates is a low bar that a
+// build-stamped sitemap cannot clear.
+const sitemapDates = new Set()
+const locOwner = new Map()
+for (const file of sitemapFiles) {
+  for (const entry of file.entries) {
+    if (!isIsoDate(entry.lastmod)) {
+      problems.push(`${file.name}: ${entry.loc} has no YYYY-MM-DD lastmod`)
+    } else {
+      if (entry.lastmod > today) problems.push(`${file.name}: ${entry.loc} is dated ${entry.lastmod}, in the future`)
+      sitemapDates.add(entry.lastmod)
+    }
+    if (locOwner.has(entry.loc)) {
+      problems.push(`${entry.loc} is listed in both ${locOwner.get(entry.loc)} and ${file.name}`)
+    } else {
+      locOwner.set(entry.loc, file.name)
+    }
+  }
+}
+if (sitemapDates.size < 3) {
+  problems.push(
+    `the whole site reports ${sitemapDates.size} distinct lastmod date(s); ` +
+      'the dates are coming from the build clock instead of the content',
+  )
+}
+
+// The commercial pages are the first child of the index, and they are all in it.
+// Both halves matter: a crawler reads one child after the index, and a core page
+// that quietly fell out of its own file would still be reachable, just last.
+const firstChild = sitemapIndex.match(/<sitemap>\s*<loc>([^<]+)<\/loc>/)?.[1] || ''
+if (firstChild !== absoluteUrl('/sitemap-core.xml')) {
+  problems.push(`sitemap.xml does not list sitemap-core.xml first (first child is "${firstChild}")`)
+}
+const coreXml = readFileSync(join(distDir, 'sitemap-core.xml'), 'utf8')
+for (const path of CORE_PATHS) {
+  if (!coreXml.includes(`<loc>${escapeHtml(absoluteUrl(path))}</loc>`)) {
+    problems.push(`sitemap-core.xml is missing ${path}`)
+  }
+}
+
 // The generated client metadata must match the Markdown on disk.
 const generated = readFileSync(join(rootDir, 'src', 'generated', 'blog-posts.js'), 'utf8')
 const generatedRecords = JSON.parse(generated.match(/export const BLOG_POSTS = ([\s\S]*?)\n\nexport/)[1])
@@ -1081,6 +1215,40 @@ for (let i = 0; i < seenLayouts.length; i += 1) {
   }
 }
 
+// ------------------------------------------------------------------- FAQ
+//
+// The FAQ exists twice on every page that has one: the text a reader sees and
+// the FAQPage markup a crawler reads. Google requires the markup to describe the
+// visible content, and the two copies are edited by different people at
+// different times, so they are compared here — questions and answers — against
+// the rendered page, with the scripts stripped first. It also fails the build
+// when one question is published with two different answers, because an answer
+// engine quoting either one makes the site contradict itself.
+const declaredFaqs = new Map()
+for (const path of ROUTE_PATHS) {
+  if (ROUTE_SEO[path].faqs?.length) declaredFaqs.set(path, ROUTE_SEO[path].faqs)
+}
+for (const post of posts) {
+  if (post.faq?.length) declaredFaqs.set(`/blog/${post.slug}`, post.faq)
+}
+const faqAudit = auditFaqsInDirectory(distDir, declaredFaqs)
+problems.push(...faqAudit.problems)
+const faqWarnings = faqAudit.warnings
+const faqSummary = `${faqAudit.stats.questions} FAQs on ${faqAudit.stats.faqPages} of ${faqAudit.stats.pages} pages`
+
+// ---------------------------------------------------------- pricing facts
+//
+// The price, the free limit and the annual discount are declared once in
+// src/pricing-facts.js, but a large share of the articles states the free limit
+// in hand-written Markdown. This reads every rendered page and fails the build
+// when one of them states a different number, so a price change cannot ship
+// half-applied.
+const pricingAudit = auditPricingFactsInDirectory(distDir)
+problems.push(...pricingAudit.problems)
+const pricingSummary =
+  `${pricingAudit.stats.freeLimitClaims} free-limit, ${pricingAudit.stats.perUserPriceClaims} price and ` +
+  `${pricingAudit.stats.annualDiscountClaims} discount claims`
+
 if (problems.length) {
   console.error('Prerender verification failed:')
   for (const problem of problems) console.error(`  - ${problem}`)
@@ -1088,6 +1256,7 @@ if (problems.length) {
 }
 
 for (const warning of titleLengthWarnings) console.warn(`  warning: ${warning}`)
+for (const warning of faqWarnings) console.warn(`  warning: ${warning}`)
 
 const layoutSummary = [...layoutCounts.entries()].map(([layout, count]) => `${layout} ${count}`).join(', ')
 console.log(
@@ -1095,5 +1264,7 @@ console.log(
     `${guides.length} guides in ${docsByLanguage.size} languages, unique titles per language, ` +
     `canonical links, hreflang, structured data, no client bundle. ` +
     `${linksChecked} internal links resolved on ${htmlPagesCrawled} pages. ` +
-    `Layouts: ${layoutSummary}. Distinct structures: ${signatures.size}.`,
+    `Layouts: ${layoutSummary}. Distinct structures: ${signatures.size}. ` +
+    `FAQ markup matches the visible text for ${faqSummary}. ` +
+    `Pricing facts agree on ${pricingSummary}.`,
 )

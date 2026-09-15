@@ -3,6 +3,7 @@ import { Eyebrow } from '../components/Section'
 import { DOWNLOADS, LICENSE_REQUEST_URL } from '../downloads'
 import { formatDate, formatMonthYear } from '../format'
 import { BLOG_CATEGORIES, BLOG_POSTS } from '../generated/blog-posts'
+import { FREE_TEAM_LIMIT_WORD } from '../pricing-facts.js'
 
 const FEATURED_COUNT = 3
 
@@ -188,7 +189,7 @@ export default function Blog() {
         <div>
           <h2>Try it on your own infrastructure</h2>
           <p>
-            ShimoDocs is free for teams of up to five people, self-hosted, and includes the AI workspace. Download the
+            ShimoDocs is free for teams of up to {FREE_TEAM_LIMIT_WORD} people, self-hosted, and includes the AI workspace. Download the
             installer or request a licence to get started.
           </p>
         </div>

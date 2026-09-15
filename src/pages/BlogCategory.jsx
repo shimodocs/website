@@ -11,6 +11,7 @@
 // two cannot drift), the other topics, and the download path.
 import { useLocation } from 'react-router-dom'
 import { Eyebrow } from '../components/Section'
+import { FREE_TEAM_LIMIT_WORD } from '../pricing-facts.js'
 import { formatMonthYear } from '../format'
 import { BLOG_CATEGORIES, BLOG_POSTS } from '../generated/blog-posts'
 import { CATEGORY_DOCS } from '../generated/blog-category-docs'
@@ -144,7 +145,7 @@ export default function BlogCategory() {
       <aside className="docs-cta">
         <div>
           <p className="docs-cta-kicker">Run this in your own environment</p>
-          <h2>ShimoDocs is free for teams of up to five people</h2>
+          <h2>ShimoDocs is free for teams of up to {FREE_TEAM_LIMIT_WORD} people</h2>
           <p>
             Self-host the suite in your own Kubernetes cluster, or ask the team for a guided private cloud deployment.
           </p>

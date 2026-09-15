@@ -6,6 +6,7 @@
 // the app, and silently render an empty page.
 import { DOWNLOADS, LICENSE_REQUEST_URL } from '../../downloads'
 import { formatDate } from '../../format'
+import { FREE_TEAM_LIMIT_WORD } from '../../pricing-facts.js'
 
 export function PostCard({ post }) {
   return (
@@ -87,7 +88,7 @@ export function PostCta({ variant = 'banner' }) {
     return (
       <aside className="post-cta post-cta-inline">
         <p className="post-cta-kicker">Try it yourself</p>
-        <h3>Free for teams of up to five people</h3>
+        <h3>Free for teams of up to {FREE_TEAM_LIMIT_WORD} people</h3>
         <div className="post-cta-actions">
           <a className="button" href={DOWNLOADS.amd64.url}>
             Download installer
@@ -104,7 +105,7 @@ export function PostCta({ variant = 'banner' }) {
     <aside className="post-cta">
       <div>
         <p className="post-cta-kicker">Run this in your own environment</p>
-        <h2>ShimoDocs is free for teams of up to five people</h2>
+        <h2>ShimoDocs is free for teams of up to {FREE_TEAM_LIMIT_WORD} people</h2>
         <p>
           Download the self-hosted installer, request the free licence by email, and keep documents and AI context
           inside your own network.

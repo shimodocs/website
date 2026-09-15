@@ -5,6 +5,13 @@
 // build-time prerenderer, and by the sitemap/robots generators. Keeping one
 // table means a route can never drift between the router and the crawler.
 import { DOWNLOADS } from './downloads'
+import {
+  ANNUAL_DISCOUNT_PERCENT,
+  FREE_TEAM_LIMIT,
+  FREE_TEAM_LIMIT_WORD,
+  TEAM_PRICE_CURRENCY,
+  TEAM_PRICE_PER_USER,
+} from './pricing-facts.js'
 import { DOCS_DEFAULT_LANGUAGE, LANGUAGE_META, docsBase, docsUi } from './docs-languages'
 
 const FALLBACK_SITE_URL = 'http://43.172.115.22'
@@ -31,9 +38,21 @@ export const ARTICLE_CARD_HEIGHT = 675
 
 export const ORGANIZATION_ID = `${SITE_URL}/#organization`
 export const WEBSITE_ID = `${SITE_URL}/#website`
+export const SOFTWARE_ID = `${SITE_URL}/#software`
 
 const DEFAULT_KEYWORDS =
   'ShimoDocs, private cloud document collaboration, self-hosted office suite, secure document collaboration, AI agents, data sovereignty, enterprise document management'
+
+// The cost question is asked on the home page and again on the pricing page. One
+// question published with two answers is the site contradicting itself as soon
+// as either copy is edited, and scripts/check-faq.mjs fails the build over it,
+// so both pages read this one string. The pricing page carries the full answer
+// because the deployment and licensing detail belongs next to the plans.
+const COST_ANSWER =
+  `ShimoDocs is free for teams of up to ${FREE_TEAM_LIMIT_WORD} people, with no time limit. ` +
+  `Teams larger than ${FREE_TEAM_LIMIT_WORD} pay $${TEAM_PRICE_PER_USER} per user per month for advanced ` +
+  `permissions, single sign-on, audit logs and AI assistance, and annual billing reduces that by ` +
+  `${ANNUAL_DISCOUNT_PERCENT}%. The servers the suite runs on are separate from the licence.`
 
 // Title pattern follows the established brand convention:
 //   ShimoDocs <Page> | <keyword descriptor>
@@ -84,7 +103,7 @@ export const ROUTE_SEO = {
       {
         question: 'Does the free plan include AI?',
         answer:
-          'The free plan for teams of up to five people includes an AI workspace preview. AI assistance across the workspace is part of the paid Team plan, alongside advanced permissions, single sign-on and audit logs.',
+          `The free plan for teams of up to ${FREE_TEAM_LIMIT_WORD} people includes an AI workspace preview. AI assistance across the workspace is part of the paid Team plan, alongside advanced permissions, single sign-on and audit logs.`,
       },
     ],
   },
@@ -416,9 +435,10 @@ export const ROUTE_SEO = {
   '/pricing': {
     changeFrequency: 'monthly',
     priority: '0.8',
-    title: 'ShimoDocs Pricing | Free Up to 5 Users in Your Private Cloud',
+    title: `ShimoDocs Pricing | Free Up to ${FREE_TEAM_LIMIT} Users in Your Private Cloud`,
     description:
-      'ShimoDocs is free for teams of up to five people. Larger teams pay $5 per user per month for advanced permissions, SSO, audit logs and AI assistance.',
+      `ShimoDocs is free for teams of up to ${FREE_TEAM_LIMIT_WORD} people. Larger teams pay ` +
+      `$${TEAM_PRICE_PER_USER} per user per month for advanced permissions, SSO, audit logs and AI assistance.`,
     keywords:
       'ShimoDocs pricing, private cloud document collaboration pricing, self-hosted office suite cost, free document collaboration, enterprise document platform pricing',
     ogAlt: 'ShimoDocs pricing plans for free and team deployments',
@@ -430,13 +450,12 @@ export const ROUTE_SEO = {
     faqs: [
       {
         question: 'How much does ShimoDocs cost?',
-        answer:
-          'ShimoDocs is free for teams of up to five people, with no time limit. Teams larger than five pay $5 per user per month for advanced permissions, single sign-on, audit logs and AI assistance, and annual billing reduces that by 20%. The servers the suite runs on are separate from the licence.',
+        answer: COST_ANSWER,
       },
       {
         question: 'Is there a free plan?',
         answer:
-          'Yes. Teams of five or fewer people get the complete workspace at no cost: documents, writers, spreadsheets, presentations, tables, shared workspaces, comments and version history. The licence is perpetual, so it does not expire.',
+          `Yes. Teams of ${FREE_TEAM_LIMIT_WORD} or fewer people get the complete workspace at no cost: documents, writers, spreadsheets, presentations, tables, shared workspaces, comments and version history. The licence is perpetual, so it does not expire.`,
       },
       {
         question: 'What does the paid Team plan add?',
@@ -455,7 +474,7 @@ export const ROUTE_SEO = {
       },
       {
         question: 'Is there a discount for paying annually?',
-        answer: 'Yes. Annual billing reduces the per-user price by 20% compared with monthly billing.',
+        answer: `Yes. Annual billing reduces the per-user price by ${ANNUAL_DISCOUNT_PERCENT}% compared with monthly billing.`,
       },
     ],
   },
@@ -498,7 +517,8 @@ export const ROUTE_SEO = {
     priority: '0.8',
     title: 'Download ShimoDocs | Private Cloud Document Collaboration',
     description:
-      'Download the self-hosted ShimoDocs installer for Linux amd64 and arm64, request the free perpetual licence for up to five users, and read the release channel.',
+      `Download the self-hosted ShimoDocs installer for Linux amd64 and arm64, request the free ` +
+      `perpetual licence for up to ${FREE_TEAM_LIMIT_WORD} users, and read the release channel.`,
     keywords:
       'download ShimoDocs, self-hosted installer, Linux amd64 arm64 package, private cloud office suite download, free perpetual licence, on-premise document collaboration',
     ogAlt: 'Download the ShimoDocs self-hosted installer for Linux',
@@ -531,6 +551,44 @@ export const ROUTE_SEO = {
     keywords: 'ShimoDocs terms and conditions, software licence terms, acceptable use, enterprise agreement, limitation of liability',
     ogAlt: 'The ShimoDocs terms and conditions',
   },
+}
+
+// When each static page's copy last changed, for the sitemap's <lastmod>.
+//
+// Articles carry their own dates in front matter and the guides are dated from
+// the Markdown on disk, but a React page has no date inside it, so it is
+// declared here beside the metadata it belongs to. Stamping every page with the
+// build date instead — which is what this table replaced — teaches Google that
+// the field means nothing on this domain, and then a page that really did change
+// is crawled on the old schedule. Bump the entry in the same commit that changes
+// what the page says; the prerenderer fails the build for a route with no entry
+// or an unusable one.
+export const ROUTE_UPDATED = {
+  '/': '2026-09-15',
+  '/ai-workspace': '2026-09-10',
+  '/blog': '2026-09-15',
+  '/blog/category/comparisons': '2026-09-15',
+  '/blog/category/self-hosting': '2026-09-15',
+  '/blog/category/security': '2026-09-15',
+  '/blog/category/ai': '2026-09-15',
+  '/blog/category/industry': '2026-09-15',
+  '/blog/category/guides': '2026-09-15',
+  '/help-center': '2026-09-15',
+  '/docs': '2026-09-15',
+  '/on-premises': '2026-09-15',
+  '/airgap': '2026-09-15',
+  '/security': '2026-09-15',
+  '/solutions/atlassian-alternative': '2026-09-15',
+  '/solutions/confluence-alternative': '2026-09-15',
+  '/migration': '2026-09-15',
+  '/pricing': '2026-09-15',
+  '/contact-sales': '2026-09-11',
+  '/about': '2026-09-14',
+  '/comparison': '2026-09-15',
+  '/download': '2026-09-15',
+  '/resources': '2026-09-14',
+  '/legal-page/privacy-policy': '2026-09-14',
+  '/legal-page/terms-conditions': '2026-09-14',
 }
 
 export const ROUTE_PATHS = Object.keys(ROUTE_SEO)
@@ -587,8 +645,7 @@ export const FAQS = [
   },
   {
     question: 'How much does ShimoDocs cost?',
-    answer:
-      'ShimoDocs is free for teams of up to five people. Teams above five pay $5 per user per month, with annual billing saving 20%. Server and infrastructure costs are managed separately by your team.',
+    answer: COST_ANSWER,
   },
   {
     question: 'How do I get a license?',
@@ -630,6 +687,53 @@ function breadcrumbLabel(pathname) {
 
 // A single @graph per page keeps node identity stable across the site, which
 // is how the existing production site models its structured data.
+// The product node, with both plans.
+//
+// One function, emitted under one @id on the home page and on the pricing page:
+// two copies of the product would be two entities to keep in step, and the whole
+// point of src/pricing-facts.js is that the price has one home.
+function softwareApplication() {
+  return {
+    '@type': 'SoftwareApplication',
+    '@id': SOFTWARE_ID,
+    name: SITE_NAME,
+    applicationCategory: 'BusinessApplication',
+    applicationSubCategory: 'Document Collaboration',
+    operatingSystem: 'Web, self-hosted (Kubernetes)',
+    url: canonicalFor('/'),
+    downloadUrl: DOWNLOADS.amd64.url,
+    softwareVersion: DOWNLOADS.version,
+    description:
+      'Self-hosted document collaboration platform with real-time docs, sheets, slides, forms, tables and configurable AI agents for private cloud deployments.',
+    featureList: [
+      'Real-time collaborative documents',
+      'Spreadsheets, presentations, forms and tables',
+      'AI agents with visible edit history',
+      'Enterprise permissions and audit logs',
+      'Private cloud and self-hosted deployment',
+    ],
+    publisher: { '@id': ORGANIZATION_ID },
+    offers: [
+      {
+        '@type': 'Offer',
+        name: 'Free',
+        price: '0',
+        priceCurrency: TEAM_PRICE_CURRENCY,
+        description: `Free for teams of up to ${FREE_TEAM_LIMIT_WORD} people.`,
+        url: canonicalFor('/pricing'),
+      },
+      {
+        '@type': 'Offer',
+        name: 'Team',
+        price: String(TEAM_PRICE_PER_USER),
+        priceCurrency: TEAM_PRICE_CURRENCY,
+        description: `Per user per month for teams above ${FREE_TEAM_LIMIT_WORD} people.`,
+        url: canonicalFor('/pricing'),
+      },
+    ],
+  }
+}
+
 export function jsonLdFor(pathname) {
   const clean = normalisePath(pathname)
   const meta = resolveSeo(clean)
@@ -700,45 +804,7 @@ export function jsonLdFor(pathname) {
   }
 
   if (isHome) {
-    graph.push({
-      '@type': 'SoftwareApplication',
-      '@id': `${SITE_URL}/#software`,
-      name: SITE_NAME,
-      applicationCategory: 'BusinessApplication',
-      applicationSubCategory: 'Document Collaboration',
-      operatingSystem: 'Web, self-hosted (Kubernetes)',
-      url: canonicalFor('/'),
-      downloadUrl: DOWNLOADS.amd64.url,
-      softwareVersion: DOWNLOADS.version,
-      description:
-        'Self-hosted document collaboration platform with real-time docs, sheets, slides, forms, tables and configurable AI agents for private cloud deployments.',
-      featureList: [
-        'Real-time collaborative documents',
-        'Spreadsheets, presentations, forms and tables',
-        'AI agents with visible edit history',
-        'Enterprise permissions and audit logs',
-        'Private cloud and self-hosted deployment',
-      ],
-      publisher: { '@id': ORGANIZATION_ID },
-      offers: [
-        {
-          '@type': 'Offer',
-          name: 'Free',
-          price: '0',
-          priceCurrency: 'USD',
-          description: 'Free for teams of up to five people.',
-          url: canonicalFor('/pricing'),
-        },
-        {
-          '@type': 'Offer',
-          name: 'Team',
-          price: '5',
-          priceCurrency: 'USD',
-          description: 'Per user per month for teams above five people.',
-          url: canonicalFor('/pricing'),
-        },
-      ],
-    })
+    graph.push(softwareApplication())
     graph.push({
       '@type': 'FAQPage',
       '@id': `${SITE_URL}/#faq`,
@@ -749,6 +815,17 @@ export function jsonLdFor(pathname) {
         acceptedAnswer: { '@type': 'Answer', text: faq.answer },
       })),
     })
+  }
+
+  // The pricing page describes the same product entity as the home page, under
+  // the same @id, and carries the plans itself. It is the page a buyer reaches
+  // from "how much does this cost", so leaving the offers only on the home page
+  // meant the pricing page answered that query in prose and told a crawler
+  // nothing about the price. `mainEntity` ties the page to the product it is
+  // about.
+  if (clean === '/pricing') {
+    graph.push(softwareApplication())
+    graph[2].mainEntity = { '@id': SOFTWARE_ID }
   }
 
   // A route can declare its own questions in ROUTE_SEO. Emitting them here is
@@ -1349,11 +1426,18 @@ export function docsIndexHead(index, entries = [], options = {}) {
 // The index points at one urlset per content type and language. Kept separate
 // so Search Console reports index coverage per language instead of as one
 // 450-URL lump where a single broken translation is invisible.
+//
+// Each child carries its own lastmod rather than the build date: the children
+// change at different rates, and the blog sitemap's date is the newest article
+// in it, not the moment the site was built.
 export function sitemapIndexXml(files, lastmod = new Date().toISOString().slice(0, 10)) {
   const rows = files.map(file =>
-    ['  <sitemap>', `    <loc>${escapeHtml(file.loc)}</loc>`, `    <lastmod>${lastmod}</lastmod>`, '  </sitemap>'].join(
-      '\n',
-    ),
+    [
+      '  <sitemap>',
+      `    <loc>${escapeHtml(file.loc)}</loc>`,
+      `    <lastmod>${file.lastmod || lastmod}</lastmod>`,
+      '  </sitemap>',
+    ].join('\n'),
   )
   return [
     '<?xml version="1.0" encoding="UTF-8"?>',

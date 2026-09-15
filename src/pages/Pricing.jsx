@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import { Eyebrow } from '../components/Section'
 import { ROUTE_SEO } from '../seo'
+import { ANNUAL_DISCOUNT_PERCENT, FREE_TEAM_LIMIT_WORD, TEAM_PRICE_PER_USER } from '../pricing-facts.js'
 
 // The questions live in src/seo.js next to the page metadata, so the FAQ a
 // reader sees and the FAQPage markup are the same strings by construction. The
@@ -44,7 +45,7 @@ export default function Pricing() {
           <h2>Team</h2>
           <p>Flexible access for growing teams and shared work.</p>
           <strong>
-            $5 <small>/ user / month</small>
+            ${TEAM_PRICE_PER_USER} <small>/ user / month</small>
           </strong>
           <ul>
             <li>✓ Everything in Free</li>
@@ -59,8 +60,9 @@ export default function Pricing() {
       </section>
 
       <p className="pricing-note">
-        <b>Simple rule:</b> teams with five or fewer people are free. Teams above five pay for each user. Annual billing
-        saves 20%. Private cloud infrastructure is quoted separately.
+        <b>Simple rule:</b> teams with {FREE_TEAM_LIMIT_WORD} or fewer people are free. Teams above{' '}
+        {FREE_TEAM_LIMIT_WORD} pay for each user. Annual billing
+        saves {ANNUAL_DISCOUNT_PERCENT}%. Private cloud infrastructure is quoted separately.
       </p>
 
       <section className="hub-faq" id="faq">

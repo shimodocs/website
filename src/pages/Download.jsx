@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import { Eyebrow } from '../components/Section'
+import { FREE_TEAM_LIMIT_WORD } from '../pricing-facts.js'
 import { DOWNLOADS, LICENSE_EMAIL, LICENSE_REQUEST_URL } from '../downloads'
 
 // The previous site published /download as a "Coming Soon" placeholder with no
@@ -44,7 +45,7 @@ export default function Download() {
         </div>
         <p className="download-meta">
           Current installer version {DOWNLOADS.version} · the licence key is requested separately and is free for up to
-          five users.
+          {FREE_TEAM_LIMIT_WORD} users.
         </p>
       </section>
 
@@ -92,13 +93,13 @@ export default function Download() {
       <section className="section">
         <Eyebrow>Licence</Eyebrow>
         <h2>
-          Free for up to five users,
+          Free for up to {FREE_TEAM_LIMIT_WORD} users,
           <br />
           <span className="gradient">perpetual, no credit card.</span>
         </h2>
         <p className="section-lead">
           The global build is licensed per deployment, not per month. Email the team to request the free perpetual
-          licence for teams of five or fewer; larger teams are quoted by the sales team.
+          licence for teams of {FREE_TEAM_LIMIT_WORD} or fewer; larger teams are quoted by the sales team.
         </p>
         <div className="hero-actions">
           <a className="button outline license-cta" href={LICENSE_REQUEST_URL}>
@@ -117,7 +118,7 @@ export default function Download() {
         </div>
       </section>
 
-      <section className="section faq-section">
+      <section className="section cta-section">
         <Eyebrow>Before you install</Eyebrow>
         <h2>
           Read the deployment

@@ -20,6 +20,8 @@
 // are enough to measure whether translated documentation earns traffic before
 // another six are switched on. The interface strings for the other five are
 // kept below so enabling one is a change to this array and nothing else.
+import { FREE_TEAM_LIMIT_WORDS } from './pricing-facts.js'
+
 export const DOCS_DEFAULT_LANGUAGE = 'en'
 
 export const DOCS_LANGUAGES = ['en', 'de', 'ja']
@@ -91,7 +93,7 @@ const EN = {
   onThisPage: 'On this page',
   languageLabel: 'Language',
   ctaKicker: 'Run this in your own environment',
-  ctaHeading: 'ShimoDocs is free for teams of up to five people',
+  ctaHeading: `ShimoDocs is free for teams of up to ${FREE_TEAM_LIMIT_WORDS.en} people`,
   ctaBody:
     'Self-host the suite in your own Kubernetes cluster, or ask the team for a guided private cloud deployment.',
   ctaDownload: 'Download the installer',
@@ -132,7 +134,7 @@ const TRANSLATIONS = {
     onThisPage: 'Auf dieser Seite',
     languageLabel: 'Sprache',
     ctaKicker: 'In Ihrer eigenen Umgebung betreiben',
-    ctaHeading: 'ShimoDocs ist für Teams mit bis zu fünf Personen kostenlos',
+    ctaHeading: `ShimoDocs ist für Teams mit bis zu ${FREE_TEAM_LIMIT_WORDS.de} Personen kostenlos`,
     ctaBody:
       'Betreiben Sie die Suite in Ihrem eigenen Kubernetes-Cluster oder lassen Sie sich vom Team bei der Bereitstellung in Ihrer privaten Cloud begleiten.',
     ctaDownload: 'Installer herunterladen',
@@ -171,7 +173,7 @@ const TRANSLATIONS = {
     onThisPage: 'En esta página',
     languageLabel: 'Idioma',
     ctaKicker: 'Ejecútelo en su propio entorno',
-    ctaHeading: 'ShimoDocs es gratis para equipos de hasta cinco personas',
+    ctaHeading: `ShimoDocs es gratis para equipos de hasta ${FREE_TEAM_LIMIT_WORDS.es} personas`,
     ctaBody:
       'Instale la suite en su propio clúster de Kubernetes o pida al equipo un despliegue guiado en su nube privada.',
     ctaDownload: 'Descargar el instalador',
@@ -210,7 +212,7 @@ const TRANSLATIONS = {
     onThisPage: 'Sur cette page',
     languageLabel: 'Langue',
     ctaKicker: 'Exécutez-le dans votre propre environnement',
-    ctaHeading: 'ShimoDocs est gratuit pour les équipes de cinq personnes maximum',
+    ctaHeading: `ShimoDocs est gratuit pour les équipes de ${FREE_TEAM_LIMIT_WORDS.fr} personnes maximum`,
     ctaBody:
       'Installez la suite dans votre propre cluster Kubernetes ou demandez à l’équipe un déploiement privé accompagné.',
     ctaDownload: 'Télécharger l’installateur',
@@ -249,7 +251,7 @@ const TRANSLATIONS = {
     onThisPage: 'このページの内容',
     languageLabel: '言語',
     ctaKicker: 'ご自身の環境で実行',
-    ctaHeading: 'ShimoDocs は 5 名までのチームなら無料です',
+    ctaHeading: `ShimoDocs は ${FREE_TEAM_LIMIT_WORDS.ja} 名までのチームなら無料です`,
     ctaBody:
       '自社の Kubernetes クラスタにセルフホストするか、チームによるプライベートクラウド構築の支援をご依頼ください。',
     ctaDownload: 'インストーラーをダウンロード',
@@ -288,7 +290,7 @@ const TRANSLATIONS = {
     onThisPage: '이 페이지의 내용',
     languageLabel: '언어',
     ctaKicker: '직접 환경에서 실행하세요',
-    ctaHeading: 'ShimoDocs는 최대 5명 팀까지 무료입니다',
+    ctaHeading: `ShimoDocs는 최대 ${FREE_TEAM_LIMIT_WORDS.ko}명 팀까지 무료입니다`,
     ctaBody: '자체 Kubernetes 클러스터에 직접 설치하거나, 팀에 프라이빗 클라우드 구축 지원을 요청하세요.',
     ctaDownload: '설치 프로그램 다운로드',
     ctaContact: '문의하기',
@@ -326,7 +328,7 @@ const TRANSLATIONS = {
     onThisPage: 'ในหน้านี้',
     languageLabel: 'ภาษา',
     ctaKicker: 'รันในสภาพแวดล้อมของคุณเอง',
-    ctaHeading: 'ShimoDocs ใช้ฟรีสำหรับทีมไม่เกิน 5 คน',
+    ctaHeading: `ShimoDocs ใช้ฟรีสำหรับทีมไม่เกิน ${FREE_TEAM_LIMIT_WORDS.th} คน`,
     ctaBody:
       'ติดตั้งชุดซอฟต์แวร์บนคลัสเตอร์ Kubernetes ของคุณเอง หรือขอให้ทีมงานช่วยติดตั้งระบบคลาวด์ส่วนตัว',
     ctaDownload: 'ดาวน์โหลดตัวติดตั้ง',
@@ -365,7 +367,7 @@ const TRANSLATIONS = {
     onThisPage: 'Trong trang này',
     languageLabel: 'Ngôn ngữ',
     ctaKicker: 'Chạy trong môi trường của bạn',
-    ctaHeading: 'ShimoDocs miễn phí cho nhóm tối đa năm người',
+    ctaHeading: `ShimoDocs miễn phí cho nhóm tối đa ${FREE_TEAM_LIMIT_WORDS.vi} người`,
     ctaBody:
       'Tự triển khai bộ sản phẩm trên cụm Kubernetes của bạn, hoặc đề nghị đội ngũ hỗ trợ triển khai đám mây riêng.',
     ctaDownload: 'Tải trình cài đặt',

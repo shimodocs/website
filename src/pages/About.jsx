@@ -141,7 +141,7 @@ export default function About() {
         </div>
       </section>
 
-      <section className="section faq-section">
+      <section className="section cta-section">
         <Eyebrow>Next step</Eyebrow>
         <h2>
           Ready to build

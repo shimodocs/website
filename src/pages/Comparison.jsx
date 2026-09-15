@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import { Eyebrow } from '../components/Section'
+import { TEAM_PRICE_PER_USER } from '../pricing-facts.js'
 
 // The comparison hub the previous site published at /comparison. The matrix
 // below is the same one that page rendered (its ticks were icon sprites, so the
@@ -18,7 +19,7 @@ const MATRIX = [
   ['Web · desktop · mobile', '✓', '✓', '✓', '✓', '✓', '✓'],
   [
     'Starting price',
-    '$5 / user / month',
+    `$${TEAM_PRICE_PER_USER} / user / month`,
     '$6 / user / month',
     '$6 / user / month',
     'Server cost',
@@ -163,7 +164,7 @@ export default function Comparison() {
         </div>
       </section>
 
-      <section className="section faq-section">
+      <section className="section cta-section">
         <Eyebrow>Next step</Eyebrow>
         <h2>
           Ready to compare

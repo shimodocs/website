@@ -120,7 +120,7 @@ After activating the release, the workflow verifies against the live host:
 
 - Every marketing route returns `200` with prerendered markup, an `<h1>`, a canonical link and structured data, and all six titles are distinct.
 - `robots.txt` is served as `text/plain` with a `Sitemap:` directive.
-- `sitemap.xml` is a `<sitemapindex>`; every child sitemap is fetched and checked as a urlset with at least one URL; every route appears in one of them; and `sitemap-docs-en.xml`, `sitemap-docs-de.xml` and `sitemap-docs-ja.xml` are all indexed. The language list is repeated here on purpose, so a release that quietly stops publishing a language fails instead of passing.
+- `sitemap.xml` is a `<sitemapindex>` whose first child is `sitemap-core.xml`, the commercial pages; every child sitemap is fetched and checked as a urlset with at least one URL; every route appears in one of them; and `sitemap-docs-en.xml`, `sitemap-docs-de.xml` and `sitemap-docs-ja.xml` are all indexed. The language list is repeated here on purpose, so a release that quietly stops publishing a language fails instead of passing.
 - `/docs`, `/de/docs/...` and `/ja/docs/...` return `200` with the right `<html lang>`, a canonical link, `TechArticle` and `BreadcrumbList` data, a full set of `hreflang` links including `x-default`, and no client bundle. This is 215 of the roughly 264 URLs, and it is the surface whose plumbing can fail while every marketing route still looks perfect.
 - An unknown path returns `404`.
 - Every installer link on the home page resolves, with a ranged request so the full package is not pulled.

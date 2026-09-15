@@ -22,6 +22,11 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v5
+        with:
+          # The sitemaps date every URL from the commit that last changed its
+          # content, so the build needs the history. A shallow clone collapses
+          # those dates onto one day and the prerenderer fails the build over it.
+          fetch-depth: 0
 
       - name: Set up Node.js
         uses: actions/setup-node@v5
@@ -223,6 +228,29 @@ jobs:
             const loc = route === '/' ? `${siteOrigin}/` : `${siteOrigin}${route}`;
             assert.ok(sitemapText.includes(`<loc>${loc}</loc>`), `no sitemap contains ${loc}`);
           }
+
+          // The commercial pages are their own child and it comes first, so a
+          // crawler that reads one child after the index gets the pages that
+          // carry the search demand rather than the legal notices. The build
+          // enforces the order; this checks the release that is actually serving.
+          assert.equal(
+            new URL(childSitemaps[0]).pathname,
+            '/sitemap-core.xml',
+            `sitemap.xml lists ${childSitemaps[0]} first, expected /sitemap-core.xml`,
+          );
+
+          // lastmod has to be a content date, not the build clock. A build that
+          // stamped every URL with one date would pass every other check here and
+          // still teach Google to ignore the field for the whole domain.
+          const lastmods = [...sitemapText.matchAll(/<lastmod>([^<]+)<\/lastmod>/g)].map(m => m[1]);
+          assert.ok(lastmods.length >= 200, `the child sitemaps carry only ${lastmods.length} lastmod values`);
+          assert.ok(
+            new Set(lastmods).size >= 3,
+            `the child sitemaps report ${new Set(lastmods).size} distinct lastmod date(s); expected content dates`,
+          );
+          const buildDate = new Date().toISOString().slice(0, 10);
+          const futureDates = [...new Set(lastmods.filter(date => date > buildDate))];
+          assert.deepEqual(futureDates, [], `sitemap lastmod dates in the future: ${futureDates.join(', ')}`);
           // The published language set lives in src/docs-languages.js. It is
           // repeated here on purpose: a release that quietly stops publishing
           // German should fail the deploy rather than pass it, so changing the

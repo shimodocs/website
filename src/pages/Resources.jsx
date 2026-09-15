@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import { Eyebrow } from '../components/Section'
+import { FREE_TEAM_LIMIT_WORD } from '../pricing-facts.js'
 
 // The previous site published this hub at /resources and listed it nowhere, so
 // only a direct probe found it. The path is kept so the indexed listing stays
@@ -30,7 +31,7 @@ const COLLECTIONS = [
   {
     kicker: 'Downloads',
     title: 'Installers and licences',
-    body: 'Linux amd64 and arm64 packages, the free perpetual licence for up to five users, and the release channel behind both.',
+    body: `Linux amd64 and arm64 packages, the free perpetual licence for up to ${FREE_TEAM_LIMIT_WORD} users, and the release channel behind both.`,
     to: '/download',
     action: 'Get the installer',
   },
@@ -108,7 +109,7 @@ export default function Resources() {
         </div>
       </section>
 
-      <section className="section faq-section">
+      <section className="section cta-section">
         <Eyebrow>Next step</Eyebrow>
         <h2>
           Looking for something
