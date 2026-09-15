@@ -132,7 +132,13 @@ found:
 ```bash
 npm run indexnow -- --dry-run   # print what would be sent
 npm run indexnow                # submit every URL in the built sitemaps
+npm run indexnow -- --live      # submit what the live site serves
 ```
+
+The first submission is normally rejected with `SiteVerificationNotCompleted`
+while IndexNow fetches the key file, so `--live` exists to retry it from
+anywhere without cutting a release: it reads the published sitemap index and
+submits those URLs.
 
 Google does not support IndexNow. Bing, Yandex, Seznam and Naver do, and Bing's
 index is what grounds several assistants — so this is the shortest path from a

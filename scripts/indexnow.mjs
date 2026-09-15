@@ -13,6 +13,12 @@
 //
 //   node scripts/indexnow.mjs --dry-run     # print what would be sent
 //   node scripts/indexnow.mjs               # submit every URL in dist/sitemaps
+//   node scripts/indexnow.mjs --live        # submit what the live site serves
+//
+// --live exists because the first submission is normally rejected while the key
+// file is still being validated, and retrying it should not require a deploy:
+// the script reads the published sitemap index instead of the local build, so it
+// can be pointed at production from anywhere.
 //
 // A failure here must never fail a deploy: the release is already verified and
 // live by the time this runs. It exits non-zero so the step is visibly red, and
@@ -55,21 +61,55 @@ export function keyFileProblem() {
   return null
 }
 
+// The URLs the site is actually serving, read from the published sitemap index
+// and its children rather than from a local build.
+export async function collectLiveUrls(site) {
+  const index = await fetch(`${site}/sitemap.xml`).then(response => response.text())
+  const children = [...index.matchAll(/<sitemap>\s*<loc>([^<]+)<\/loc>/g)].map(match => match[1].trim())
+  if (!children.length) throw new Error(`${site}/sitemap.xml lists no child sitemaps`)
+
+  const urls = new Set()
+  for (const child of children) {
+    const xml = await fetch(child).then(response => response.text())
+    // <image:loc> does not match: the literal characters before "loc" differ.
+    for (const match of xml.matchAll(/<loc>([^<]+)<\/loc>/g)) urls.add(match[1].trim())
+  }
+  return [...urls].sort()
+}
+
 async function main() {
   const dryRun = process.argv.includes('--dry-run')
-  const problem = keyFileProblem()
-  if (problem && !dryRun) {
-    console.error(problem)
-    process.exit(1)
+  const live = process.argv.includes('--live')
+  const site = (process.env.INDEXNOW_SITE || 'https://shimodocs.com').replace(/\/+$/, '')
+
+  let urls
+  let host
+  if (live) {
+    host = new URL(site).host
+    const keyResponse = await fetch(`${site}/${INDEXNOW_KEY}.txt`)
+    const keyBody = keyResponse.ok ? (await keyResponse.text()).trim() : ''
+    if (keyBody !== INDEXNOW_KEY && !dryRun) {
+      throw new Error(
+        `${site}/${INDEXNOW_KEY}.txt returned ${keyResponse.status} with "${keyBody.slice(0, 40)}"; ` +
+          'IndexNow cannot prove ownership until it serves the key',
+      )
+    }
+    urls = await collectLiveUrls(site)
+  } else {
+    const problem = keyFileProblem()
+    if (problem && !dryRun) {
+      console.error(problem)
+      process.exit(1)
+    }
+    urls = collectUrls()
+    host = urls.length ? new URL(urls[0]).host : ''
   }
 
-  const urls = collectUrls()
   if (!urls.length) {
-    console.error('no URLs found in dist/sitemap*.xml; run the build first')
+    console.error('no URLs found; run the build first, or pass --live')
     process.exit(1)
   }
 
-  const host = new URL(urls[0]).host
   const body = {
     host,
     key: INDEXNOW_KEY,
