@@ -506,6 +506,26 @@ export const UPSTREAM_REPAIRS = [
     from: '`3 master   N worker`',
     to: '`3 master + N worker`',
   },
+  // A second, unrelated artefact in the same guide: where the English source
+  // reads "VERSION and directories", the German and Japanese translations ran
+  // the placeholder into the following conjunction, so the published page showed
+  // "VERSIONund" and "VERSIONおよび". Only the spacing is wrong — the surrounding
+  // sentence is otherwise translated — so the two words are separated here.
+  //
+  // These are the only two occurrences across the translated guides (one file
+  // each, verified by scanning every non-English guide for a word character
+  // immediately following the placeholder), which is why they are listed
+  // individually rather than handled by a pattern.
+  {
+    id: 'deployment/getting-started/quick-start (de)',
+    from: 'VERSIONund',
+    to: 'VERSION und',
+  },
+  {
+    id: 'deployment/getting-started/quick-start (ja)',
+    from: 'VERSIONおよび',
+    to: 'VERSION および',
+  },
 ]
 
 const repairApplications = new Map()
