@@ -383,6 +383,8 @@ function llmsTxt() {
     ['/on-premises', 'On-premises document collaboration', 'what running the suite on your own servers requires'],
     ['/airgap', 'Air-gapped document collaboration', 'offline installation and AI inference inside an isolated network'],
     ['/security', 'Security and data control', 'where documents live, who can reach them, what leaves the network, and who owns each control'],
+    ['/solutions/atlassian-alternative', 'Atlassian alternative', 'the 2026 data contribution default, the Data Center end-of-life schedule, and what a replacement covers'],
+    ['/solutions/confluence-alternative', 'Confluence alternative', 'cloud, Data Center and self-hosted options compared, plus the migration steps that decide the schedule'],
     ['/comparison', 'Platform comparison', 'ShimoDocs compared with Google Workspace, Microsoft 365, Nextcloud and ONLYOFFICE'],
     ['/pricing', 'Pricing', 'free for teams of up to five people; $5 per user per month above that'],
     ['/download', 'Download', 'self-hosted installer for Linux amd64 and arm64, plus the free licence request'],

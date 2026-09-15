@@ -39,6 +39,11 @@ export const ROUTES = [
   { path: '/on-premises', label: 'On-Premises', Component: Hub },
   { path: '/airgap', label: 'Air-Gapped', Component: Hub },
   { path: '/security', label: 'Security', Component: Hub },
+  // Displacement pages. A buyer searching for a replacement for a named product
+  // has already decided to move; these answer the decision rather than the
+  // category, which is what the comparison articles cannot do.
+  { path: '/solutions/atlassian-alternative', label: 'Atlassian Alternative', Component: Hub },
+  { path: '/solutions/confluence-alternative', label: 'Confluence Alternative', Component: Hub },
   { path: '/pricing', label: 'Pricing', Component: Pricing },
   { path: '/contact-sales', label: 'Contact Sales', Component: ContactSales },
   // Addresses the previous site published and Google already indexed. They are

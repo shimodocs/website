@@ -263,6 +263,80 @@ export const ROUTE_SEO = {
       },
     ],
   },
+  '/solutions/atlassian-alternative': {
+    changeFrequency: 'monthly',
+    priority: '0.9',
+    title: 'Atlassian Alternative, Self-Hosted | ShimoDocs',
+    description:
+      'What changed in Atlassian data contribution and the Data Center end-of-life schedule, and what a self-hosted alternative has to cover to replace it.',
+    keywords:
+      'atlassian alternative, self-hosted atlassian alternative, confluence and jira alternative, atlassian data contribution, atlassian ai training opt out, data center end of life, on-premises atlassian replacement',
+    ogAlt: 'An Atlassian alternative deployed inside your own network',
+    faqs: [
+      {
+        question: 'Does Atlassian train on Confluence and Jira data by default?',
+        answer:
+          'Atlassian began using customer data according to its data contribution settings on 17 August 2026. In-app data such as Confluence page titles and body text is collected by default on Free and Standard plans, and an organisation administrator can turn it off. Metadata — derived signals such as readability scores, story points and sprint dates — is collected on every plan and cannot be disabled below the Enterprise tier.',
+      },
+      {
+        question: 'Can I opt out of Atlassian metadata collection?',
+        answer:
+          'Only on Enterprise. Atlassian documentation states that metadata contribution cannot be changed on Free, Standard or Premium. On those plans the setting is not a switch an administrator can reach. Atlassian also documents carve-outs for customer-managed encryption keys, Government Cloud, Isolated Cloud and customers with HIPAA requirements.',
+      },
+      {
+        question: 'When does Atlassian Data Center reach end of life?',
+        answer:
+          'Atlassian published a hard end of life of 28 March 2029, after which the Data Center products are read-only and receive no further security fixes. New customers could not buy new Data Center subscriptions or Marketplace apps from 30 March 2026, and existing customers lose the ability to buy new subscriptions, apps or user expansions from 30 March 2028. Bitbucket Data Center and Jira Align Data Center are exempt.',
+      },
+      {
+        question: 'What should replace Confluence in a self-hosted estate?',
+        answer:
+          'It depends which half of Confluence you rely on. If you need page trees, space permissions, page history and search, a self-hosted document platform covers it. If you run sprints, boards, epics and a release train, that is an issue tracker and no document platform replaces it — keep Jira and move the documentation.',
+      },
+      {
+        question: 'How long does migrating off Confluence take?',
+        answer:
+          'The content export is the fast part. The schedule is decided by permissions translation, attachment link repair and whether page history and comments survive. Draft the permission mapping table before any content moves, and test the import on your messiest space rather than your cleanest one.',
+      },
+    ],
+  },
+  '/solutions/confluence-alternative': {
+    changeFrequency: 'monthly',
+    priority: '0.9',
+    title: 'A Confluence Alternative You Can Self-Host | ShimoDocs',
+    description:
+      'Compare cloud, Data Center and self-hosted Confluence alternatives on where the content lives, plus the migration steps that decide the schedule.',
+    keywords:
+      'confluence alternative, self-hosted confluence alternative, on-premises confluence replacement, confluence data center end of life, confluence migration, confluence alternative open source, private cloud wiki',
+    ogAlt: 'A self-hosted Confluence alternative running in your own cluster',
+    faqs: [
+      {
+        question: 'Is there a self-hosted alternative to Confluence?',
+        answer:
+          'Yes, in three shapes: a self-hosted wiki such as Docmost or Outline, an on-premises office suite, or Confluence Data Center itself until it reaches end of life. A wiki is the closest match if you only need documentation. An office suite covers documentation plus the spreadsheets, forms and tables that teams otherwise keep open beside a wiki.',
+      },
+      {
+        question: 'What happens to Confluence Data Center after March 2029?',
+        answer:
+          'The products go read-only and stop receiving security fixes on 28 March 2029. New customers could not buy new Data Center subscriptions from 30 March 2026, and existing customers lose the ability to buy new subscriptions, apps or user expansions from 30 March 2028, which closes the window to grow a deployment before the deadline.',
+      },
+      {
+        question: 'What is lost when you migrate off Confluence?',
+        answer:
+          'Macros and Marketplace apps are the most common casualty, and they are worth auditing before you scope the move. Page content exports to HTML faithfully. The things that usually break quietly are attachments — which survive while the internal links pointing at them do not — and the comment threads, which carry the reasoning behind a page rather than the page itself.',
+      },
+      {
+        question: 'How do Confluence permissions map onto a self-hosted platform?',
+        answer:
+          'Not one-to-one. Confluence permissions are per-space with page-level overrides that accumulate over years, while most self-hosted platforms use workspace-level roles for groups. It is a translation exercise with a mapping table rather than a copy operation, and it is the deliverable the rest of the migration waits on.',
+      },
+      {
+        question: 'Can a self-hosted wiki handle spreadsheets and forms too?',
+        answer:
+          'A wiki cannot. ShimoDocs covers documents, sheets, slides, forms and tables in one deployment, so the budget model, the release checklist and the intake form stop living in three different tools. That is the practical difference between replacing Confluence and replacing the set of things teams used alongside it.',
+      },
+    ],
+  },
   '/pricing': {
     changeFrequency: 'monthly',
     priority: '0.8',
@@ -428,6 +502,8 @@ function breadcrumbLabel(pathname) {
     '/docs': 'Documentation',
     '/on-premises': 'On-Premises Deployment',
     '/airgap': 'Air-Gapped Deployment',
+    '/solutions/atlassian-alternative': 'Atlassian Alternative',
+    '/solutions/confluence-alternative': 'Confluence Alternative',
     '/pricing': 'Pricing',
     '/contact-sales': 'Contact Sales',
     '/about': 'About',

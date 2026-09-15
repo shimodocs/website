@@ -27,6 +27,45 @@ function HubLinks({ links }) {
   )
 }
 
+// A section can carry one table. Anything wider than the column scrolls rather
+// than widening the page, which matters for the tier matrices.
+function HubTable({ table }) {
+  if (!table) return null
+  return (
+    <figure className="hub-table">
+      <div className="hub-table-scroll">
+        <table>
+          <thead>
+            <tr>
+              {table.head.map(cell => (
+                <th key={cell} scope="col">
+                  {cell}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {table.rows.map(row => (
+              <tr key={row[0]}>
+                {row.map((cell, index) =>
+                  index === 0 ? (
+                    <th key={cell} scope="row">
+                      {cell}
+                    </th>
+                  ) : (
+                    <td key={`${row[0]}-${index}`}>{cell}</td>
+                  ),
+                )}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      {table.caption ? <figcaption>{table.caption}</figcaption> : null}
+    </figure>
+  )
+}
+
 export default function Hub() {
   const { pathname } = useLocation()
   const path = normalisePath(pathname)
@@ -72,6 +111,7 @@ export default function Hub() {
             </ul>
           ) : null}
           {section.note ? <p className="hub-note">{section.note}</p> : null}
+          <HubTable table={section.table} />
           <HubLinks links={section.links} />
         </section>
       ))}

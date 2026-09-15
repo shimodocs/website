@@ -939,3 +939,32 @@
 }
 .archive-head h3 a{text-decoration:none}
 .archive-head h3 a:hover{color:var(--cyan)}
+
+/* Tables on a hub page. The tier matrices are wider than the reading column on
+   a laptop, so the scroll lives on the table rather than on the page. */
+.hub-table{margin:26px 0 0;padding:0}
+.hub-table-scroll{overflow-x:auto;border:1px solid var(--line);border-radius:12px}
+.hub-table table{width:100%;border-collapse:collapse;font-size:14px;min-width:520px}
+.hub-table th,.hub-table td{
+  padding:13px 16px;
+  text-align:left;
+  vertical-align:top;
+  border-bottom:1px solid #ffffff14;
+  line-height:1.5;
+}
+.hub-table thead th{
+  background:#ffffff0f;
+  color:var(--ink);
+  font-weight:600;
+  white-space:nowrap;
+}
+.hub-table tbody th{color:var(--ink);font-weight:600;white-space:nowrap}
+.hub-table td{color:var(--muted)}
+.hub-table tbody tr:last-child th,.hub-table tbody tr:last-child td{border-bottom:0}
+.hub-table figcaption{
+  margin-top:11px;
+  color:#8f89a6;
+  font-size:12.5px;
+  line-height:1.55;
+  max-width:70ch;
+}

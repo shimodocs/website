@@ -277,4 +277,195 @@ export const HUBS = {
       ],
     },
   },
+
+  '/solutions/atlassian-alternative': {
+    eyebrow: 'Atlassian alternative',
+    h1: ['An Atlassian alternative you can', 'run inside your own network.'],
+    lead:
+      'Two things changed for Atlassian customers in 2026: data contribution became a default rather than a choice, and the on-premises product line got a hard end-of-life date. This page is what those two changes actually say, in Atlassian own words, and what a replacement has to cover.',
+    sections: [
+      {
+        heading: 'What changed on 17 August 2026',
+        body: [
+          'Atlassian began using customer data under its data contribution settings on 17 August 2026, according to its own documentation. Two classes of data are collected. Metadata covers derived signals such as readability scores, task classifications, story points, sprint dates, SLA values and Teamwork Graph similarity measures. In-app data covers the content itself: Confluence page titles and body text, and Jira work item titles, descriptions and comments, along with custom status and workflow names.',
+          'Retention is documented at up to seven years. If an organisation opts out, in-app data is removed within 30 days and the affected models are retrained within 90 days.',
+          'The part that decides the argument is not the collection. It is who is allowed to switch it off, and that differs by plan.',
+        ],
+        table: {
+          head: ['Plan', 'Metadata contribution', 'In-app data contribution'],
+          rows: [
+            ['Free / Standard', 'Cannot be changed', 'On by default; an org admin can turn it off'],
+            ['Premium', 'Cannot be changed', 'On by default; an org admin can turn it off'],
+            ['Enterprise', 'Can be turned off', 'Can be turned off'],
+          ],
+          caption:
+            'According to Atlassian data contribution settings. Metadata — the derived signals rather than the text — can only be disabled on Enterprise.',
+        },
+        note:
+          'Atlassian documents carve-outs for customer-managed encryption keys, Atlassian Government Cloud, Isolated Cloud, and customers with HIPAA requirements. If you are on one of those, the default does not apply to you. If you are not, it does.',
+        links: [
+          ['https://support.atlassian.com/security-and-access-policies/docs/data-contribution-settings/', 'Atlassian: Data contribution settings'],
+          ['https://www.atlassian.com/trust/ai/data-contribution', 'Atlassian: Data contribution'],
+        ],
+      },
+      {
+        heading: 'The deadline nobody has budgeted for',
+        body: [
+          'Separately from the AI question, Atlassian has published an end-of-life schedule for its Data Center products. It is the more consequential of the two changes, because it is dated and it is not optional.',
+        ],
+        list: [
+          'From 30 March 2026 — no new Data Center subscriptions or Marketplace apps for new customers',
+          'From 30 March 2028 — existing customers can no longer buy subscriptions, apps or user expansions',
+          '28 March 2029 — hard end of life: the products go read-only and receive no further security fixes',
+        ],
+        note:
+          'Bitbucket Data Center and Jira Align Data Center are exempt from the schedule. If your estate includes Jira and Confluence Data Center, the clock is running on both.',
+        links: [
+          ['https://www.atlassian.com/licensing/data-center-end-of-life', 'Atlassian: Data Center end of life'],
+        ],
+      },
+      {
+        heading: 'What a replacement has to cover',
+        body: [
+          'Most teams evaluating this are not replacing Confluence alone. They are replacing a wiki, a work tracker and the integrations between them, and the honest question is which of those you still need.',
+          'A project workspace with owners, statuses and dates is something ShimoDocs covers with tables and app sheets rather than a separate issue tracker. That is a different shape from Jira, and it is the right shape for a team that was using Jira as a shared task list rather than as a delivery pipeline. If you are running sprints, boards, epics and a release train, Jira is doing work no document platform replaces, and you should keep it.',
+          'Where a document platform is the right answer is the documentation half: a space per team, page trees, permissions inherited from the space, comments and suggestions on a page, a full page history, and search across all of it. That is the surface a wiki earns its place on.',
+        ],
+        links: [
+          ['/blog/shimodocs-vs-confluence', 'ShimoDocs compared with Confluence in detail'],
+          ['/docs', 'The deployment documentation'],
+        ],
+      },
+      {
+        heading: 'The AI question, answered the other way round',
+        body: [
+          'The reason the August change is uncomfortable is not that a vendor wants to train a model. It is that the decision was made for you, on a tier you may not be able to change.',
+          'A self-hosted deployment inverts that. ShimoDocs runs in your own Kubernetes cluster, and the AI configuration layer points at a model endpoint you choose. On a self-hosted or isolated network that endpoint is a model inside your own boundary, so document context never becomes someone else training data. If you would rather switch AI off entirely, it is an addition to the suite rather than a dependency of it, and collaboration is unaffected.',
+          'One more difference is worth naming. An AI agent with delegated access to your wiki is an exfiltration path. In August 2026 two independent research teams disclosed indirect prompt injection paths in Atlassian Rovo, one of which was still unconfirmed as remediated at publication, and disabling the assistant web search did not close it because the tool that follows a dynamically constructed URL stayed available. The controls that do close it are architectural — the model inside your network, no outbound URL tool it can be talked into using, and every AI action written to your own audit log. Those are properties of where you deploy, not settings you toggle.',
+        ],
+        links: [
+          ['/docs/deployment/operations-platform/suite/ai-configuration', 'Configuring the AI endpoint'],
+          ['/blog/ai-agents-in-documents-security', 'AI agents in documents: the security checklist'],
+          ['https://labs.cloudsecurityalliance.org/research/csa-research-note-atlassian-rovo-prompt-injection-20260811-c/', 'CSA: Indirect prompt injection in Atlassian Rovo'],
+        ],
+      },
+      {
+        heading: 'A migration order that survives contact with a calendar',
+        body: [
+          'Confluence migration is a content problem before it is a technical one. Four things decide the schedule, and doing them in this order is what keeps the project from slipping.',
+        ],
+        list: [
+          'Inventory the spaces by owner, not by size. A space nobody owns is a space nobody will notice losing, and it should not be in scope for the first cutover.',
+          'Map permissions before content. Confluence permissions are per-space with page-level overrides that have accumulated for years; the target model is group-based roles, and the mapping table is the deliverable that unblocks everything else.',
+          'Move the page tree, then the attachments, then the history. Attachments and page history are the two things that make an import look successful and behave badly, so test them on your ugliest space rather than your cleanest.',
+          'Retire the old system explicitly. Adoption completes when people stop looking for the old copy, and leaving it read-only but reachable is what makes a migration take twice as long as it should.',
+        ],
+        links: [
+          ['/blog/how-to-migrate-from-google-workspace', 'A staged migration plan, and the mapping exercise it rests on'],
+          ['/docs/deployment/troubleshooting/data-backup', 'Backup and restore, before you need it'],
+        ],
+      },
+    ],
+    checklist: {
+      heading: 'What to establish before you decide',
+      items: [
+        'Your current Atlassian plan, because it decides whether you can turn metadata contribution off at all',
+        'Whether a carve-out applies — customer-managed keys, Government Cloud, Isolated Cloud, HIPAA',
+        'Which Data Center products you run, and their position on the 2026 / 2028 / 2029 schedule',
+        'Whether you are replacing a wiki, an issue tracker, or both, and which of those you still use',
+        'The number of Confluence spaces with no current owner',
+        'Who holds the model endpoint decision, if you intend to enable AI',
+        'A restore target for the new platform that is not the same disk as the data',
+      ],
+    },
+  },
+
+  '/solutions/confluence-alternative': {
+    eyebrow: 'Confluence alternative',
+    h1: ['A Confluence alternative', 'you can self-host.'],
+    lead:
+      'Confluence is a wiki, and a wiki is a solved problem. The hard part is moving a decade of spaces, permissions and page history somewhere you control. This page is about what a replacement has to do, what it does not have to do, and how the migration actually goes.',
+    sections: [
+      {
+        heading: 'What teams actually use Confluence for',
+        body: [
+          'Strip out the parts nobody opens and four jobs remain: a home for documentation that is not a file share, page trees that stay navigable past a few hundred pages, comments and suggestions on a page while it is being written, and search that finds the page rather than the folder.',
+          'A replacement is credible when it does those four well, and honest when it does not do the rest. The rest — macros, Marketplace apps, deep Jira linkage — is where a migration gets expensive, and it is worth auditing which of it is load-bearing before you scope anything.',
+        ],
+      },
+      {
+        heading: 'The options, side by side',
+        body: [
+          'There are four shapes of answer, and they fail in different ways. The comparison that matters is not a feature count. It is where the content lives, and who can be made to produce it.',
+        ],
+        table: {
+          head: ['Option', 'Where it runs', 'Strongest at', 'The trade-off'],
+          rows: [
+            ['Confluence Cloud', 'Atlassian cloud', 'Ecosystem, macros, Jira linkage', 'Content sits on Atlassian infrastructure, under their AI settings'],
+            ['Confluence Data Center', 'Your servers', 'Familiarity, existing investment', 'Hard end of life 28 March 2029, with no security fixes after'],
+            ['Self-hosted wiki (Docmost, Outline)', 'Your servers', 'Documentation, fast to run', 'Weak on structured files; it is a wiki only'],
+            ['ShimoDocs', 'Your Kubernetes cluster', 'Docs, sheets, slides, forms, tables and AI inside one boundary', 'You own the operations'],
+          ],
+          caption:
+            'Confluence Data Center dates are Atlassian published schedule: no new subscriptions for new customers from 30 March 2026, no expansions for existing customers from 30 March 2028, end of life 28 March 2029.',
+        },
+        links: [
+          ['https://www.atlassian.com/licensing/data-center-end-of-life', 'Atlassian: Data Center end of life'],
+          ['/blog/best-self-hosted-document-collaboration-tools', 'The self-hosted options, reviewed'],
+        ],
+      },
+      {
+        heading: 'Where a wiki is not enough',
+        body: [
+          'Confluence is a document tool. Teams that live in it eventually keep something else open beside it, because a wiki is a poor place for a budget model, a release checklist or an intake form.',
+          'ShimoDocs covers that adjacent surface in the same deployment: spreadsheets with a formula language for the model, app sheets and tables for the checklist and its owners, and forms for the intake. The point is not feature count. It is that the document, the data behind it and the AI that reads both sit inside one network boundary rather than three vendor tenancies.',
+        ],
+        links: [
+          ['/on-premises', 'What running the suite on your own servers involves'],
+          ['/airgap', 'Running it with no outbound access at all'],
+        ],
+      },
+      {
+        heading: 'How the migration actually goes',
+        body: [
+          'Confluence exports to HTML, and the export is faithful enough that the content moves cleanly. The three things that decide whether the migration sticks are the ones that do not appear in an import log.',
+        ],
+        list: [
+          'Permissions translation. Space permissions plus years of page-level overrides do not map one-to-one onto group-based roles. Build the mapping table first; it is the artefact the whole project waits on.',
+          'Attachments. They usually survive, and they usually break the internal links that pointed at them. Test on the messiest space you own.',
+          'Page history and comments. Losing the discussion while keeping the text is the most common bad outcome, because the reasoning behind a decision lives in the comments rather than the page body.',
+        ],
+        note:
+          'A read-only Confluence left reachable after cutover is the most reliable way to double the length of a migration. Retire it on a date, and tell people the date.',
+        links: [
+          ['/blog/shimodocs-vs-confluence', 'A working comparison, including where Confluence wins'],
+          ['/blog/how-to-migrate-from-google-workspace', 'The staged migration plan this follows'],
+          ['/docs/deployment/getting-started/quick-start', 'Install the suite and try the import yourself'],
+        ],
+      },
+      {
+        heading: 'The question the 2026 default raises',
+        body: [
+          'Atlassian began using customer data under its data contribution settings on 17 August 2026, and metadata contribution cannot be disabled below the Enterprise tier. That does not make Confluence a bad wiki. It does mean that for some organisations the hosting question moved from a preference to a requirement.',
+          'If that is where you are, the relevant question is not which self-hosted wiki looks nicest. It is whether the platform can point its AI at a model you chose, inside a boundary you control, and whether every AI action lands in an audit log you can produce. Those are deployment properties, and they are the ones to test in a pilot.',
+        ],
+        links: [
+          ['https://support.atlassian.com/security-and-access-policies/docs/data-contribution-settings/', 'Atlassian: Data contribution settings'],
+          ['/blog/ai-training-content-control', 'Controlling what your content is used to train'],
+          ['/security', 'Our own security and compliance position'],
+        ],
+      },
+    ],
+    checklist: {
+      heading: 'What to have ready before you scope the migration',
+      items: [
+        'A list of spaces with a named owner, and a decision about the ones without',
+        'The permission mapping table, drafted before any content moves',
+        'Which Marketplace apps are load-bearing, and what replaces each one',
+        'Your worst space, chosen deliberately as the import test case',
+        'A cutover date after which the old system is no longer reachable',
+        'A model endpoint decision, if AI is in scope',
+      ],
+    },
+  },
 }
