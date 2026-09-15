@@ -7,21 +7,34 @@ import { FAQS } from '../seo'
 const words = ['Docs', 'Teams', 'AI']
 
 const caps = [
-  ['Documents', 'Real-time collaborative documents where teams write, comment and resolve feedback together', 'extract-1.png'],
-  ['Writers', 'Polished word processing for every shared draft, contract and specification', 'extract-2.png'],
-  ['Spreadsheets', 'Flexible spreadsheets for shared data, modelling and operational decisions', 'extract-3.png'],
-  ['Presentations', 'Collaborative slides that keep the story moving from draft to review', 'extract-4.png'],
-  ['App sheets', 'Apps and tables that keep projects, owners and deadlines on track', 'extract-5.png'],
-  ['Forms', 'Forms that turn field responses into structured, usable context', 'extract-6.png'],
+  ['Documents', 'Real-time collaborative documents where teams write, comment and resolve feedback together', 'extract-1.webp'],
+  ['Writers', 'Polished word processing for every shared draft, contract and specification', 'extract-2.webp'],
+  ['Spreadsheets', 'Flexible spreadsheets for shared data, modelling and operational decisions', 'extract-3.webp'],
+  ['Presentations', 'Collaborative slides that keep the story moving from draft to review', 'extract-4.webp'],
+  ['App sheets', 'Apps and tables that keep projects, owners and deadlines on track', 'extract-5.webp'],
+  ['Forms', 'Forms that turn field responses into structured, usable context', 'extract-6.webp'],
 ]
 
+// Intrinsic dimensions. The CSS sizes both frames explicitly, so these do not
+// change the layout — they let the browser reserve the box before the image
+// arrives, which is the part of Core Web Vitals the home page was failing.
+const imageSizes = {
+  'extract-1.webp': [1672, 941],
+  'extract-2.webp': [1714, 918],
+  'extract-3.webp': [1600, 900],
+  'extract-4.webp': [1672, 941],
+  'extract-5.webp': [1619, 971],
+  'extract-6.webp': [1717, 916],
+  'extract-7.webp': [1672, 941],
+}
+
 const scenes = [
-  ['Knowledge management', 'Build a team knowledge hub.', 'extract-2.png'],
-  ['Project management', 'Plan a project launch.', 'extract-3.png'],
-  ['Meeting notes', 'Capture meeting decisions.', 'extract-6.png'],
-  ['Policy & SOPs', 'Keep operating knowledge current.', 'extract-1.png'],
-  ['Marketing planning', 'Prepare an executive review.', 'extract-4.png'],
-  ['HR onboarding', 'Run employee onboarding.', 'extract-7.png'],
+  ['Knowledge management', 'Build a team knowledge hub.', 'extract-2.webp'],
+  ['Project management', 'Plan a project launch.', 'extract-3.webp'],
+  ['Meeting notes', 'Capture meeting decisions.', 'extract-6.webp'],
+  ['Policy & SOPs', 'Keep operating knowledge current.', 'extract-1.webp'],
+  ['Marketing planning', 'Prepare an executive review.', 'extract-4.webp'],
+  ['HR onboarding', 'Run employee onboarding.', 'extract-7.webp'],
 ]
 
 // Mirrors the control themes the established site ranks for: your cloud, your
@@ -139,6 +152,9 @@ export default function Home() {
               <img
                 src={`/assets/${scenes[scene][2]}`}
                 alt={`ShimoDocs workflow preview: ${scenes[scene][1]}`}
+                width={imageSizes[scenes[scene][2]][0]}
+                height={imageSizes[scenes[scene][2]][1]}
+                fetchPriority="high"
                 decoding="async"
               />
               <div className="scene-caption">
@@ -191,6 +207,8 @@ export default function Home() {
               <img
                 src={`/assets/${img}`}
                 alt={`ShimoDocs ${title} interface in a private cloud deployment`}
+                width={imageSizes[img][0]}
+                height={imageSizes[img][1]}
                 loading="lazy"
                 decoding="async"
               />

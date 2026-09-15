@@ -127,6 +127,27 @@ The icon it writes is not drawn in code: `brand/shimodocs-mark.svg` and
 the script resamples them. Replace those two files to change the mark — the
 header wordmark lives at `public/assets/logo-shimodocs.svg`.
 
+### Regenerating the web fonts
+
+```bash
+pip install fonttools brotli   # once
+npm run fonts
+```
+
+`scripts/make-font-subsets.py` turns the design TTFs in `brand/fonts` into the
+Latin-subset WOFF2 the browser loads: 392 KB of TTF becomes 125 KB, and the two
+weights the home page preloads drop from 115 KB to 36 KB. Coverage is Latin,
+Latin Extended and Vietnamese — the Japanese and Korean guides deliberately fall
+back to the reader's system font rather than pulling a CJK web font in behind
+them. The script compares each subset against the source font and fails if a
+glyph the source carried was lost, so a range that is too narrow is caught here
+instead of on somebody's page.
+
+The full TTFs live in `brand/` rather than `public/assets` because
+`scripts/make-assets.py` needs them to draw the Open Graph card while the
+browser needs only the subsets; keeping the sources out of `public/` keeps 392 KB
+out of every deploy.
+
 ## Download and licence call to action
 
 The home hero carries the two ways to get the product, both defined in

@@ -14,6 +14,7 @@
     "check:docs": "node scripts/sync-docs.mjs --check",
     "check:contact": "node scripts/check-contact-fields.mjs",
     "assets": "python3 scripts/make-assets.py",
+    "fonts": "python3 scripts/make-font-subsets.py",
     "preview": "vite preview --port 4173"
   },
   "dependencies": {

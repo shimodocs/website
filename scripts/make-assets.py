@@ -33,10 +33,14 @@ VIOLET = (93, 52, 208)
 PINK = (255, 0, 110)
 CYAN = (0, 240, 255)
 
-SPACE_BOLD = ASSETS / "space-grotesk-700.ttf"
-SPACE_SEMI = ASSETS / "space-grotesk-600.ttf"
-DM_REGULAR = ASSETS / "dm-sans-400.ttf"
-DM_MEDIUM = ASSETS / "dm-sans-500.ttf"
+# The design fonts live in brand/, not in public/assets: the browser loads the
+# subset WOFF2 that make-font-subsets.py writes, and shipping the full TTFs in
+# the published directory would put 392 KB of unused files in every deploy.
+FONTS = BRAND / "fonts"
+SPACE_BOLD = FONTS / "space-grotesk-700.ttf"
+SPACE_SEMI = FONTS / "space-grotesk-600.ttf"
+DM_REGULAR = FONTS / "dm-sans-400.ttf"
+DM_MEDIUM = FONTS / "dm-sans-500.ttf"
 SCREENSHOT = ASSETS / "extract-0.png"
 
 FAVICON_SVG = (BRAND / "shimodocs-mark.svg").read_text(encoding="utf-8")
