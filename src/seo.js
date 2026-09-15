@@ -337,6 +337,52 @@ export const ROUTE_SEO = {
       },
     ],
   },
+  // The migration hub answers the question that follows the hosting decision:
+  // the buyer has already chosen to move, and now has to scope the move. It is
+  // deliberately about the work rather than the product, because the work is
+  // what the person reading it has to schedule.
+  '/migration': {
+    changeFrequency: 'monthly',
+    priority: '0.9',
+    title: 'Document Migration to a Self-Hosted Platform | ShimoDocs',
+    description:
+      'Plan a document platform migration: what imports, what has to be rebuilt, how identity and permissions map, and how to verify the move before cutover.',
+    keywords:
+      'document migration, document platform migration, migrate to self-hosted document collaboration, confluence migration, google workspace migration, sharepoint migration, private cloud document migration, migration plan',
+    ogAlt: 'Migrating documents into a self-hosted platform you control',
+    faqs: [
+      {
+        question: 'Can ShimoDocs import Word, Excel and PowerPoint files?',
+        answer:
+          'Yes. Import support is documented as a set of per-format feature switches: doc, docx, wps and wpt become documents; xls, xlsx, xlsm and csv become spreadsheets; ppt and pptx become presentations; md and txt become documents; csv, xls and xlsx can become application tables; xmind becomes a mind map. Attachments including svg and xml are handled as attachments rather than as content.',
+      },
+      {
+        question: 'Is there a Confluence or Google Workspace migration connector?',
+        answer:
+          'No, and it is worth being direct about it. The product documentation describes no connector that reads a Confluence space, a Google Workspace drive or a SharePoint site and recreates it inside the suite. Content moves by exporting from the source system in the supported formats and importing it, and the structure, permissions and conversation around it are rebuilt deliberately rather than transferred.',
+      },
+      {
+        question: 'Do permissions, comments and version history survive the migration?',
+        answer:
+          'They are not transferred as data. Space and folder hierarchy, page-level overrides, comment threads, inline suggestions and version history all have to be reconstructed or accepted as a loss. Content is the part with a mechanical answer; the other three are the part that decides the schedule, and they should be scoped and written down before anything moves.',
+      },
+      {
+        question: 'Can users be imported in bulk?',
+        answer:
+          'Yes. The system configuration reference exposes an import limit of up to 500 user rows per batch, which is the setting to check before planning a large onboarding window. Connect the identity provider first and let group membership drive roles, rather than onboarding into a local user list and retrofitting permissions afterwards.',
+      },
+      {
+        question: 'How do you verify a migration before retiring the old system?',
+        answer:
+          'From the server side. File information search confirms a file application, type, status and size by its internal GUID or client file identifier and is read-only. Transcoding event search resolves an import or export task ID to its full event list so a failure can be located. Document repair has two recovery paths for a file that will not open. Object storage compatibility testing checks configuration, connectivity, upload compatibility and throughput before documents depend on the bucket.',
+      },
+      {
+        question: 'Can the data be exported if the organisation leaves later?',
+        answer:
+          'Documents export to docx, markdown, PDF and images. Spreadsheets export to xlsx, with a full export archive and single-form data as CSV. Tables export to xlsx, and presentations to pptx and PDF. Backups cover the database, object storage and installation configuration, with a documented restore and post-recovery verification procedure. The export path is the evidence that control over the data is real rather than nominal.',
+      },
+    ],
+  },
   '/pricing': {
     changeFrequency: 'monthly',
     priority: '0.8',

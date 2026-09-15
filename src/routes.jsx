@@ -44,6 +44,10 @@ export const ROUTES = [
   // category, which is what the comparison articles cannot do.
   { path: '/solutions/atlassian-alternative', label: 'Atlassian Alternative', Component: Hub },
   { path: '/solutions/confluence-alternative', label: 'Confluence Alternative', Component: Hub },
+  // The migration hub. It answers the question that follows a displacement
+  // decision — what moving actually involves — so it sits next to the
+  // solutions pages rather than in the marketing navigation.
+  { path: '/migration', label: 'Migration', Component: Hub },
   { path: '/pricing', label: 'Pricing', Component: Pricing },
   { path: '/contact-sales', label: 'Contact Sales', Component: ContactSales },
   // Addresses the previous site published and Google already indexed. They are

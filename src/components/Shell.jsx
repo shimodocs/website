@@ -26,6 +26,7 @@ const FOOTER_SECTIONS = [
       ['/airgap', 'Air-gapped and offline deployment'],
       ['/solutions/atlassian-alternative', 'Replacing Atlassian on your own servers'],
       ['/solutions/confluence-alternative', 'A Confluence alternative you can self-host'],
+      ['/migration', 'Planning a document platform migration'],
       ['/resources', 'Guides, comparisons and downloads'],
       ['/help-center', 'Self-hosted deployment guides'],
       ['/blog', 'Private cloud collaboration blog'],

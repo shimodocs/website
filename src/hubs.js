@@ -468,4 +468,218 @@ export const HUBS = {
       ],
     },
   },
+
+  // The migration hub. The displacement pages answer "should I move"; this one
+  // answers "what does moving involve", which is the question the same buyer
+  // asks a week later and the one an administrator has to put a schedule
+  // against. Everything factual here is checkable in content/docs — the import
+  // and export format lists, the bulk user import limit, and the four operation
+  // tools used to verify an import — and the parts a migration cannot carry
+  // across are stated as losses rather than smoothed over.
+  '/migration': {
+    eyebrow: 'Migration',
+    h1: ['Document migration into', 'a platform you control.'],
+    lead:
+      'A migration looks like a file-transfer project and turns out to be an identity and permissions project. This page is the assessment an administrator can work from: what comes across as data, what has to be rebuilt deliberately, and how to prove the move worked before anyone retires the old system.',
+    sections: [
+      {
+        heading: 'Four things move, and only one of them is a file problem',
+        body: [
+          'The instinct is to treat this as an export-and-import exercise, because that is the part that visibly either works or does not. Content is in fact the least dangerous of the four assets a migration has to carry, and the other three are where schedules slip.',
+        ],
+        list: [
+          'Content — pages, documents, spreadsheets and presentations. This is the mechanical part, and the part with a documented answer.',
+          'Structure and permissions — who could see which page, inherited from spaces and folders and years of one-off overrides. No export produces this in the shape a target platform expects.',
+          'Identity — who counts as a user and which group they belong to. This decides every permission downstream, which is why it has to land before people are onboarded rather than after.',
+          'Conversation — comments, inline suggestions and the reasoning recorded while a document was being written. Losing this while keeping the text is the most common bad outcome, because the decision usually lives in the comments rather than the page body.',
+        ],
+        note:
+          'Plan the four as separate workstreams with separate owners. The migration that treats them as one is the one that runs both systems in parallel for a year.',
+      },
+      {
+        heading: 'What the platform can import',
+        body: [
+          'Content arrives as files. The suite accepts the formats people actually have, and every import type is a documented feature switch an administrator can inspect rather than a claim on a marketing page.',
+        ],
+        table: {
+          head: ['Source format', 'Lands as', 'Extensions'],
+          rows: [
+            ['Word documents', 'Document', 'doc, docx, wps, wpt'],
+            ['Markdown and plain text', 'Document', 'md, txt'],
+            ['Excel workbooks and CSV', 'Spreadsheet', 'xls, xlsx, xlsm, csv'],
+            ['PowerPoint decks', 'Presentation', 'ppt, pptx'],
+            ['Tabular data', 'Application table', 'csv, xls, xlsx'],
+            ['Mind maps', 'Mind map', 'xmind'],
+            ['Attachments', 'Stored or converted', 'svg, xml and standard attachment types'],
+          ],
+          caption:
+            'Import support as documented in the editor configuration reference, where each row is a feature switch with its own default and its own toggle.',
+        },
+        note:
+          'Test before you promise anything. Open one real file of each class your organisation owns, including the awkward ones — a workbook with external links, a deck with embedded fonts, a document carrying tracked changes. A format list tells you what will be attempted, not what will survive contact with your worst file.',
+        links: [
+          [
+            '/docs/deployment/operations-platform/suite/configuration/editor-configuration',
+            'Editor configuration and import switches',
+          ],
+        ],
+      },
+      {
+        heading: 'What does not come across, and has to be rebuilt',
+        body: [
+          'This is the part worth being blunt about, because a plan that assumes otherwise is the one that stalls in week three.',
+          'There is no connector that reads a Confluence space, a Google Workspace drive or a SharePoint site and recreates it inside the suite. Nothing in the product documentation describes one. Plan on exporting from the source system in the formats above and importing the result as content, which means the tree, the permissions and the conversation are reconstructed by hand or by script rather than transferred.',
+        ],
+        list: [
+          'Space and folder hierarchy, and every permission inherited from it',
+          'Page-level permission overrides that accumulated over years',
+          'Comments, inline suggestions and the reply threads attached to them',
+          'Version history — an imported document carries the history it was exported with, not the history it had',
+          'Macros, Marketplace apps and other platform-specific artefacts, which have no equivalent to import into',
+        ],
+        note:
+          'Decide deliberately which of these you are willing to lose, and write the decision down. A migration that says "everything" out loud and quietly drops the comment threads is how a documentation platform loses the trust of the people who have to use it.',
+      },
+      {
+        heading: 'The mapping exercise everything else waits on',
+        body: [
+          'Source platforms express permissions as per-space or per-folder access with individual overrides. A self-hosted suite expresses them as group-based roles driven by the identity provider. The gap between those two models is not closed by software; it is closed by a table somebody has to write.',
+          'Build the mapping before any content moves, and validate it against the group structure your directory already has. Two things make this cheaper. Inventory spaces and folders by owner rather than by size, because an unowned space should not be in the first cutover at all. And expect the long tail: the overrides that matter are rarely the ones anyone remembers creating.',
+        ],
+        links: [
+          ['/blog/sso-self-hosted-document-platform', 'Identity and SSO: LDAP, SAML, OIDC and group mapping'],
+          ['/docs/deployment/operations-platform/suite/user-management', 'Suite user management'],
+        ],
+      },
+      {
+        heading: 'Getting users in before content',
+        body: [
+          'Accounts can be created in bulk rather than one at a time. The system configuration reference exposes an import limit of up to 500 user rows per batch, which is the setting to check before committing to an onboarding window.',
+          'Connect the identity provider first and let the directory be the source of truth for group membership. Onboarding people into a local user list and retrofitting group mapping afterwards is the expensive version of this project, and it is the version that leaves orphaned access behind when someone leaves the organisation.',
+        ],
+        links: [
+          [
+            '/docs/deployment/operations-platform/suite/configuration/system-configuration',
+            'System configuration reference',
+          ],
+          [
+            '/docs/deployment/operations-platform/system-services/system-management/user-management',
+            'User management in the operations platform',
+          ],
+        ],
+      },
+      {
+        heading: 'Where people are migrating from',
+        body: [
+          'The four source systems that come up most often fail in different places, and knowing which one you are leaving tells you where to spend the test budget.',
+        ],
+        table: {
+          head: ['Leaving', 'What exports cleanly', 'What you rebuild'],
+          rows: [
+            [
+              'Google Workspace',
+              'Docs, Sheets and Slides export to docx, xlsx and pptx, and Drive preserves the folder structure',
+              'The sharing model, comment threads, and anything that depended on Apps Script or add-ons',
+            ],
+            [
+              'Confluence',
+              'Pages export to HTML and import as documents; attachments travel with them',
+              'Space and page permissions, macros, and the Jira linkage',
+            ],
+            [
+              'SharePoint or a file share',
+              'Office files are already in importable formats and need no conversion',
+              'Site permissions, metadata columns, and check-in version history',
+            ],
+            [
+              'Notion',
+              'Pages export to Markdown and CSV',
+              'Databases, relations and rollups, which flatten into tables rather than surviving as relations',
+            ],
+          ],
+          caption:
+            'Export fidelity is a property of the source system, not of the destination. Verify it against your own content before you rely on it.',
+        },
+        note:
+          'If you are leaving a platform because of a hosting or data-use decision, the migration is the price of that decision rather than a separate project. Budget it that way and give it a named owner.',
+        links: [
+          [
+            '/blog/how-to-migrate-from-google-workspace',
+            'A staged Google Workspace migration plan, with cutover and rollback',
+          ],
+          ['/solutions/confluence-alternative', 'What replacing Confluence actually involves'],
+        ],
+      },
+      {
+        heading: 'Proving the migration worked before you retire anything',
+        body: [
+          'The advantage a self-hosted platform gives a migration is the ability to inspect it from the server side. Four tools in the operations platform are aimed at exactly this, and they are the difference between hoping the import worked and being able to demonstrate that it did.',
+        ],
+        list: [
+          'File information search — look a file up by its internal GUID or client file identifier and confirm its application, type, status and content size. The page is read-only, so it is safe to use during a live cutover.',
+          'Import and export task tracing — every transcoding task carries a task ID, and the event search resolves that ID to the full event list, so a failure is located rather than guessed at.',
+          'Document repair — when a file will not open after import there are two recovery paths, one from encrypted data and one from historical data, and a failed repair carries no risk to the file.',
+          'Object storage compatibility and performance testing — checks configuration, connectivity, upload compatibility and upload throughput against the bucket you intend to use, before documents depend on it.',
+        ],
+        note:
+          'Run all four against a deliberately awkward sample rather than a clean test file: the largest workbook, the deck with the most embedded media, the document with a decade of comments. A migration validated on clean files has not been validated.',
+        links: [
+          [
+            '/docs/deployment/operations-platform/system-services/business-control/file-information',
+            'File information search',
+          ],
+          [
+            '/docs/deployment/operations-platform/system-services/business-control/transcoding-events',
+            'Transcoding event search',
+          ],
+          [
+            '/docs/deployment/operations-platform/system-services/business-control/document-repair',
+            'Document repair',
+          ],
+          [
+            '/docs/deployment/operations-platform/system-services/toolset/compatibility-testing',
+            'Object storage compatibility testing',
+          ],
+        ],
+      },
+      {
+        heading: 'The exit path is part of the plan',
+        body: [
+          'A migration decision is easier to defend when leaving again is a documented operation rather than a hope. Documents export to docx, markdown, PDF and images; spreadsheets export to xlsx, with a full export archive and single-form data as CSV; tables export to xlsx; presentations export to pptx and PDF. Backups cover the database, the object storage and the installation configuration, with a documented restore and post-recovery verification procedure.',
+          'That matters beyond procurement. The reason a self-hosted deployment is defensible is that the data sits on infrastructure you control, and documented export formats are the evidence that the control is real rather than nominal.',
+        ],
+        links: [
+          ['/docs/deployment/troubleshooting/data-backup', 'Backup, restore and post-recovery verification'],
+          [
+            '/docs/deployment/operations-platform/system-services/service-operations/system-upgrade',
+            'System upgrade procedure',
+          ],
+          ['/blog/upgrade-and-rollback-document-platform', 'Upgrade and rollback on a self-hosted platform'],
+        ],
+      },
+      {
+        heading: 'When migration is the wrong answer',
+        body: ['A page like this should say where it does not apply. Three cases are worth naming.'],
+        list: [
+          'If the value of your current platform is its ecosystem rather than its documents — Marketplace apps, macros, deep issue-tracker linkage — a document platform is not a like-for-like replacement, and the migration will surface that cost after the content has already moved.',
+          'If you are moving only to reduce licence cost, the arithmetic often loses. You take on upgrades, backup testing, availability and capacity planning, and that operational time is the real price of the move.',
+          'If nobody owns the retirement date, do not start. A migration with no date on which the old system becomes unreachable does not finish; it adds a second system to maintain.',
+        ],
+        note:
+          'The honest version of this page is more useful than the persuasive one, because the person reading it has to justify the decision to somebody else.',
+      },
+    ],
+    checklist: {
+      heading: 'What to have ready before you schedule a cutover',
+      items: [
+        'A named owner for the migration, and a date on which the old system stops being reachable',
+        'Identity connected, with group-to-role mapping tested on a pilot group',
+        'The permission mapping table, drafted before any content moves',
+        'A test set of real files: the largest workbook, the messiest deck, the most-commented document',
+        'Object storage compatibility and throughput tested against the target bucket',
+        'A restore rehearsed on the destination, not merely a backup taken',
+        'A written decision about which comments, history and macros you accept losing',
+      ],
+    },
+  },
 }
