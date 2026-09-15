@@ -5,6 +5,7 @@ description: "Data sovereignty is not the same as data residency. What the disti
 layout: standard
 category: security
 date: 2026-01-16
+updated: 2026-09-15
 tags: [data sovereignty, compliance, governance, security]
 keywords: "data sovereignty, data residency, document collaboration compliance, cross-border data access"
 featured: true

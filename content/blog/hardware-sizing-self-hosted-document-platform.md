@@ -5,6 +5,7 @@ description: "How to size CPU, memory and storage for a self-hosted document pla
 layout: standard
 category: self-hosting
 date: 2026-03-23
+updated: 2026-09-15
 tags: [sizing, infrastructure, capacity, operations]
 keywords: "self hosted document platform sizing, document collaboration hardware requirements, capacity planning concurrent editors"
 ---

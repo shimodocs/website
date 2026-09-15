@@ -5,6 +5,7 @@ description: "Least privilege, group-derived roles and access reviews: the acces
 layout: standard
 category: security
 date: 2026-03-16
+updated: 2026-09-15
 tags: [access control, least privilege, identity, audit]
 keywords: "document access control, least privilege documents, access review document platform"
 ---

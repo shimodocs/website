@@ -5,6 +5,7 @@ description: "What self-hosted collaboration actually involves, the five questio
 layout: standard
 category: self-hosting
 date: 2026-01-14
+updated: 2026-09-15
 tags: [self-hosted, operations, kubernetes, infrastructure]
 keywords: "self-hosted collaboration, self-hosted document collaboration guide, run collaboration software yourself"
 featured: true

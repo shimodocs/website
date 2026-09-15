@@ -5,6 +5,7 @@ description: "What to monitor in a self-hosted document platform, which alerts a
 layout: magazine
 category: self-hosting
 date: 2026-03-30
+updated: 2026-09-15
 tags: [monitoring, observability, alerting, operations]
 keywords: "document platform monitoring, self hosted collaboration observability, alerting document platform"
 ---

@@ -5,6 +5,7 @@ description: "How to evaluate self-hosted document collaboration tools, the depl
 layout: magazine
 category: comparisons
 date: 2026-02-20
+updated: 2026-09-15
 tags: [self-hosted, comparison, shortlist, deployment]
 keywords: "self-hosted document collaboration, best self-hosted collaboration tools, private cloud document tools"
 ---

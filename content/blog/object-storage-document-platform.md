@@ -5,6 +5,7 @@ description: "S3-compatible storage for a self-hosted document platform: version
 layout: magazine
 category: self-hosting
 date: 2026-04-13
+updated: 2026-09-15
 tags: [object storage, s3, infrastructure, lifecycle]
 keywords: "object storage document platform, s3 compatible storage collaboration, lifecycle policy document versions"
 ---

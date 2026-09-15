@@ -5,6 +5,7 @@ description: "Why concurrent editors, not registered users, determine document p
 layout: standard
 category: self-hosting
 date: 2026-04-10
+updated: 2026-09-15
 tags: [capacity, concurrency, sizing, operations]
 keywords: "concurrent editors capacity planning, document platform concurrency, collaboration platform sizing"
 ---

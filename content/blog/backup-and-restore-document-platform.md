@@ -5,6 +5,7 @@ description: "What to back up in a self-hosted document platform, why database a
 layout: briefing
 category: self-hosting
 date: 2026-03-27
+updated: 2026-09-15
 tags: [backup, restore, disaster recovery, operations]
 keywords: "document platform backup, self hosted document restore, point in time recovery collaboration"
 ---

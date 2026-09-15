@@ -5,6 +5,7 @@ description: "Private cloud document collaboration keeps real-time editing, comm
 layout: standard
 category: self-hosting
 date: 2026-01-12
+updated: 2026-09-15
 tags: [private cloud, self-hosted, architecture, data sovereignty]
 keywords: "private cloud document collaboration, self-hosted document collaboration, what is private cloud collaboration"
 featured: true

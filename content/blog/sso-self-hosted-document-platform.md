@@ -5,6 +5,7 @@ description: "LDAP, SAML and OIDC for a self-hosted document platform: what to i
 layout: feature
 category: self-hosting
 date: 2026-04-03
+updated: 2026-09-15
 tags: [sso, identity, ldap, saml, oidc]
 keywords: "sso self hosted documents, ldap saml oidc document platform, group mapping document permissions"
 ---

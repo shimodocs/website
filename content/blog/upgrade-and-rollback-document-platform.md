@@ -5,6 +5,7 @@ description: "Why upgrades are the highest-risk routine operation in a self-host
 layout: standard
 category: self-hosting
 date: 2026-04-01
+updated: 2026-09-15
 tags: [upgrades, change management, rollback, operations]
 keywords: "document platform upgrade, self hosted collaboration upgrade rollback, change management document platform"
 ---

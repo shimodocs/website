@@ -5,6 +5,7 @@ description: "The relational database holds a document platform's real source of
 layout: feature
 category: self-hosting
 date: 2026-03-25
+updated: 2026-09-15
 tags: [database, tuning, mysql, operations]
 keywords: "document platform database tuning, mysql document collaboration performance, database backup point in time recovery"
 ---

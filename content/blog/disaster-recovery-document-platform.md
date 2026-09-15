@@ -5,6 +5,7 @@ description: "Designing disaster recovery for a self-hosted document platform: o
 layout: magazine
 category: self-hosting
 date: 2026-04-08
+updated: 2026-09-15
 tags: [disaster recovery, resilience, business continuity, operations]
 keywords: "disaster recovery document platform, self hosted collaboration business continuity, rto rpo document collaboration"
 ---

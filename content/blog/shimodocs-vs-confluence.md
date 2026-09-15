@@ -5,6 +5,7 @@ description: "Confluence is a hosted wiki tied to Jira. ShimoDocs is a self-host
 layout: briefing
 category: comparisons
 date: 2026-02-04
+updated: 2026-09-15
 tags: [comparison, confluence, wiki, knowledge base]
 keywords: "shimodocs vs confluence, confluence alternative, self-hosted confluence alternative"
 ---

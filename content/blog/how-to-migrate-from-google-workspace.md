@@ -5,6 +5,7 @@ description: "A staged migration plan for moving documents out of Google Workspa
 layout: feature
 category: guides
 date: 2026-01-26
+updated: 2026-09-15
 tags: [migration, google workspace, cutover, planning]
 keywords: "migrate from google workspace, google docs migration, document migration plan"
 ---

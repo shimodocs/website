@@ -4,6 +4,7 @@ seoTitle: "Your Content Is Training AI. Did You Agree? | ShimoDocs"
 description: "Twitch made AI training opt-out by default. What that reveals about consent, defaults, and controlling content that already lives on someone else's platform."
 category: ai
 date: 2026-08-14
+updated: 2026-09-15
 tags: [ai training data, consent, defaults, data control]
 keywords: "ai training content, opt out of ai training, content consent, document data control"
 layout: magazine

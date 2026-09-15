@@ -31,7 +31,7 @@ export const BLOG_POSTS = [
     "layout": "magazine",
     "figures": 3,
     "date": "2026-08-14",
-    "updated": null,
+    "updated": "2026-09-15",
     "tags": [
       "ai training data",
       "consent",
@@ -72,7 +72,7 @@ export const BLOG_POSTS = [
     "layout": "magazine",
     "figures": 2,
     "date": "2026-04-13",
-    "updated": null,
+    "updated": "2026-09-15",
     "tags": [
       "object storage",
       "s3",
@@ -92,7 +92,7 @@ export const BLOG_POSTS = [
     "layout": "standard",
     "figures": 2,
     "date": "2026-04-10",
-    "updated": null,
+    "updated": "2026-09-15",
     "tags": [
       "capacity",
       "concurrency",
@@ -112,7 +112,7 @@ export const BLOG_POSTS = [
     "layout": "magazine",
     "figures": 2,
     "date": "2026-04-08",
-    "updated": null,
+    "updated": "2026-09-15",
     "tags": [
       "disaster recovery",
       "resilience",
@@ -132,7 +132,7 @@ export const BLOG_POSTS = [
     "layout": "briefing",
     "figures": 2,
     "date": "2026-04-06",
-    "updated": null,
+    "updated": "2026-09-15",
     "tags": [
       "air-gapped",
       "offline",
@@ -152,7 +152,7 @@ export const BLOG_POSTS = [
     "layout": "feature",
     "figures": 2,
     "date": "2026-04-03",
-    "updated": null,
+    "updated": "2026-09-15",
     "tags": [
       "sso",
       "identity",
@@ -173,7 +173,7 @@ export const BLOG_POSTS = [
     "layout": "standard",
     "figures": 2,
     "date": "2026-04-01",
-    "updated": null,
+    "updated": "2026-09-15",
     "tags": [
       "upgrades",
       "change management",
@@ -193,7 +193,7 @@ export const BLOG_POSTS = [
     "layout": "magazine",
     "figures": 2,
     "date": "2026-03-30",
-    "updated": null,
+    "updated": "2026-09-15",
     "tags": [
       "monitoring",
       "observability",
@@ -213,7 +213,7 @@ export const BLOG_POSTS = [
     "layout": "briefing",
     "figures": 2,
     "date": "2026-03-27",
-    "updated": null,
+    "updated": "2026-09-15",
     "tags": [
       "backup",
       "restore",
@@ -233,7 +233,7 @@ export const BLOG_POSTS = [
     "layout": "feature",
     "figures": 2,
     "date": "2026-03-25",
-    "updated": null,
+    "updated": "2026-09-15",
     "tags": [
       "database",
       "tuning",
@@ -253,7 +253,7 @@ export const BLOG_POSTS = [
     "layout": "standard",
     "figures": 2,
     "date": "2026-03-23",
-    "updated": null,
+    "updated": "2026-09-15",
     "tags": [
       "sizing",
       "infrastructure",
@@ -273,7 +273,7 @@ export const BLOG_POSTS = [
     "layout": "magazine",
     "figures": 2,
     "date": "2026-03-20",
-    "updated": null,
+    "updated": "2026-09-15",
     "tags": [
       "encryption",
       "key management",
@@ -313,7 +313,7 @@ export const BLOG_POSTS = [
     "layout": "standard",
     "figures": 2,
     "date": "2026-03-16",
-    "updated": null,
+    "updated": "2026-09-15",
     "tags": [
       "access control",
       "least privilege",
@@ -513,7 +513,7 @@ export const BLOG_POSTS = [
     "layout": "magazine",
     "figures": 2,
     "date": "2026-02-20",
-    "updated": null,
+    "updated": "2026-09-15",
     "tags": [
       "self-hosted",
       "comparison",
@@ -633,7 +633,7 @@ export const BLOG_POSTS = [
     "layout": "briefing",
     "figures": 2,
     "date": "2026-02-06",
-    "updated": null,
+    "updated": "2026-09-15",
     "tags": [
       "comparison",
       "sharepoint",
@@ -653,7 +653,7 @@ export const BLOG_POSTS = [
     "layout": "briefing",
     "figures": 2,
     "date": "2026-02-04",
-    "updated": null,
+    "updated": "2026-09-15",
     "tags": [
       "comparison",
       "confluence",
@@ -733,7 +733,7 @@ export const BLOG_POSTS = [
     "layout": "feature",
     "figures": 2,
     "date": "2026-01-26",
-    "updated": null,
+    "updated": "2026-09-15",
     "tags": [
       "migration",
       "google workspace",
@@ -813,7 +813,7 @@ export const BLOG_POSTS = [
     "layout": "standard",
     "figures": 2,
     "date": "2026-01-16",
-    "updated": null,
+    "updated": "2026-09-15",
     "tags": [
       "data sovereignty",
       "compliance",
@@ -833,7 +833,7 @@ export const BLOG_POSTS = [
     "layout": "standard",
     "figures": 2,
     "date": "2026-01-14",
-    "updated": null,
+    "updated": "2026-09-15",
     "tags": [
       "self-hosted",
       "operations",
@@ -853,7 +853,7 @@ export const BLOG_POSTS = [
     "layout": "standard",
     "figures": 2,
     "date": "2026-01-12",
-    "updated": null,
+    "updated": "2026-09-15",
     "tags": [
       "private cloud",
       "self-hosted",

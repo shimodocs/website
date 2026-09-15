@@ -5,6 +5,7 @@ description: "What encryption at rest actually protects, when a customer-managed
 layout: magazine
 category: security
 date: 2026-03-20
+updated: 2026-09-15
 tags: [encryption, key management, byok, security]
 keywords: "byok document encryption, customer managed keys, encryption key custody documents"
 ---

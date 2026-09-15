@@ -5,6 +5,7 @@ description: "SharePoint is a broad Microsoft platform; ShimoDocs is a focused s
 layout: briefing
 category: comparisons
 date: 2026-02-06
+updated: 2026-09-15
 tags: [comparison, sharepoint, document management, microsoft]
 keywords: "shimodocs vs sharepoint, sharepoint alternative, self-hosted sharepoint alternative"
 ---

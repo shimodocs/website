@@ -5,6 +5,7 @@ description: "Running document collaboration with no internet access: offline in
 layout: briefing
 category: self-hosting
 date: 2026-04-06
+updated: 2026-09-15
 tags: [air-gapped, offline, security, deployment]
 keywords: "air gapped document collaboration, offline document platform, disconnected network collaboration software"
 ---
