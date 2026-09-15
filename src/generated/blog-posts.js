@@ -641,7 +641,7 @@ export const BLOG_POSTS = [
       "microsoft"
     ],
     "readingTime": 8,
-    "words": 1666,
+    "words": 1668,
     "featured": false
   },
   {
@@ -661,7 +661,7 @@ export const BLOG_POSTS = [
       "knowledge base"
     ],
     "readingTime": 8,
-    "words": 1723,
+    "words": 1725,
     "featured": false
   },
   {
