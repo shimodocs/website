@@ -273,9 +273,24 @@ where one broken translation is invisible.
 ## Download statistics
 
 GitHub exposes only a cumulative `download_count` per release asset, so a daily
-number exists only if something reads the counter every day and subtracts.
-`.github/workflows/download-stats.yml` does that at 09:00 Beijing time, and
-commits the result:
+number exists only if something reads the counter every day and subtracts, and
+a day that is missed can never be reconstructed. Everything about the job
+follows from that:
+
+- It runs **twice** a day, at 09:00 and 21:00 Beijing time. The second run
+  rewrites the same day's entry with the same numbers rather than adding a
+  second one, and it is the retry window for a morning that failed.
+- Only the first successful run of the day sends the card. If that card was
+  rejected, the flag stays unset and the evening run sends it again
+  (`--force-notify` resends one on demand).
+- A 403, 429 or 5xx is retried twice with a backoff, and a failure for a day
+  that is **already archived** exits successfully with a warning instead of a
+  red run — the data is safe, so there is nothing to act on. A failure for a
+  day that is **not** archived fails loudly, because that day is at risk.
+- The archive is written before the webhook is called, never after: a hanging
+  bot must not be able to cost a day.
+
+It commits the result:
 
 | File | Purpose |
 | --- | --- |
@@ -291,8 +306,9 @@ name-based diff would report as one enormous negative day.
 ```bash
 npm run stats:dry                                            # print, write nothing
 node scripts/download-stats.mjs                              # snapshot now
-node scripts/download-stats.mjs --dry-run --print-payload    # inspect the card
-LARK_WEBHOOK=... node scripts/download-stats.mjs --dry-run --notify   # test the card
+node scripts/download-stats.mjs --print-payload --dry-run     # inspect the card
+node scripts/download-stats.mjs --dry-run --notify            # send a test card
+LARK_WEBHOOK=... node scripts/download-stats.mjs --force-notify   # resend today's
 ```
 
 Each run also pushes a card to a Lark custom bot. That needs the repository

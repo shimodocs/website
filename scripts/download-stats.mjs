@@ -397,14 +397,24 @@ async function main() {
   const assets = snapshotAssets(releases)
 
   const history = readHistory()
+  // Whether this is the first snapshot of the day, and whether the card for it
+  // already went out. The workflow runs twice a day precisely so a failure at
+  // 09:00 can be recovered at 21:00, which means the second run has to know not
+  // to send the same card again — unless the first attempt failed to send it.
+  const existing = history.days.find(day => day.date === date)
+  const alreadyNotified = Boolean(existing?.notified)
+  const forceNotify = process.argv.includes('--force-notify')
+
   const days = history.days.filter(day => day.date !== date)
   const previous = days.length ? days[days.length - 1] : null
   const snapshot = buildSnapshot(date, repo, assets, previous)
+  snapshot.notified = alreadyNotified
   const nextDays = [...days, snapshot].sort((a, b) => a.date.localeCompare(b.date))
   const notes = anomalies(snapshot, nextDays)
 
   printSummary(snapshot, nextDays, notes)
   if (previous) console.log(`  距上一快照 ${daysBetween(previous.date, date)} 天`)
+  if (existing) console.log(`  今天已有一份快照${alreadyNotified ? '，且日报已推送' : '，但日报尚未推送'}`)
 
   if (dryRun) {
     // Dumping the payload is how the card is reviewed without a webhook: a
@@ -427,25 +437,43 @@ async function main() {
   mkdirSync(DATA_DIR, { recursive: true })
   mkdirSync(REPORT_DIR, { recursive: true })
 
-  writeFileSync(
-    HISTORY_FILE,
-    `${JSON.stringify({ repo: PRODUCT_REPO, generatedAt: snapshot.capturedAt, days: nextDays }, null, 2)}\n`,
-  )
-  writeFileSync(CSV_FILE, writeCsv(nextDays))
-  writeFileSync(LATEST_FILE, `${JSON.stringify({ ...snapshot, notes }, null, 2)}\n`)
-
   const month = date.slice(0, 7)
-  const reportFile = join(REPORT_DIR, `${month}.md`)
-  writeFileSync(reportFile, writeMonthReport(nextDays, month))
+  const writeArchive = () => {
+    writeFileSync(
+      HISTORY_FILE,
+      `${JSON.stringify({ repo: PRODUCT_REPO, generatedAt: snapshot.capturedAt, days: nextDays }, null, 2)}\n`,
+    )
+    writeFileSync(LATEST_FILE, `${JSON.stringify({ ...snapshot, notes }, null, 2)}\n`)
+  }
+
+  // The archive is written before the notification, not after it: talking to a
+  // webhook can hang, and a day of history must not depend on the bot
+  // answering.
+  writeFileSync(CSV_FILE, writeCsv(nextDays))
+  writeFileSync(join(REPORT_DIR, `${month}.md`), writeMonthReport(nextDays, month))
+  writeArchive()
 
   let notification = 'skipped'
-  try {
-    notification = await notifyLark(snapshot, nextDays, notes)
-  } catch (error) {
-    // The archive is already on disk and the workflow commits it regardless: a
-    // broken webhook must not cost a day of data. The annotation surfaces it.
-    notification = `failed: ${error.message}`
-    console.log(`::warning::${error.message}`)
+  if (alreadyNotified && !forceNotify) {
+    // The second run of the day refreshes the number but must not repeat the
+    // card; --force-notify exists for resending one that was lost.
+    notification = 'skipped（今天的日报已经推送过）'
+  } else {
+    try {
+      notification = await notifyLark(snapshot, nextDays, notes)
+      if (notification === 'sent') {
+        // Recorded in the snapshot so a later run the same day knows the card
+        // is out, and so a send that failed is retried at 21:00 rather than
+        // lost.
+        snapshot.notified = true
+        writeArchive()
+      }
+    } catch (error) {
+      // The archive on disk already covers the day, so this is a warning rather
+      // than a failure; the next scheduled run retries the card.
+      notification = `failed: ${error.message}`
+      console.log(`::warning::${error.message}`)
+    }
   }
 
   console.log(
@@ -454,4 +482,24 @@ async function main() {
   )
 }
 
-await main()
+// A snapshot of a cumulative counter is the one thing here that cannot be
+// recomputed later: missing a day leaves a permanent hole in the history. Two
+// failures therefore deserve opposite outcomes.
+//
+// If the failure happens before the day is recorded, the run must fail loudly —
+// the workflow is scheduled twice a day so the second attempt can still save
+// the day. If the day is already archived, the same failure costs nothing, and
+// failing the run would only paint the Actions tab red for no reason.
+try {
+  await main()
+} catch (error) {
+  let archived = false
+  try {
+    archived = !dryRun && readHistory().days.some(day => day.date === dayIn(REPORT_TIME_ZONE))
+  } catch {
+    archived = false
+  }
+  if (!archived) throw error
+  console.log(`::warning::${error.message}`)
+  console.log('今天的快照已经在库里，这次失败不影响这一天，按成功退出。')
+}

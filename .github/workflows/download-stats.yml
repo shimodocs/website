@@ -8,12 +8,19 @@ name: Daily download stats
 # 01:00 UTC is 09:00 in Shanghai. That is deliberately after midnight there, so
 # a "day" in the report is a finished Beijing day rather than a partial one.
 #
+# The job runs twice: the same daily snapshot is taken again at 13:00 UTC, which
+# is 21:00 in Shanghai. The counter is cumulative, so a day missed at 09:00 can
+# never be reconstructed afterwards — the second run is the retry window. It
+# rewrites the same day's entry with the same numbers instead of adding a second
+# one, and only sends the card if the morning one did not.
+#
 # The daily commit also keeps the schedule alive: GitHub disables a scheduled
 # workflow after 60 days without repository activity.
 
 on:
   schedule:
     - cron: '0 1 * * *'
+    - cron: '0 13 * * *'
   workflow_dispatch:
     inputs:
       dry_run:
@@ -50,6 +57,10 @@ jobs:
       # releases; it is passed to lift the anonymous 60-requests-per-hour limit.
       # The Lark secrets are optional: without them the numbers are still
       # archived and the run logs a warning instead of failing.
+      #
+      # The script retries a 403, 429 or 5xx twice, and exits successfully when
+      # the day it could not fetch is already archived, so a red run always
+      # means a day is genuinely at risk.
       - name: Snapshot the release download counts
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
