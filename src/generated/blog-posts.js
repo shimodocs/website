@@ -39,7 +39,7 @@ export const BLOG_POSTS = [
       "data control"
     ],
     "readingTime": 8,
-    "words": 1682,
+    "words": 1691,
     "featured": false
   },
   {
@@ -80,7 +80,7 @@ export const BLOG_POSTS = [
       "lifecycle"
     ],
     "readingTime": 7,
-    "words": 1528,
+    "words": 1525,
     "featured": false
   },
   {
@@ -100,7 +100,7 @@ export const BLOG_POSTS = [
       "operations"
     ],
     "readingTime": 7,
-    "words": 1505,
+    "words": 1501,
     "featured": false
   },
   {
@@ -120,7 +120,7 @@ export const BLOG_POSTS = [
       "operations"
     ],
     "readingTime": 7,
-    "words": 1461,
+    "words": 1456,
     "featured": false
   },
   {
@@ -139,8 +139,8 @@ export const BLOG_POSTS = [
       "security",
       "deployment"
     ],
-    "readingTime": 6,
-    "words": 1412,
+    "readingTime": 7,
+    "words": 1438,
     "featured": false
   },
   {
@@ -161,7 +161,7 @@ export const BLOG_POSTS = [
       "oidc"
     ],
     "readingTime": 6,
-    "words": 1378,
+    "words": 1375,
     "featured": false
   },
   {
@@ -181,7 +181,7 @@ export const BLOG_POSTS = [
       "operations"
     ],
     "readingTime": 6,
-    "words": 1369,
+    "words": 1364,
     "featured": false
   },
   {
@@ -201,7 +201,7 @@ export const BLOG_POSTS = [
       "operations"
     ],
     "readingTime": 7,
-    "words": 1499,
+    "words": 1495,
     "featured": false
   },
   {
@@ -221,7 +221,7 @@ export const BLOG_POSTS = [
       "operations"
     ],
     "readingTime": 8,
-    "words": 1700,
+    "words": 1696,
     "featured": false
   },
   {
@@ -241,7 +241,7 @@ export const BLOG_POSTS = [
       "operations"
     ],
     "readingTime": 6,
-    "words": 1288,
+    "words": 1284,
     "featured": false
   },
   {
@@ -261,7 +261,7 @@ export const BLOG_POSTS = [
       "operations"
     ],
     "readingTime": 7,
-    "words": 1521,
+    "words": 1519,
     "featured": false
   },
   {
@@ -281,7 +281,7 @@ export const BLOG_POSTS = [
       "security"
     ],
     "readingTime": 5,
-    "words": 1196,
+    "words": 1187,
     "featured": false
   },
   {
@@ -321,7 +321,7 @@ export const BLOG_POSTS = [
       "audit"
     ],
     "readingTime": 5,
-    "words": 1154,
+    "words": 1152,
     "featured": false
   },
   {
@@ -521,7 +521,7 @@ export const BLOG_POSTS = [
       "deployment"
     ],
     "readingTime": 6,
-    "words": 1230,
+    "words": 1261,
     "featured": false
   },
   {
@@ -541,7 +541,7 @@ export const BLOG_POSTS = [
       "evaluation"
     ],
     "readingTime": 10,
-    "words": 2203,
+    "words": 2242,
     "featured": true
   },
   {
@@ -661,7 +661,7 @@ export const BLOG_POSTS = [
       "knowledge base"
     ],
     "readingTime": 6,
-    "words": 1272,
+    "words": 1318,
     "featured": false
   },
   {
@@ -741,7 +741,7 @@ export const BLOG_POSTS = [
       "planning"
     ],
     "readingTime": 5,
-    "words": 1028,
+    "words": 1059,
     "featured": false
   },
   {
@@ -821,7 +821,7 @@ export const BLOG_POSTS = [
       "security"
     ],
     "readingTime": 6,
-    "words": 1268,
+    "words": 1300,
     "featured": true
   },
   {
