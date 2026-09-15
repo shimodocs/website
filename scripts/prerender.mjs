@@ -26,7 +26,7 @@ import {
   sortDocs,
   withNeighbours,
 } from './docs-content.mjs'
-import { DOCS_DEFAULT_LANGUAGE, DOCS_LANGUAGES, docsBase, docsUi } from '../src/docs-languages.js'
+import { DOCS_DEFAULT_LANGUAGE, DOCS_LANGUAGES, docsBase } from '../src/docs-languages.js'
 
 const rootDir = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const distDir = join(rootDir, 'dist')
@@ -69,9 +69,6 @@ const docNav = buildNav(docs, DOCS_DEFAULT_LANGUAGE)
 // copy means those three cannot disagree about what exists.
 const docsByLanguage = loadDocsByLanguage()
 const docLanguages = languagesByDocId(docsByLanguage)
-const translations = DOCS_LANGUAGES.filter(
-  language => language !== DOCS_DEFAULT_LANGUAGE && docsByLanguage.has(language),
-)
 const missingLanguages = DOCS_LANGUAGES.filter(
   language => language !== DOCS_DEFAULT_LANGUAGE && !docsByLanguage.has(language),
 )
