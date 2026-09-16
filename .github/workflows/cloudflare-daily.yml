@@ -1,0 +1,40 @@
+name: Archive Cloudflare traffic
+
+on:
+  schedule:
+    # Twice daily in UTC: overlapping 23h snapshots avoid a daily 1h blind spot.
+    - cron: '17 2,14 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: cloudflare-daily
+  cancel-in-progress: false
+
+jobs:
+  collect:
+    if: github.repository == 'shimodocs/website'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+      - name: Collect aggregates without Feishu authorization
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ZONE_ID: ${{ vars.CLOUDFLARE_ZONE_ID }}
+        run: |
+          test -n "$CLOUDFLARE_API_TOKEN" || { echo 'Missing CLOUDFLARE_API_TOKEN repository secret'; exit 1; }
+          mkdir -p reports
+          node scripts/cloudflare-daily.mjs --dry-run --output reports/cloudflare.json
+      - name: Retain timestamped aggregate snapshot
+        uses: actions/upload-artifact@v4
+        with:
+          name: cloudflare-${{ github.run_id }}-${{ github.run_attempt }}
+          path: reports/cloudflare.json
+          if-no-files-found: error
+          retention-days: 90

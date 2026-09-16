@@ -20,7 +20,7 @@
 // and is never written anywhere else. The Feishu write goes through lark-cli, so
 // it uses the operator's own authorization rather than a second secret.
 import { execFileSync } from 'node:child_process'
-import { existsSync, readFileSync } from 'node:fs'
+import { existsSync, readFileSync, writeFileSync } from 'node:fs'
 import { dirname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
@@ -39,6 +39,10 @@ const BOT_HINT = /bot|crawler|spider|slurp|curl|wget|python|node|go-http|java|sc
 
 const args = process.argv.slice(2)
 const dryRun = args.includes('--dry-run')
+const outputArg = args.includes('--output') ? args[args.indexOf('--output') + 1] : null
+if (args.includes('--output') && (!outputArg || outputArg.startsWith('--'))) {
+  throw new Error('--output requires a file path')
+}
 const dateArg = args.includes('--date') ? args[args.indexOf('--date') + 1] : null
 
 function token() {
@@ -92,7 +96,8 @@ async function dailyTotals(zone, date) {
       uniq { uniques }
     } } } }`)
   const rows = zoneData.httpRequests1dGroups
-  const row = rows.find(entry => entry.dimensions.date === date) || rows[rows.length - 1]
+  const row = rows.find(entry => entry.dimensions.date === date)
+  if (!row) throw new Error(`No daily totals for ${date}; refusing to substitute another date`)
   return {
     date: row.dimensions.date,
     requests: row.sum.requests,
@@ -149,7 +154,7 @@ async function perRequest(zone) {
     .map(row => `${row.dimensions.clientCountryName} ${row.count}`)
     .join(' / ')
 
-  return { counts, bots, top }
+  return { window: { from, to }, counts, bots, top }
 }
 
 // ------------------------------------------------------------------ writing
@@ -205,6 +210,18 @@ async function main() {
   const date = dateArg || yesterdayUtc()
   const daily = await dailyTotals(zone, date)
   const per = await perRequest(zone)
+
+  // CI archives aggregates without needing the operator's local Feishu login.
+  // UA matches are not verified bot identities; rolling windows overlap and
+  // must not be summed or labelled as the UTC daily total.
+  if (outputArg) {
+    writeFileSync(resolve(outputArg), JSON.stringify({
+      collectedAt: new Date().toISOString(), daily, per,
+      caveats: ['Daily totals use a UTC calendar day; per-request counts use the recorded rolling window.',
+        'Rolling windows overlap: do not sum them.',
+        'Adaptive groups may be sampled or truncated; crawler names are user-agent matches, not verified identities.'],
+    }, null, 2) + '\n')
+  }
 
   const row = {
     日期: daily.date,

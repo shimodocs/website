@@ -570,7 +570,7 @@ export const ROUTE_SEO = {
 // or an unusable one.
 export const ROUTE_UPDATED = {
   '/': '2026-09-15',
-  '/ai-workspace': '2026-09-10',
+  '/ai-workspace': '2026-09-15',
   '/blog': '2026-09-15',
   '/blog/category/comparisons': '2026-09-15',
   '/blog/category/self-hosting': '2026-09-15',
