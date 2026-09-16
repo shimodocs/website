@@ -17,12 +17,14 @@ From the **Mac terminal**, upload the configuration:
 
 ```bash
 cd /Users/piggy/Documents/ChatGPT/shimodocs
+scp deploy/nginx/analytics-log-format.conf ubuntu@43.172.115.22:/tmp/shimodocs-analytics-log-format.conf
 scp deploy/nginx/shimodocs.conf ubuntu@43.172.115.22:/tmp/shimodocs.conf
 ```
 
 Then use the **server SSH terminal** to install and enable it. On a new server, disable the unused default site; preserve any other existing sites:
 
 ```bash
+sudo install -m 644 /tmp/shimodocs-analytics-log-format.conf /etc/nginx/conf.d/shimodocs-analytics.conf
 sudo install -m 644 /tmp/shimodocs.conf /etc/nginx/sites-available/shimodocs
 sudo ln -sfn /etc/nginx/sites-available/shimodocs /etc/nginx/sites-enabled/shimodocs
 sudo unlink /etc/nginx/sites-enabled/default
@@ -239,3 +241,17 @@ Before connecting the repository, validate locally with:
 npm ci
 npm run build
 ```
+
+## Daily traffic and acquisition reporting
+
+`node scripts/shimodocs-daily.mjs --dry-run` validates the unified collector;
+`--setup` creates only missing Feishu tables/fields. The normal run updates
+Cloudflare traffic, crawler/page details, trusted origin referrers and likely-human
+estimates, and the GitHub cumulative download snapshot. It records each source's
+status separately. GSC is not rewritten until API authorization is configured.
+
+The local Codex task runs at 08:00 Asia/Shanghai and needs the Mac available.
+See [analytics operations](../scripts/analytics/README.md) for date boundaries,
+origin log installation, CIDR maintenance, warmup and attribution limitations.
+The dedicated origin log requires the format file to be installed before the site
+configuration. The original access log is retained.
