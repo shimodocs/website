@@ -64,9 +64,11 @@ below the origin count. Never add or subtract the two.
 
 ## Cloudflare Web Analytics (RUM)
 
-This is the only source with a complete referring URL: the beacon runs in the
-browser and reports to Cloudflare's edge, while a referral that arrives as a
-request has already been reduced to a bare origin by the sending page's policy.
+The beacon runs in the browser and reports the referring URL exactly as the
+browser held it, including same-site navigations the origin never sees because
+they never become a request. It still obeys the referring site's policy: Google
+arrives as `https://www.google.com/` and nothing more, so external rows rarely
+carry a path while same-site rows carry a full one.
 `真实用户来源日报` and `真实用户画像日报` come from it, and the two `真实用户*`
 columns on `流量观测` are its daily totals. Sessions count entries only, so
 same-site rows carry zero sessions by design.
