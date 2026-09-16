@@ -1,11 +1,11 @@
 ---
-title: "What Is Private Cloud Document Collaboration?"
-seoTitle: "What Is Private Cloud Document Collaboration? | ShimoDocs"
-description: "Private cloud document collaboration keeps real-time editing, comments and AI inside infrastructure you control. Here is how it works and when it fits."
+title: "Private Cloud Collaboration: A Guide for Document Teams"
+seoTitle: "Private Cloud Collaboration Guide for Documents | ShimoDocs"
+description: "A private cloud collaboration guide for document teams: understand the deployment boundary, compare it with SaaS and decide who will own operations."
 layout: standard
 category: self-hosting
 date: 2026-01-12
-updated: 2026-09-15
+updated: 2026-09-16
 tags: [private cloud, self-hosted, architecture, data sovereignty]
 keywords: "private cloud document collaboration, self-hosted document collaboration, what is private cloud collaboration"
 featured: true
@@ -24,9 +24,11 @@ faq:
     answer: "As a self-hosted suite covering documents, writers, spreadsheets, presentations, forms and tables, with the AI workspace included. It runs on a single node or a high-availability Kubernetes cluster, connects to your MySQL, Redis and object storage, and runs AI against the model endpoint you nominate."
 ---
 
-Most teams never choose where their documents live. They inherit a decision made years ago by whoever picked the productivity suite, and the files, comments, version history and search indexes have been accumulating inside someone else's data centre ever since.
+Private cloud collaboration for documents means running real-time editing, comments, storage and search on infrastructure your organisation controls. The deployment boundary, rather than the editing experience, is what distinguishes it from a public SaaS suite.
 
-Private cloud document collaboration is the alternative: the same real-time editing and sharing experience, running on infrastructure your organisation controls.
+This guide explains which layers belong inside that boundary, what your operations team takes on and when private deployment is the wrong choice. Self-hosting the storage alone does not put the editor or an external AI service under your control.
+
+If you already understand the deployment model, continue with the [self-hosting operations guide](/blog/self-hosted-collaboration-guide). To evaluate a replacement for an existing suite, use the [private cloud Google Docs alternative guide](/blog/google-docs-alternative-private-cloud).
 
 ## The short definition
 

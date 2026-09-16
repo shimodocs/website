@@ -571,9 +571,9 @@ export const ROUTE_SEO = {
 export const ROUTE_UPDATED = {
   '/': '2026-09-15',
   '/ai-workspace': '2026-09-15',
-  '/blog': '2026-09-15',
-  '/blog/category/comparisons': '2026-09-15',
-  '/blog/category/self-hosting': '2026-09-15',
+  '/blog': '2026-09-16',
+  '/blog/category/comparisons': '2026-09-16',
+  '/blog/category/self-hosting': '2026-09-16',
   '/blog/category/security': '2026-09-15',
   '/blog/category/ai': '2026-09-15',
   '/blog/category/industry': '2026-09-15',

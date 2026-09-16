@@ -786,22 +786,22 @@ export const BLOG_POSTS = [
   },
   {
     "slug": "google-docs-alternative-private-cloud",
-    "title": "A Private Cloud Google Docs Alternative",
-    "description": "What to look for in a private cloud Google Docs alternative, how real-time collaboration holds up, and the questions to ask before migrating.",
+    "title": "A Google Docs Alternative in Your Private Cloud",
+    "description": "Evaluate a private cloud Google Docs alternative: real-time editing, identity, AI data flows, file fidelity and a migration plan you can test.",
     "category": "comparisons",
     "categoryLabel": "Comparisons",
     "layout": "standard",
     "figures": 2,
     "date": "2026-01-19",
-    "updated": "2026-09-15",
+    "updated": "2026-09-16",
     "tags": [
       "google docs alternative",
       "private cloud",
       "migration",
       "comparison"
     ],
-    "readingTime": 8,
-    "words": 1864,
+    "readingTime": 9,
+    "words": 1908,
     "featured": false
   },
   {
@@ -846,14 +846,14 @@ export const BLOG_POSTS = [
   },
   {
     "slug": "what-is-private-cloud-document-collaboration",
-    "title": "What Is Private Cloud Document Collaboration?",
-    "description": "Private cloud document collaboration keeps real-time editing, comments and AI inside infrastructure you control. Here is how it works and when it fits.",
+    "title": "Private Cloud Collaboration: A Guide for Document Teams",
+    "description": "A private cloud collaboration guide for document teams: understand the deployment boundary, compare it with SaaS and decide who will own operations.",
     "category": "self-hosting",
     "categoryLabel": "Self-hosting",
     "layout": "standard",
     "figures": 2,
     "date": "2026-01-12",
-    "updated": "2026-09-15",
+    "updated": "2026-09-16",
     "tags": [
       "private cloud",
       "self-hosted",
@@ -861,7 +861,7 @@ export const BLOG_POSTS = [
       "data sovereignty"
     ],
     "readingTime": 7,
-    "words": 1486,
+    "words": 1539,
     "featured": true
   }
 ]
