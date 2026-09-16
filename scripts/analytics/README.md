@@ -40,6 +40,8 @@ Each table answers a different question; no single cell is the answer.
 | Where arrivals came from and where they landed | `来源与落地页日报` | `渠道`, `来源域名`, `来源URL`, `落地页`, `utm_source`/`utm_medium`/`utm_campaign`, `入口请求`, `独立IP估算` |
 | Which crawler fetched which page | `爬虫抓取明细` | `厂商`, `Bot`, `用途`, `页面`, `请求`, `成功请求`, `重定向请求`, `失败请求` |
 | Whether the collection ran and which source broke | `每日采集状态` | `数据源`, `状态`, `说明`, `采集时间` |
+| Where visitors came from, with the full referring URL | `真实用户来源日报` | `来源域名`, `来源路径`, `落地页`, `页面浏览`, `会话` |
+| Who the visitors were | `真实用户画像日报` | `国家`, `设备`, `浏览器`, `系统`, `页面浏览`, `会话` |
 
 `渠道` splits 站内 / 推广（UTM）/ AI引荐 / 搜索引荐 / 外部引荐 / 直接-来源未知.
 An absent Referer is "unknown", not "direct": HTTPS clients, privacy settings and
@@ -59,6 +61,31 @@ than a per-source outcome.
 The origin only sees what reached it — no edge cache hits, no edge-blocked
 requests — while Cloudflare Adaptive totals are sampled estimates that can read
 below the origin count. Never add or subtract the two.
+
+## Cloudflare Web Analytics (RUM)
+
+This is the only source with a complete referring URL: the beacon runs in the
+browser and reports to Cloudflare's edge, while a referral that arrives as a
+request has already been reduced to a bare origin by the sending page's policy.
+`真实用户来源日报` and `真实用户画像日报` come from it, and the two `真实用户*`
+columns on `流量观测` are its daily totals. Sessions count entries only, so
+same-site rows carry zero sessions by design.
+
+The beacon is injected by Cloudflare's edge (automatic setup is on for this
+proxied zone), so the repository still ships no JavaScript to article or guide
+pages. Reading the data needs an API token with **Account -> Account Analytics ->
+Read** and the account included under Account Resources; a zone-scoped token
+alone answers `not authorized for that account`. The site is identified by
+`CLOUDFLARE_RUM_SITE_TAG` (default in `scripts/rum-daily.mjs`); the account holds
+other sites, whose rows must never be mixed in. One query covers at most 13 weeks,
+and every run re-reads a 7-day window, so late-arriving page loads and missed days
+correct themselves instead of freezing a partial number.
+
+Feishu reads can return the revision from before a write, so writes are verified
+by re-reading until the values match. `lark-cli` also fails intermittently with
+`TLS handshake timeout` because the local proxy holds a fake IP for
+`open.feishu.cn`; reads retry, writes stay single-shot so a timed-out create
+cannot duplicate a row.
 
 ## Origin setup and maintenance
 

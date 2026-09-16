@@ -247,7 +247,8 @@ npm run build
 `node scripts/shimodocs-daily.mjs --dry-run` validates the unified collector;
 `--setup` creates only missing Feishu tables/fields. The normal run updates
 Cloudflare traffic, crawler/page details, trusted origin referrers and likely-human
-estimates, and the GitHub cumulative download snapshot. It records each source's
+estimates, likely-human referrers, Cloudflare Web Analytics sessions with the full
+referring URL, and the GitHub cumulative download snapshot. It records each source's
 status separately. GSC is not rewritten until API authorization is configured.
 
 The local Codex task runs at 08:00 Asia/Shanghai and needs the Mac available.

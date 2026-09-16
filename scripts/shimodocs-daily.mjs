@@ -17,11 +17,24 @@ const schemas={
  '来源与落地页日报':[...['记录键','日期','渠道','来源域名','来源URL','落地页','utm_source','utm_medium','utm_campaign','口径','数据状态'].map(text),...['入口请求','独立IP估算'].map(num)],
  '爬虫抓取明细':[...['记录键','日期','厂商','Bot','用途','页面','识别方式','统计范围','数据状态'].map(text),...['请求','成功请求','重定向请求','失败请求'].map(num)],
  '每日采集状态':[...['记录键','日期','数据源','状态','采集时间','说明'].map(text)],
+ '真实用户来源日报':[...['记录键','日期','来源域名','来源路径','落地页','口径'].map(text),...['页面浏览','会话'].map(num)],
+ '真实用户画像日报':[...['记录键','日期','国家','设备','浏览器','系统','口径'].map(text),...['页面浏览','会话'].map(num)],
 }
-const trafficFields=[...['采集起始','采集截止','采集时间','统计口径','采样情况','源站统计口径'].map(text),...['疑似人类页面浏览','疑似人类独立IP','未知页面请求','已知自动化页面请求'].map(num)]
-function cli(args){
- const raw=execFileSync('lark-cli',args,{encoding:'utf8',timeout:120000,maxBuffer:12*1024*1024})
- const j=JSON.parse(raw);if(j.ok!==true)throw Error(j.error?.message||'Feishu operation failed');return j.data
+const trafficFields=[...['采集起始','采集截止','采集时间','统计口径','采样情况','源站统计口径'].map(text),...['疑似人类页面浏览','疑似人类独立IP','未知页面请求','已知自动化页面请求','真实用户页面浏览','真实用户会话'].map(num)]
+// lark-cli intermittently fails with "TLS handshake timeout" against open.feishu.cn.
+// Reads retry; writes stay single-shot so a timed-out create cannot duplicate a row.
+const transient=/timeout|network|TLS|EOF|ECONN|socket hang up/i
+const sleep=ms=>Atomics.wait(new Int32Array(new SharedArrayBuffer(4)),0,0,ms)
+function cli(args,attempts=1){
+ for(let i=0;;i++){
+  try{
+   const raw=execFileSync('lark-cli',args,{encoding:'utf8',timeout:120000,maxBuffer:12*1024*1024})
+   const j=JSON.parse(raw);if(j.ok!==true)throw Error(j.error?.message||'Feishu operation failed');return j.data
+  }catch(e){
+   if(i>=attempts-1||!transient.test(String(e.message||'')+String(e.stderr||'')))throw e
+   sleep(2000*(i+1))
+  }
+ }
 }
 const common=table=>['--base-token',BASE,'--table-id',table,'--as','user']
 function preflight(){
@@ -31,8 +44,8 @@ function preflight(){
  const missing=['base:table:create','base:field:create','base:record:create','base:record:update'].filter(s=>!scopes.includes(s))
  if(missing.length){console.error(`飞书授权缺少 scope：${missing.join('、')}。请运行：lark-cli auth login --no-wait --json --domain base,docs 重新授权后重试。`);process.exit(2)}
 }
-function fields(table){return cli(['base','+field-list',...common(table),'--json']).fields||[]}
-function tableMap(){return new Map((cli(['base','+table-list','--base-token',BASE,'--as','user','--json']).tables||[]).map(t=>[t.name,t.id]))}
+function fields(table){return cli(['base','+field-list',...common(table),'--json'],5).fields||[]}
+function tableMap(){return new Map((cli(['base','+table-list','--base-token',BASE,'--as','user','--json'],5).tables||[]).map(t=>[t.name,t.id]))}
 function setupTables(){
  const tables=tableMap()
  for(const [name,schema] of Object.entries(schemas)){
@@ -66,14 +79,33 @@ function list(table){
  let offset=0,rows=[]
  for(;;){
   const file=join(artifactDir,`records-${table}-${offset}.ndjson`)
-  const raw=execFileSync('lark-cli',['base','+record-list',...common(table),'--format','ndjson','--output',file,'--overwrite','--limit','2000','--offset',String(offset)],{encoding:'utf8',timeout:120000,maxBuffer:2*1024*1024})
-  const manifest=JSON.parse(raw);if(manifest.ok===false)throw Error('Feishu list failed')
+  let manifest
+  for(let attempt=0;;attempt++){
+   try{
+    const raw=execFileSync('lark-cli',['base','+record-list',...common(table),'--format','ndjson','--output',file,'--overwrite','--limit','2000','--offset',String(offset)],{encoding:'utf8',timeout:120000,maxBuffer:2*1024*1024})
+    manifest=JSON.parse(raw);if(manifest.ok===false)throw Error('Feishu list failed');break
+   }catch(e){
+    if(attempt>=4||!transient.test(String(e.message||'')+String(e.stderr||'')))throw e
+    sleep(2000*(attempt+1))
+   }
+  }
   const batch=readFileSync(manifest.record_file||file,'utf8').trim().split('\n').filter(Boolean).map(JSON.parse);rows.push(...batch)
   if(!manifest.has_more)return rows
   if(!batch.length)throw Error('Feishu pagination made no progress');offset+=batch.length
  }
 }
 function key(row){return createHash('sha256').update(JSON.stringify(row)).digest('hex').slice(0,32)}
+const same=(a,b)=>(a??'')===(b??'')
+// Feishu reads can return the pre-write revision; re-read before calling a write wrong.
+function verifyRows(table,rows){
+ for(let attempt=0;;attempt++){
+  const found=new Map(list(table).map(r=>[r['记录键'],r]))
+  const bad=rows.filter(row=>{const hit=found.get(row['记录键']);return !hit||Object.entries(row).some(([k,v])=>!same(hit[k],v))})
+  if(!bad.length)return
+  if(attempt>=4)throw Error('Readback mismatch: '+table)
+  sleep(2000)
+ }
+}
 function upsert(table,rows){
  const dimensionTable=table===tables.get('来源与落地页日报')||table===tables.get('爬虫抓取明细')
  const existing=list(table),index=new Map()
@@ -97,8 +129,7 @@ function upsert(table,rows){
   if(create.length)cli(['base','+record-batch-create',...common(table),'--json',JSON.stringify({create_records:create})])
   if(Object.keys(update).length)cli(['base','+record-batch-update',...common(table),'--json',JSON.stringify({update_records:update})])
  }
- const verify=new Map(list(table).map(r=>[r['记录键'],r]))
- for(const row of rows){const found=verify.get(row['记录键']);if(!found||Object.entries(row).some(([k,v])=>found[k]!==v))throw Error('Readback mismatch: '+table)}
+ verifyRows(table,rows)
 }
 function run(file,args=[]){
  const p=spawnSync(process.execPath,[file,...args],{cwd:root,encoding:'utf8',timeout:600000,maxBuffer:4*1024*1024})
@@ -135,12 +166,18 @@ await stage('源站来源 / 疑似人类',()=>{
   const dayRows=list('tbl7IrEmsG0q4rEh').filter(r=>String(r.日期).slice(0,10)===date)
   if(dayRows.length!==1)throw Error('Need exactly one Cloudflare daily row before attaching origin summary')
   cli(['base','+record-batch-update',...common('tbl7IrEmsG0q4rEh'),'--json',JSON.stringify({update_records:{[dayRows[0].record_id]:{...data.summary,源站统计口径:JSON.stringify(data.coverage)}}})])
-  const verified=list('tbl7IrEmsG0q4rEh').find(r=>r.record_id===dayRows[0].record_id)
-  if(Object.entries(data.summary).some(([k,v])=>verified[k]!==v))throw Error('Origin summary readback mismatch')
+  let verified
+  for(let attempt=0;;attempt++){
+   verified=list('tbl7IrEmsG0q4rEh').find(r=>r.record_id===dayRows[0].record_id)
+   if(!Object.entries(data.summary).some(([k,v])=>!same(verified?.[k],v)))break
+   if(attempt>=4)throw Error('Origin summary readback mismatch')
+   sleep(2000)
+  }
  }
  console.log('Source rows:',rows.length,'Origin summary:',JSON.stringify(data.summary))
 })
 await stage('GitHub下载快照',()=>run('scripts/github-downloads-daily.mjs',dry?['--dry-run']:[]))
+await stage('Cloudflare RUM 真实用户',()=>run('scripts/rum-daily.mjs',dry?['--dry-run']:[]))
 statuses.push({数据源:'Google Search Console收录',状态:'未接入',说明:'现有数据为手工导出基线；无自动API授权，不重写旧数据，不把未采集写0'})
 const now=new Date().toISOString()
 const rows=statuses.map(r=>({...r,说明:String(r.说明).replace(/\s+/g,' ').slice(0,500),日期:date,采集时间:now,记录键:key([date,r.数据源])}))
