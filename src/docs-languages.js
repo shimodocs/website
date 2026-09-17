@@ -26,6 +26,14 @@ export const DOCS_DEFAULT_LANGUAGE = 'en'
 
 export const DOCS_LANGUAGES = ['en', 'de', 'ja']
 
+// Languages submitted through sitemap.xml. German and Japanese stay published:
+// the pages, hreflang cluster and language switcher remain, so a reader who
+// lands on a translated URL still gets a document. They are not advertised in
+// the sitemap while English commercial pages and English docs are the crawl
+// priority. Restoring a language here resumes submitting it; removing it from
+// DOCS_LANGUAGES would unpublish the pages.
+export const DOCS_SITEMAP_LANGUAGES = ['en']
+
 export const LANGUAGE_META = {
   en: { label: 'English', ogLocale: 'en_US' },
   de: { label: 'Deutsch', ogLocale: 'de_DE' },

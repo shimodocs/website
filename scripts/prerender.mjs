@@ -33,7 +33,7 @@ import { auditFiguresInDirectory } from './check-figures.mjs'
 import { auditPricingFactsInDirectory } from './check-pricing-facts.mjs'
 import { contentDate } from './content-dates.mjs'
 import { INDEXNOW_KEY, keyFileProblem } from './indexnow.mjs'
-import { DOCS_DEFAULT_LANGUAGE, DOCS_LANGUAGES, docsBase } from '../src/docs-languages.js'
+import { DOCS_DEFAULT_LANGUAGE, DOCS_LANGUAGES, DOCS_SITEMAP_LANGUAGES, docsBase } from '../src/docs-languages.js'
 
 const rootDir = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const distDir = join(rootDir, 'dist')
@@ -86,6 +86,11 @@ const missingLanguages = DOCS_LANGUAGES.filter(
 if (missingLanguages.length) {
   console.error(`Published languages with no content: ${missingLanguages.join(', ')}`)
   console.error('Run "node scripts/sync-docs.mjs" or remove them from src/docs-languages.js.')
+  process.exit(1)
+}
+const invalidSitemapLanguages = DOCS_SITEMAP_LANGUAGES.filter(language => !DOCS_LANGUAGES.includes(language))
+if (invalidSitemapLanguages.length) {
+  console.error(`DOCS_SITEMAP_LANGUAGES names unpublished languages: ${invalidSitemapLanguages.join(', ')}`)
   process.exit(1)
 }
 
@@ -326,11 +331,15 @@ writeFileSync(join(distDir, 'blog', 'feed.xml'), blogFeedXml(posts))
 
 // ------------------------------------------------------------- sitemaps
 //
-// One urlset per content type, with the guides split again per language, and
-// sitemap.xml as the index over them. Search Console then reports index
-// coverage per language: with all 500 URLs in one file, a language whose
-// translations Google refuses to index is invisible until the traffic numbers
-// fail to appear.
+// One urlset per content type, with the guides split again per language that
+// is being submitted, and sitemap.xml as the index over them. Search Console
+// then reports index coverage per language: with all 500 URLs in one file, a
+// language whose translations Google refuses to index is invisible until the
+// traffic numbers fail to appear.
+//
+// Not every published language is submitted. DOCS_SITEMAP_LANGUAGES is the
+// list that goes into the index; German and Japanese stay on the site and in
+// the hreflang graph but off the sitemap while English is the crawl priority.
 //
 // The commercial pages are their own file and the first <sitemap> in the index,
 // so the first child a crawler fetches after the index is the set of pages that
@@ -451,7 +460,7 @@ const sitemapFiles = [
       priority: '0.6',
     })),
   },
-  ...DOCS_LANGUAGES.filter(language => docsByLanguage.has(language)).map(language => ({
+  ...DOCS_SITEMAP_LANGUAGES.filter(language => docsByLanguage.has(language)).map(language => ({
     name: `sitemap-docs-${language}.xml`,
     entries: [
       // A translated index is a generated page, not a route, so it lives here.
@@ -604,7 +613,7 @@ for (const file of sitemapFiles) {
   console.log(`  ${file.name.padEnd(24)} -> ${file.entries.length} urls`)
 }
 console.log(`  ${'sitemap.xml'.padEnd(24)} -> index over ${sitemapFiles.length} sitemaps`)
-console.log(`  ${'total indexable urls'.padEnd(24)} -> ${sitemapFiles.reduce((sum, file) => sum + file.entries.length, 0)}`)
+console.log(`  ${'urls in sitemaps'.padEnd(24)} -> ${sitemapFiles.reduce((sum, file) => sum + file.entries.length, 0)}`)
 
 // ------------------------------------------------------------- verification
 
@@ -1207,10 +1216,28 @@ for (const post of posts) {
     problems.push(`no sitemap contains ${loc}`)
   }
 }
+function sitemapLists(loc) {
+  return sitemapFiles.some(file => file.entries.some(entry => entry.loc === loc))
+}
 for (const { doc } of guides) {
   const loc = absoluteUrl(doc.url)
-  if (!sitemapFiles.some(file => file.entries.some(entry => entry.loc === loc))) {
-    problems.push(`no sitemap contains ${loc}`)
+  if (DOCS_SITEMAP_LANGUAGES.includes(doc.language)) {
+    if (!sitemapLists(loc)) problems.push(`no sitemap contains ${loc}`)
+  } else if (sitemapLists(loc)) {
+    problems.push(`${loc} is a ${doc.language} guide and must stay off the sitemap`)
+  }
+}
+for (const language of DOCS_LANGUAGES) {
+  if (language === DOCS_DEFAULT_LANGUAGE) continue
+  const loc = absoluteUrl(docsBase(language))
+  if (DOCS_SITEMAP_LANGUAGES.includes(language)) {
+    if (!sitemapLists(loc)) problems.push(`no sitemap contains ${loc}`)
+  } else if (sitemapLists(loc)) {
+    problems.push(`${loc} must stay off the sitemap`)
+  }
+  const stale = `sitemap-docs-${language}.xml`
+  if (!DOCS_SITEMAP_LANGUAGES.includes(language) && existsSync(join(distDir, stale))) {
+    problems.push(`${stale} was written; translations stay off the sitemap`)
   }
 }
 

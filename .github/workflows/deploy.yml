@@ -243,7 +243,10 @@ jobs:
           // stamped every URL with one date would pass every other check here and
           // still teach Google to ignore the field for the whole domain.
           const lastmods = [...sitemapText.matchAll(/<lastmod>([^<]+)<\/lastmod>/g)].map(m => m[1]);
-          assert.ok(lastmods.length >= 200, `the child sitemaps carry only ${lastmods.length} lastmod values`);
+          // English-first sitemap is the commercial pages, the English guides
+          // and the blog — about 130 URLs. The previous 200 floor assumed
+          // German and Japanese docs were submitted too.
+          assert.ok(lastmods.length >= 100, `the child sitemaps carry only ${lastmods.length} lastmod values`);
           assert.ok(
             new Set(lastmods).size >= 3,
             `the child sitemaps report ${new Set(lastmods).size} distinct lastmod date(s); expected content dates`,
@@ -251,20 +254,27 @@ jobs:
           const buildDate = new Date().toISOString().slice(0, 10);
           const futureDates = [...new Set(lastmods.filter(date => date > buildDate))];
           assert.deepEqual(futureDates, [], `sitemap lastmod dates in the future: ${futureDates.join(', ')}`);
-          // The published language set lives in src/docs-languages.js. It is
-          // repeated here on purpose: a release that quietly stops publishing
-          // German should fail the deploy rather than pass it, so changing the
-          // set means changing this list too.
-          for (const language of ['en', 'de', 'ja']) {
+          // Published languages live in src/docs-languages.js; the sitemap
+          // subset is DOCS_SITEMAP_LANGUAGES. Both lists are repeated here so
+          // a release that quietly puts German or Japanese back in the sitemap,
+          // or drops English, fails instead of passing. The pages themselves
+          // are still verified below.
+          for (const language of ['en']) {
             assert.ok(
               childSitemaps.some(url => url.endsWith(`sitemap-docs-${language}.xml`)),
               `sitemap.xml does not index sitemap-docs-${language}.xml`,
             );
           }
+          for (const language of ['de', 'ja']) {
+            assert.ok(
+              !childSitemaps.some(url => url.endsWith(`sitemap-docs-${language}.xml`)),
+              `sitemap.xml still indexes sitemap-docs-${language}.xml`,
+            );
+          }
 
-          // The documentation is the largest surface on the site — 215 of ~264
-          // URLs — and the one whose plumbing can fail while every marketing
-          // route still looks perfect: a language prefix that stops resolving, a
+          // The documentation is still the largest surface on the site, even
+          // with German and Japanese off the sitemap, and the one whose plumbing
+          // can fail while every marketing route still looks perfect: a
           // guide that loses its TechArticle data, an hreflang set that quietly
           // loses its return links. None of that is visible from /.
           const docsIndex = await get('/docs');
