@@ -5,6 +5,7 @@ description: "Slab is a hosted knowledge base built for team posts. ShimoDocs is
 layout: briefing
 category: comparisons
 date: 2026-02-11
+updated: 2026-09-17
 tags: [comparison, slab, knowledge base, wiki]
 keywords: "shimodocs vs slab, slab alternative, self-hosted knowledge base"
 ---
@@ -48,6 +49,12 @@ caption: Figure 1. The first column benefits from publishing discipline. The sec
 **AI on your own terms.** The inference path in a hosted product is the vendor's. If the requirement is that document text reaches only an endpoint you nominate, that is an architectural constraint rather than a setting.
 
 **External collaboration.** Knowledge bases are usually inward-facing. When you need to share a document with a client, a partner or a regulator, the model starts to strain.
+
+```callout
+tone: note
+title: Decide which copy is authoritative
+A post that links to a model, a deck or a form is a pointer to the record, not the record itself. Name which of the two is authoritative for that class of content, and give the pointer an owner, before the file becomes the version everyone works from.
+```
 
 ## Side by side
 

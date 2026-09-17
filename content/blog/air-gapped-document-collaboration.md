@@ -5,7 +5,7 @@ description: "Running document collaboration with no internet access: offline in
 layout: briefing
 category: self-hosting
 date: 2026-04-06
-updated: 2026-09-15
+updated: 2026-09-17
 tags: [air-gapped, offline, security, deployment]
 keywords: "air gapped document collaboration, offline document platform, disconnected network collaboration software"
 ---
@@ -128,6 +128,10 @@ Both checks are worth repeating after any upgrade, since a new version may add a
 An air-gapped deployment is justified when the content genuinely cannot leave the boundary — classified material, regulated research, or environments where the network isolation is the primary control.
 
 It is badly suited to organisations that want the isolation without the operational commitment. The burden is real, permanent, and concentrated in a small number of people. Where the requirement is data residency or sovereignty rather than isolation, a conventional self-hosted deployment is usually the better fit, as covered in our [data residency guide](/blog/data-residency-requirements-guide).
+
+```pullquote
+An air gap is justified by content that cannot leave the boundary, not by a preference for stronger security.
+```
 
 For what running the platform involves day to day, see [backup and restore](/blog/backup-and-restore-document-platform) and [upgrading safely](/blog/upgrade-and-rollback-document-platform).
 

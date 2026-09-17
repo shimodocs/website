@@ -5,7 +5,7 @@ description: "Why upgrades are the highest-risk routine operation in a self-host
 layout: standard
 category: self-hosting
 date: 2026-04-01
-updated: 2026-09-15
+updated: 2026-09-17
 tags: [upgrades, change management, rollback, operations]
 keywords: "document platform upgrade, self hosted collaboration upgrade rollback, change management document platform"
 ---
@@ -73,6 +73,12 @@ That changes the risk calculation, and it should change the plan:
 **Hold a decision point.** A named time at which someone decides to continue or roll back, rather than an open-ended assessment.
 
 **Keep the previous release artefacts.** Rolling back is faster and safer if the previous version is already available rather than downloaded during an incident.
+
+```callout
+tone: tip
+title: Rehearse a full restore, not a database-only one
+Time the rehearsal end to end, and include the object storage restore to the same point. A restore that stops at the database measures the shorter half of the job, and the number it produces is the one people put in the change record.
+```
 
 ```figure
 type: matrix

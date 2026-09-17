@@ -83,6 +83,74 @@ function title(spec, width) {
   return lines(width / 2, 24, [spec.title], { size: 17, weight: 600, fill: PALETTE.ink })
 }
 
+// Advance width per character, as a fraction of the font size.
+//
+// There is no text layout at build time, so a label that runs past the viewBox
+// is not wrapped or shrunk by the browser — it is simply not painted, and a
+// figure loses an explanation with nothing on the page to show that something is
+// missing. These factors deliberately over-estimate: a label that wraps a line
+// early is a blemish, one that disappears is a bug. Any label long enough to
+// matter is passed through `wrap` first, which is where the truncation is
+// decided, so this only has to be roughly right in the safe direction.
+const ADVANCE = { 600: 0.62, 500: 0.58, 400: 0.56 }
+
+function textWidth(text, size, weight = 600) {
+  return String(text).length * size * (ADVANCE[weight] ?? 0.6)
+}
+
+/**
+ * Text inside a rendered figure that falls outside the SVG's own viewBox.
+ *
+ * The browser clips an SVG at its viewport and does not wrap or shrink what does
+ * not fit, so text reported here is text nobody will ever see — a figure loses
+ * an explanation, and the page shows no sign that anything is missing. Nothing
+ * in the markup distinguishes it from a figure that was meant to be that sparse,
+ * which is why it is checked here rather than left to review.
+ *
+ * The width is estimated, so a small tolerance absorbs the error in the
+ * estimate; only overflows too large to be an artefact are returned.
+ */
+export function overflowingFigureText(html) {
+  const decode = value =>
+    value.replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"')
+  const found = []
+  for (const svg of String(html).matchAll(/<svg viewBox="0 0 (\d+) \d+"[\s\S]*?<\/svg>/g)) {
+    const width = Number(svg[1])
+    for (const node of svg[0].matchAll(/<text ([^>]*)>([^<]*)<\/text>/g)) {
+      const attributes = Object.fromEntries([...node[1].matchAll(/([\w-]+)="([^"]*)"/g)].map(m => [m[1], m[2]]))
+      const content = decode(node[2]).trim()
+      if (!content || !attributes.x) continue
+      const extent = textWidth(content, Number(attributes['font-size'] || 13), Number(attributes['font-weight'] || 400))
+      const x = Number(attributes.x)
+      const anchor = attributes['text-anchor'] || 'start'
+      const left = anchor === 'middle' ? x - extent / 2 : anchor === 'end' ? x - extent : x
+      const over = Math.round(Math.max(-left, left + extent - width))
+      if (over > 4) found.push({ over, text: content })
+    }
+  }
+  return found
+}
+
+/**
+ * The narrowest column this text wraps into `maxLines` lines in, measured in the
+ * same rough pixels as `textWidth`.
+ *
+ * Half the label's width is the floor — that is what one line of a two-line wrap
+ * costs — but greedy word wrapping cannot always use every character of it, so
+ * the answer is found by widening until the real `wrap` succeeds. A caller that
+ * leaves the text this much room is guaranteed the wrap it asked for.
+ */
+function columnWidth(text, size, weight, maxLines) {
+  const charWidth = size * (ADVANCE[weight] ?? 0.6)
+  const fits = room => {
+    const wrapped = wrap(text, Math.max(4, Math.floor(room / charWidth)), maxLines)
+    return wrapped.join(' ').replace(/…$/, '').trim() === String(text)
+  }
+  let room = textWidth(text, size, weight) / maxLines
+  for (let step = 0; step < 40 && !fits(room); step += 1) room *= 1.08
+  return fits(room) ? room : Infinity
+}
+
 function caption(spec) {
   if (!spec.caption) return ''
   return `<figcaption>${esc(spec.caption)}</figcaption>`
@@ -96,15 +164,33 @@ function flow(spec) {
   const width = 960
   const gap = 26
   const boxW = (width - gap * (items.length - 1)) / items.length
-  const boxH = 108
   const top = 58
+
+  // Every box is the same width and the row is laid out around them, so a label
+  // has to wrap to the box rather than to a fixed character count — five boxes
+  // leave half the room three do, and a fixed count overflows the five-box case
+  // on both sides of the centre.
+  const labelRoom = boxW - 26
+  const labelPerLine = Math.max(8, Math.floor(labelRoom / (14 * ADVANCE[600])))
+  const subPerLine = Math.max(8, Math.floor(labelRoom / (11.5 * ADVANCE[400])))
+  // The subtitle is the part of a flow box that carries the specific detail, so
+  // it is given a third line before it is allowed to truncate: narrow boxes are
+  // the normal case for five or six steps, and a caption that ellipsises every
+  // box would leave the row with nothing to read.
+  const wrapped = items.map((item, index) => ({
+    label: wrap(item, labelPerLine, 2),
+    sub: detail[index] ? wrap(detail[index], subPerLine, 4) : [],
+  }))
+  const labelLines = Math.max(...wrapped.map(entry => entry.label.length), 1)
+  const subLines = Math.max(...wrapped.map(entry => entry.sub.length), 0)
+  // Tall enough for the tallest box, so the text never spills past its border.
+  const boxH = Math.max(108, 94 + (labelLines - 1) * 18 + Math.max(0, subLines - 1) * 15)
   const height = top + boxH + 34
 
   const parts = items.map((item, index) => {
     const x = index * (boxW + gap)
     const accent = ACCENTS[index % ACCENTS.length]
-    const label = wrap(item, 20, 2)
-    const sub = detail[index] ? wrap(detail[index], 26, 2) : []
+    const { label, sub } = wrapped[index]
     return `
       <g>
         <rect x="${x.toFixed(1)}" y="${top}" width="${boxW.toFixed(1)}" height="${boxH}" rx="14" fill="${PALETTE.card}" stroke="${PALETTE.line}"/>
@@ -134,27 +220,48 @@ function layers(spec) {
   const items = splitList(spec.items)
   const detail = splitList(spec.detail)
   const width = 960
-  const rowH = 58
   const gap = 12
   const top = 58
   const left = 26
   const innerW = width - left * 2
-  const height = top + items.length * (rowH + gap) + 18
 
+  // Each row is inset a little further than the one above it, so the room for
+  // its text shrinks as the stack goes down, and wrapping is decided per row for
+  // that reason. Rows then take the height their own text needs rather than a
+  // single fixed row height, because a wrapped explanation is taller than one
+  // line and would otherwise run into the layer below it.
   const rows = items.map((item, index) => {
-    const y = top + index * (rowH + gap)
-    const accent = ACCENTS[index % ACCENTS.length]
     const inset = index * 26
+    const room = innerW - inset - 44
+    const itemLines = wrap(item, Math.max(8, Math.floor(room / (14.5 * ADVANCE[600]))), 2)
+    const detailLines = detail[index] ? wrap(detail[index], Math.max(8, Math.floor(room / (12 * ADVANCE[400]))), 3) : []
+    return { index, inset, itemLines, detailLines }
+  })
+
+  let cursor = top
+  const laid = rows.map(row => {
+    const y = cursor
+    const rowH = 25 + (row.itemLines.length - 1) * 18 + (row.detailLines.length ? 19 + (row.detailLines.length - 1) * 15 : 0) + 14
+    cursor += rowH + gap
+    return { ...row, y, rowH }
+  })
+  const height = cursor - gap + 18
+
+  const markup = laid.map(({ index, inset, itemLines, detailLines, y, rowH }) => {
+    const accent = ACCENTS[index % ACCENTS.length]
+    const x = left + inset / 2
+    const textX = x + 22
+    const detailY = y + 25 + (itemLines.length - 1) * 18 + 19
     return `
       <g>
-        <rect x="${left + inset / 2}" y="${y}" width="${innerW - inset}" height="${rowH}" rx="12" fill="${PALETTE.card}" stroke="${PALETTE.line}"/>
-        <rect x="${left + inset / 2}" y="${y}" width="4" height="${rowH}" rx="2" fill="${accent}"/>
-        <text x="${left + inset / 2 + 22}" y="${y + 25}" font-size="14.5" font-weight="600" fill="${PALETTE.ink}">${esc(item)}</text>
-        ${detail[index] ? `<text x="${left + inset / 2 + 22}" y="${y + 44}" font-size="12" font-weight="400" fill="${PALETTE.muted}">${esc(detail[index])}</text>` : ''}
+        <rect x="${x}" y="${y}" width="${innerW - inset}" height="${rowH}" rx="12" fill="${PALETTE.card}" stroke="${PALETTE.line}"/>
+        <rect x="${x}" y="${y}" width="4" height="${rowH}" rx="2" fill="${accent}"/>
+        ${lines(textX, y + 25, itemLines, { size: 14.5, weight: 600, anchor: 'start', lead: 1.24 })}
+        ${detailLines.length ? lines(textX, detailY, detailLines, { size: 12, weight: 400, fill: PALETTE.muted, anchor: 'start', lead: 1.25 }) : ''}
       </g>`
   })
 
-  return svg(width, height, spec, `${title(spec, width)}${rows.join('')}`)
+  return svg(width, height, spec, `${title(spec, width)}${markup.join('')}`)
 }
 
 // -------------------------------------------------------------- compare
@@ -207,24 +314,57 @@ function bars(spec) {
   const width = 960
   const left = 250
   const right = 90
-  const barMax = width - left - right - 40
   const rowH = 44
   const top = 62
+  const edge = 26
+  const labelGap = 12
+  const labelSize = 12.5
+  const labelWeight = 600
   const max = Math.max(...values.filter(Number.isFinite), 1)
+
+  const numbers = items.map((_, index) => (Number.isFinite(values[index]) ? values[index] : 0))
+  const labels = items.map((_, index) => captions[index] || String(numbers[index]))
+
+  // A label may take a second line inside its own row. The bars are then
+  // shortened until every label has the room it needs next to its own bar, which
+  // is tightest on the row with the longest bar. Figures with short labels are
+  // unaffected: their allowance never binds, and barMax stays at its ceiling.
+  const need = labels.map(label => columnWidth(label, labelSize, labelWeight, 2))
+  let barMax = width - left - right - 40
+  numbers.forEach((value, index) => {
+    if (value <= 0) return
+    const allowance = width - edge - left - labelGap - need[index]
+    barMax = Math.min(barMax, (allowance * max) / value)
+  })
+  barMax = Math.max(180, barMax)
+
   const height = top + items.length * rowH + 24
 
   const rows = items
     .map((item, index) => {
-      const value = Number.isFinite(values[index]) ? values[index] : 0
+      const value = numbers[index]
       const w = Math.max(6, (value / max) * barMax)
       const y = top + index * rowH
       const accent = ACCENTS[index % ACCENTS.length]
+      // Whatever the bar leaves is the label's room, and the label is wrapped to
+      // it. Anything that still does not fit is a build failure rather than an
+      // invisible loss: the author shortens the label or moves the explanation
+      // into the caption, where it wraps freely.
+      const room = width - edge - (left + w + labelGap)
+      const perLine = Math.max(4, Math.floor(room / (labelSize * ADVANCE[labelWeight])))
+      const label = wrap(labels[index], perLine, 2)
+      if (label.join(' ').replace(/…$/, '').trim() !== labels[index]) {
+        throw new Error(
+          `bars figure "${spec.title || spec.caption || 'untitled'}": the label "${labels[index]}" does not fit beside its bar. ` +
+            `Shorten it to ${perLine * 2} characters, give the bar a smaller value, or move the explanation into the caption.`,
+        )
+      }
       return `
         <g>
           <text x="${left - 16}" y="${y + 20}" text-anchor="end" font-size="13" font-weight="500" fill="${PALETTE.ink}">${esc(wrap(item, 28, 1)[0] ?? '')}</text>
           <rect x="${left}" y="${y + 6}" width="${barMax}" height="20" rx="10" fill="${PALETTE.card}"/>
           <rect x="${left}" y="${y + 6}" width="${w.toFixed(1)}" height="20" rx="10" fill="${accent}" opacity="0.85"/>
-          <text x="${left + w + 12}" y="${y + 21}" font-size="12.5" font-weight="600" fill="${PALETTE.ink}">${esc(captions[index] || String(value))}</text>
+          ${lines(left + w + labelGap, y + 21, label, { size: labelSize, weight: labelWeight, anchor: 'start', lead: 1.2 })}
         </g>`
     })
     .join('')

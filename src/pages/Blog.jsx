@@ -1,14 +1,17 @@
 import { useMemo, useState } from 'react'
+import BlogTopics from '../components/BlogTopics'
 import { Eyebrow } from '../components/Section'
 import { DOWNLOADS, LICENSE_REQUEST_URL } from '../downloads'
 import { formatDate, formatMonthYear } from '../format'
-import { BLOG_CATEGORIES, BLOG_POSTS } from '../generated/blog-posts'
+import { BLOG_CATEGORIES, BLOG_POSTS, BLOG_UPDATED } from '../generated/blog-posts'
 import { FREE_TEAM_LIMIT_WORD } from '../pricing-facts.js'
 
 const FEATURED_COUNT = 3
 
-function matches(post, category, query) {
-  if (category !== 'all' && post.category !== category) return false
+// Search only. The category selector navigates to a topic page rather than
+// filtering here, so this no longer takes a category: a query is a reader
+// looking for something they can already name, and it has no URL worth having.
+function matches(post, query) {
   if (!query) return true
   const haystack = `${post.title} ${post.description} ${post.tags.join(' ')} ${post.categoryLabel}`.toLowerCase()
   return haystack.includes(query)
@@ -46,15 +49,14 @@ function PostCard({ post }) {
 }
 
 export default function Blog() {
-  const [category, setCategory] = useState('all')
   const [query, setQuery] = useState('')
 
   const normalisedQuery = query.trim().toLowerCase()
-  const isFiltered = category !== 'all' || normalisedQuery.length > 0
+  const isFiltered = normalisedQuery.length > 0
 
   const filtered = useMemo(
-    () => BLOG_POSTS.filter(post => matches(post, category, normalisedQuery)),
-    [category, normalisedQuery],
+    () => BLOG_POSTS.filter(post => matches(post, normalisedQuery)),
+    [normalisedQuery],
   )
 
   // Default view: a small featured set plus a complete grouped archive, so the
@@ -74,8 +76,6 @@ export default function Blog() {
       })).filter(entry => entry.posts.length > 0),
     [],
   )
-
-  const latestDate = BLOG_POSTS[0]?.date
 
   return (
     <div className="page blog-page">
@@ -97,31 +97,16 @@ export default function Blog() {
           <span>
             <b>{BLOG_CATEGORIES.length}</b> categories
           </span>
-          {latestDate ? (
+          {BLOG_UPDATED ? (
             <span>
-              Updated <b>{formatDate(latestDate)}</b>
+              Updated <b>{formatDate(BLOG_UPDATED)}</b>
             </span>
           ) : null}
         </div>
       </section>
 
       <section className="section blog-controls">
-        <div className="blog-filters" role="group" aria-label="Filter articles by category">
-          <button type="button" className={category === 'all' ? 'active' : ''} onClick={() => setCategory('all')}>
-            All articles
-          </button>
-          {BLOG_CATEGORIES.map(entry => (
-            <button
-              key={entry.id}
-              type="button"
-              className={category === entry.id ? 'active' : ''}
-              onClick={() => setCategory(entry.id)}
-            >
-              {entry.label}
-              <span>{entry.count}</span>
-            </button>
-          ))}
-        </div>
+        <BlogTopics />
         <label className="blog-search">
           <span className="visually-hidden">Search articles</span>
           <input
@@ -136,8 +121,7 @@ export default function Blog() {
       {isFiltered ? (
         <section className="section">
           <p className="blog-result-count">
-            {filtered.length} {filtered.length === 1 ? 'article' : 'articles'}
-            {category !== 'all' ? ` in ${BLOG_CATEGORIES.find(entry => entry.id === category)?.label}` : ''}
+            {filtered.length} {filtered.length === 1 ? 'article' : 'articles'} matching “{query.trim()}”
           </p>
           {filtered.length ? (
             <div className="blog-grid">

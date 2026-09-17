@@ -5,7 +5,7 @@ description: "The relational database holds a document platform's real source of
 layout: feature
 category: self-hosting
 date: 2026-03-25
-updated: 2026-09-15
+updated: 2026-09-17
 tags: [database, tuning, mysql, operations]
 keywords: "document platform database tuning, mysql document collaboration performance, database backup point in time recovery"
 ---
@@ -41,6 +41,14 @@ Exact parameter names differ between MySQL and PostgreSQL. The concerns do not.
 **Slow query logging.** Enable it from day one. The queries that degrade a document platform are usually the ones the application issues on every page load, so they appear in slow logs long before users complain loudly enough to investigate.
 
 **Autovacuum, if PostgreSQL.** Bloat in metadata tables is a slow, cumulative problem. Tuning it is unglamorous and prevents an incident that arrives eighteen months in.
+
+```keypoints
+title: Four numbers to take before you change a setting
+- **Working set size against buffer pool size.** If the working set is larger, routine reads go to disk, and the platform feels slow under load for no visible reason.
+- **Actual concurrency, before the connection limit.** A pool that is too small queues and a pool that is too large context-switches, and both present as database slowness.
+- **Recovery point objective against log retention.** Nightly dumps alone mean losing up to a day of permissions and comments; the log window is what narrows that to minutes.
+- **Which queries run on every page load.** Those are the ones that degrade a document platform, and they reach the slow log before they reach a complaint.
+```
 
 ## Backups are the point
 

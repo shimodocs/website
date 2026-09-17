@@ -2,8 +2,9 @@
 title: "50 Web3 Security Tools & Resources for Builders"
 seoTitle: "50 Web3 Security Tools & Resources for Builders in 2026"
 description: "A builder's guide to Web3 security tooling: static analysis, fuzzing, bytecode tooling, wallet signing safety, monitoring and the frameworks behind them."
-category: security
+category: guides
 date: 2026-08-13
+updated: 2026-09-17
 tags: [web3, security, smart contracts, solidity, tooling]
 keywords: "web3 security tools, smart contract security, solidity static analysis, evm fuzzing, wallet security"
 layout: feature

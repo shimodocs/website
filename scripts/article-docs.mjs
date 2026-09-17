@@ -65,6 +65,34 @@ export const ARTICLE_DOCS = {
     'deployment/troubleshooting/incident-response-sop',
     'deployment/getting-started/high-availability-kubernetes',
   ],
+  'document-collaboration-financial-services-rollout': [
+    'deployment/operations-platform/system-services/system-management/audit-logs',
+    'deployment/operations-platform/suite/user-management',
+    'deployment/getting-started/resource-planning',
+  ],
+  'document-collaboration-legal-teams': [
+    'deployment/operations-platform/suite/user-management',
+    'deployment/operations-platform/system-services/system-management/audit-logs',
+  ],
+  'document-collaboration-public-sector': [
+    'deployment/getting-started/quick-start',
+    'deployment/system-requirements',
+    'deployment/operations-platform/system-services/system-management/audit-logs',
+  ],
+  'document-platform-adoption-plan': [
+    'deployment/operations-platform/suite/user-management',
+    'deployment/getting-started/quick-start',
+  ],
+  'document-platform-lock-in-and-exit-planning': [
+    'deployment/troubleshooting/data-backup',
+    'deployment/operations-platform/suite/user-management',
+  ],
+  'document-platform-operations-cost': [
+    'deployment/getting-started/resource-planning',
+    'deployment/troubleshooting/data-backup',
+    'deployment/operations-platform/system-services/toolset/static-resource-monitoring',
+    'deployment/middleware/object-storage/configuration',
+  ],
   'document-retention-policy-guide': [
     'deployment/troubleshooting/data-backup',
     'deployment/operations-platform/system-services/system-management/audit-logs',
@@ -106,6 +134,10 @@ export const ARTICLE_DOCS = {
     'deployment/operations-platform/system-services/system-management/audit-logs',
     'deployment/troubleshooting/data-backup',
   ],
+  'migrating-shared-drives-to-a-document-platform': [
+    'deployment/getting-started/quick-start',
+    'deployment/troubleshooting/data-backup',
+  ],
   'monitoring-self-hosted-document-platform': [
     'deployment/troubleshooting/monitoring-metrics',
     'deployment/operations-platform/system-services/control-panel/notification-channels',
@@ -117,6 +149,15 @@ export const ARTICLE_DOCS = {
   'open-source-document-collaboration-options': [
     'deployment/getting-started/quick-start',
     'deployment',
+  ],
+  'passing-a-document-platform-security-review': [
+    'deployment/system-requirements',
+    'deployment/operations-platform/system-services/system-management/audit-logs',
+    'deployment/operations-platform/suite/user-management',
+  ],
+  'private-model-endpoint-for-document-ai': [
+    'deployment/operations-platform/suite/ai-configuration',
+    'deployment/system-requirements',
   ],
   'secure-cloud-collaboration': [
     'deployment/getting-started/quick-start',
@@ -136,6 +177,10 @@ export const ARTICLE_DOCS = {
     'deployment/getting-started/single-node-kubernetes',
     'deployment/getting-started/high-availability-kubernetes',
     'deployment/getting-started/resource-planning',
+  ],
+  'self-hosted-document-platform-pricing': [
+    'deployment/operations-platform/suite/license-management',
+    'deployment/operations-platform/suite/user-management',
   ],
   'self-hosted-office-suite-comparison': [
     'deployment/getting-started/quick-start',

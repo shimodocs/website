@@ -5,6 +5,7 @@ description: "A suite-level comparison of Microsoft 365 and ShimoDocs, covering 
 layout: briefing
 category: comparisons
 date: 2026-02-09
+updated: 2026-09-17
 tags: [comparison, microsoft 365, suite, deployment]
 keywords: "shimodocs vs microsoft 365, microsoft 365 alternative, self-hosted office suite"
 ---
@@ -12,6 +13,14 @@ keywords: "shimodocs vs microsoft 365, microsoft 365 alternative, self-hosted of
 Microsoft 365 is the most complete productivity suite available. Comparing a focused self-hosted suite against it on capability is not a contest, and any comparison that pretends otherwise is not useful.
 
 The useful comparison is about a constraint. Organisations evaluate ShimoDocs against Microsoft 365 when something in the Microsoft model does not fit — usually where the content sits, or where AI inference happens.
+
+```keypoints
+title: The short version
+- **Capability is not the question.** Microsoft 365 is the more complete suite, and a feature-by-feature comparison against it is not worth running.
+- **The comparison exists because of a constraint.** What matters is which document classes have handling requirements the incumbent model cannot satisfy.
+- **The realistic move is a tier.** Regulated classes move to a controlled environment; email, calendar, meetings and general documents stay.
+- **Model the cost against that tier.** Run over the whole organisation, hosted almost always wins; run over the constrained tier, the numbers are close enough to be worth doing properly.
+```
 
 ## What you get with Microsoft 365
 

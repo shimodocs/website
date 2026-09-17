@@ -128,10 +128,10 @@
 .blog-stats b{color:var(--ink);font-weight:600}
 .blog-controls{display:flex;flex-wrap:wrap;gap:16px;align-items:center;justify-content:space-between;padding-top:0;padding-bottom:34px}
 .blog-filters{display:flex;flex-wrap:wrap;gap:8px}
-.blog-filters button{display:inline-flex;align-items:center;gap:8px;padding:9px 14px;border-radius:999px;background:#ffffff0a;border:1px solid var(--line);color:#c8c2de;cursor:pointer;font:400 13px 'DM Sans'}
-.blog-filters button span{color:#8b85a3;font-size:11px}
-.blog-filters button.active,.blog-filters button:hover{border-color:var(--cyan);color:#fff}
-.blog-filters button.active span{color:var(--cyan)}
+.blog-filters a{display:inline-flex;align-items:center;gap:8px;padding:11px 15px;border-radius:999px;background:#ffffff0a;border:1px solid var(--line);color:#c8c2de;text-decoration:none;font:400 13px 'DM Sans'}
+.blog-filters a span{font:11px 'Space Grotesk';color:#8b85a3}
+.blog-filters a.active,.blog-filters a:hover{border-color:var(--cyan);color:#fff}
+.blog-filters a.active span{color:var(--cyan)}
 .blog-search input{min-width:230px;padding:11px 15px;border-radius:999px;border:1px solid var(--line);background:#0d0a18;color:#fff;font:13px 'DM Sans'}
 .blog-search input::placeholder{color:#77718f}
 .blog-section-title{font:500 clamp(28px,3.4vw,40px)/1.05 'Space Grotesk';letter-spacing:-.05em;margin:0 0 26px}
@@ -915,28 +915,6 @@
 .post-docs a:hover{color:var(--cyan)}
 .post-docs small{display:block;color:var(--muted);font-size:12.5px;line-height:1.6}
 
-/* ------------------------------------------------------------------
-   Blog topic pages.
-   The topic links are anchors, not the filter buttons they sit beside,
-   so they need the same shape with link semantics.
-   ------------------------------------------------------------------ */
-.blog-filters.topic-links a{
-  display:inline-flex;
-  align-items:center;
-  gap:8px;
-  padding:11px 15px;
-  border-radius:999px;
-  background:#ffffff0a;
-  border:1px solid var(--line);
-  color:#c8c2de;
-  text-decoration:none;
-  font-size:13px;
-}
-.blog-filters.topic-links a:hover{border-color:var(--cyan);color:#fff}
-.blog-filters.topic-links a span{
-  font:11px 'Space Grotesk';
-  color:var(--cyan);
-}
 .archive-head h3 a{text-decoration:none}
 .archive-head h3 a:hover{color:var(--cyan)}
 

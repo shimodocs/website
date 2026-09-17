@@ -571,13 +571,13 @@ export const ROUTE_SEO = {
 export const ROUTE_UPDATED = {
   '/': '2026-09-15',
   '/ai-workspace': '2026-09-15',
-  '/blog': '2026-09-16',
-  '/blog/category/comparisons': '2026-09-16',
-  '/blog/category/self-hosting': '2026-09-16',
-  '/blog/category/security': '2026-09-15',
-  '/blog/category/ai': '2026-09-15',
-  '/blog/category/industry': '2026-09-15',
-  '/blog/category/guides': '2026-09-15',
+  '/blog': '2026-09-17',
+  '/blog/category/comparisons': '2026-09-17',
+  '/blog/category/self-hosting': '2026-09-17',
+  '/blog/category/security': '2026-09-17',
+  '/blog/category/ai': '2026-09-17',
+  '/blog/category/industry': '2026-09-17',
+  '/blog/category/guides': '2026-09-17',
   '/help-center': '2026-09-15',
   '/docs': '2026-09-15',
   '/on-premises': '2026-09-15',
@@ -662,6 +662,14 @@ export const FAQS = [
 export function breadcrumbFor(pathname) {
   const clean = normalisePath(pathname)
   const items = [{ name: 'Home', url: canonicalFor('/') }]
+  // A topic page hangs off the archive, and the trail has to say so. Without
+  // the middle level the markup put six pages directly under the homepage, and
+  // named the second crumb with a page title — "Document Collaboration
+  // Comparisons | ShimoDocs" — where the page itself visibly prints
+  // "Home / Blog / Comparisons".
+  if (clean.startsWith('/blog/category/')) {
+    items.push({ name: breadcrumbLabel('/blog'), url: canonicalFor('/blog') })
+  }
   if (clean !== '/' && ROUTE_SEO[clean]) {
     items.push({ name: breadcrumbLabel(clean), url: canonicalFor(clean) })
   }
@@ -672,6 +680,16 @@ function breadcrumbLabel(pathname) {
   const titles = {
     '/ai-workspace': 'AI Workspace',
     '/blog': 'Blog',
+    // Topic pages crumb on the short label, not the SEO title: a breadcrumb is
+    // a position in a hierarchy, and the page title already appears in the
+    // <title>. These are the same strings scripts/blog-content.mjs gives the
+    // topic selector, and the build fails if the rendered crumb disagrees.
+    '/blog/category/comparisons': 'Comparisons',
+    '/blog/category/self-hosting': 'Self-hosting',
+    '/blog/category/security': 'Security & compliance',
+    '/blog/category/ai': 'AI at work',
+    '/blog/category/industry': 'Industry',
+    '/blog/category/guides': 'Guides & workflows',
     '/help-center': 'Help Center',
     '/docs': 'Documentation',
     '/on-premises': 'On-Premises Deployment',
@@ -1204,6 +1222,45 @@ export function blogIndexJsonLd(posts) {
       '@type': 'BlogPosting',
       headline: post.title,
       url: absoluteUrl(blogPostPath(post.slug)),
+      datePublished: post.date,
+      dateModified: post.updated || post.date,
+      articleSection: post.categoryLabel,
+    })),
+  }
+}
+
+// Structured data for a topic page.
+//
+// The head graph a route gets by default says "this is a page, here is its
+// breadcrumb". On a topic page that is the least interesting true thing about
+// it: the page exists to be a collection of articles on one subject, and
+// nothing in the markup said so. CollectionPage with hasPart is the type that
+// says it, and it is the shape /docs already uses for the documentation index.
+//
+// Appended as its own script rather than folded into jsonLdFor, for the reason
+// the blog and documentation indexes are: this one needs the posts, and the
+// route graph is built from route metadata alone.
+export function topicIndexJsonLd(category, posts) {
+  const path = `/blog/category/${category.id}`
+  const canonical = canonicalFor(path)
+  const meta = ROUTE_SEO[path]
+
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    '@id': `${canonical}#collection`,
+    url: canonical,
+    name: meta.title,
+    description: meta.description,
+    isPartOf: { '@id': WEBSITE_ID },
+    about: { '@id': ORGANIZATION_ID },
+    inLanguage: 'en',
+    breadcrumb: { '@id': `${canonical}#breadcrumb` },
+    hasPart: posts.map(post => ({
+      '@type': 'BlogPosting',
+      headline: post.title,
+      url: absoluteUrl(blogPostPath(post.slug)),
+      description: post.description,
       datePublished: post.date,
       dateModified: post.updated || post.date,
       articleSection: post.categoryLabel,

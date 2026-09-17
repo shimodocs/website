@@ -2,6 +2,72 @@
 // Source of truth: content/blog/*.md
 
 export const CATEGORY_DOCS = {
+  "industry": [
+    {
+      "url": "/docs/deployment/operations-platform/system-services/system-management/audit-logs",
+      "title": "Audit Log",
+      "description": "Operation logs are used to view and track user management operations in the system, helping with troubleshooting, security audits, and change tracking."
+    },
+    {
+      "url": "/docs/deployment/operations-platform/suite/user-management",
+      "title": "Suite User Management",
+      "description": "User management is used to view users in each tenant of ShimoDocs Suite and to enable or disable user accounts in bulk."
+    },
+    {
+      "url": "/docs/deployment/system-requirements",
+      "title": "System Requirements",
+      "description": "Supported server resources, network access and deployment prerequisites for installing ShimoDocs Suite in your own private cloud infrastructure."
+    },
+    {
+      "url": "/docs/deployment/getting-started/quick-start",
+      "title": "Quick Start",
+      "description": "Install ShimoDocs Suite for the first time: prepare the installer and release package, check the environment and verify the deployment after it completes."
+    }
+  ],
+  "guides": [
+    {
+      "url": "/docs/deployment/getting-started/quick-start",
+      "title": "Quick Start",
+      "description": "Install ShimoDocs Suite for the first time: prepare the installer and release package, check the environment and verify the deployment after it completes."
+    },
+    {
+      "url": "/docs/deployment/operations-platform/suite/user-management",
+      "title": "Suite User Management",
+      "description": "User management is used to view users in each tenant of ShimoDocs Suite and to enable or disable user accounts in bulk."
+    },
+    {
+      "url": "/docs/deployment/system-requirements",
+      "title": "System Requirements",
+      "description": "Supported server resources, network access and deployment prerequisites for installing ShimoDocs Suite in your own private cloud infrastructure."
+    },
+    {
+      "url": "/docs/deployment/troubleshooting/data-backup",
+      "title": "Data Backup",
+      "description": "Validate backup targets and back up the databases, object storage and configuration of a self-hosted ShimoDocs Suite deployment before you need a restore."
+    }
+  ],
+  "self-hosting": [
+    {
+      "url": "/docs/deployment/getting-started/resource-planning",
+      "title": "Resource Planning",
+      "description": "Size a ShimoDocs deployment: application node requirements, middleware baselines and object storage planning for single-node and clustered installs."
+    },
+    {
+      "url": "/docs/deployment/getting-started/quick-start",
+      "title": "Quick Start",
+      "description": "Install ShimoDocs Suite for the first time: prepare the installer and release package, check the environment and verify the deployment after it completes."
+    },
+    {
+      "url": "/docs/deployment/middleware/object-storage/configuration",
+      "title": "Object Storage Configuration",
+      "description": "Only object storage fully compatible with the S3 protocol is supported. Huawei Cloud OBS, Alibaba Cloud OSS, Tencent Cloud COS, and AWS S3 are recommended."
+    },
+    {
+      "url": "/docs/deployment/system-requirements",
+      "title": "System Requirements",
+      "description": "Supported server resources, network access and deployment prerequisites for installing ShimoDocs Suite in your own private cloud infrastructure."
+    }
+  ],
   "security": [
     {
       "url": "/docs/deployment/system-requirements",
@@ -19,9 +85,9 @@ export const CATEGORY_DOCS = {
       "description": "Validate backup targets and back up the databases, object storage and configuration of a self-hosted ShimoDocs Suite deployment before you need a restore."
     },
     {
-      "url": "/docs/deployment/getting-started/quick-start",
-      "title": "Quick Start",
-      "description": "Install ShimoDocs Suite for the first time: prepare the installer and release package, check the environment and verify the deployment after it completes."
+      "url": "/docs/deployment/operations-platform/suite/user-management",
+      "title": "Suite User Management",
+      "description": "User management is used to view users in each tenant of ShimoDocs Suite and to enable or disable user accounts in bulk."
     }
   ],
   "ai": [
@@ -34,28 +100,6 @@ export const CATEGORY_DOCS = {
       "url": "/docs/deployment/system-requirements",
       "title": "System Requirements",
       "description": "Supported server resources, network access and deployment prerequisites for installing ShimoDocs Suite in your own private cloud infrastructure."
-    }
-  ],
-  "self-hosting": [
-    {
-      "url": "/docs/deployment/getting-started/quick-start",
-      "title": "Quick Start",
-      "description": "Install ShimoDocs Suite for the first time: prepare the installer and release package, check the environment and verify the deployment after it completes."
-    },
-    {
-      "url": "/docs/deployment/getting-started/resource-planning",
-      "title": "Resource Planning",
-      "description": "Size a ShimoDocs deployment: application node requirements, middleware baselines and object storage planning for single-node and clustered installs."
-    },
-    {
-      "url": "/docs/deployment/system-requirements",
-      "title": "System Requirements",
-      "description": "Supported server resources, network access and deployment prerequisites for installing ShimoDocs Suite in your own private cloud infrastructure."
-    },
-    {
-      "url": "/docs/deployment/getting-started/high-availability-kubernetes",
-      "title": "High Availability Kubernetes Deployment",
-      "description": "Build a resilient ShimoDocs cluster: node topology, minimum server specifications, ACCESS_DOMAIN configuration and high-availability verification."
     }
   ],
   "comparisons": [
@@ -78,40 +122,6 @@ export const CATEGORY_DOCS = {
       "url": "/docs/deployment",
       "title": "ShimoDocs Suite Deployment and Operations",
       "description": "Plan, install, configure, operate and troubleshoot a private ShimoDocs Suite deployment, from system requirements through to incident response."
-    }
-  ],
-  "industry": [
-    {
-      "url": "/docs/deployment/operations-platform/system-services/system-management/audit-logs",
-      "title": "Audit Log",
-      "description": "Operation logs are used to view and track user management operations in the system, helping with troubleshooting, security audits, and change tracking."
-    },
-    {
-      "url": "/docs/deployment/system-requirements",
-      "title": "System Requirements",
-      "description": "Supported server resources, network access and deployment prerequisites for installing ShimoDocs Suite in your own private cloud infrastructure."
-    },
-    {
-      "url": "/docs/deployment/troubleshooting/data-backup",
-      "title": "Data Backup",
-      "description": "Validate backup targets and back up the databases, object storage and configuration of a self-hosted ShimoDocs Suite deployment before you need a restore."
-    }
-  ],
-  "guides": [
-    {
-      "url": "/docs/deployment/getting-started/quick-start",
-      "title": "Quick Start",
-      "description": "Install ShimoDocs Suite for the first time: prepare the installer and release package, check the environment and verify the deployment after it completes."
-    },
-    {
-      "url": "/docs/deployment/getting-started/resource-planning",
-      "title": "Resource Planning",
-      "description": "Size a ShimoDocs deployment: application node requirements, middleware baselines and object storage planning for single-node and clustered installs."
-    },
-    {
-      "url": "/docs/deployment/system-requirements",
-      "title": "System Requirements",
-      "description": "Supported server resources, network access and deployment prerequisites for installing ShimoDocs Suite in your own private cloud infrastructure."
     }
   ]
 }

@@ -13,6 +13,7 @@
     "sync:docs": "node scripts/sync-docs.mjs",
     "check:docs": "node scripts/sync-docs.mjs --check",
     "check:contact": "node scripts/check-contact-fields.mjs",
+    "check:figures": "node scripts/check-figures.mjs dist",
     "check:faq": "node scripts/check-faq.mjs dist",
     "check:pricing": "node scripts/check-pricing-facts.mjs dist",
     "assets": "python3 scripts/make-assets.py",

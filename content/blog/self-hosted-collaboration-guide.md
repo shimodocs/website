@@ -5,7 +5,7 @@ description: "What self-hosted collaboration actually involves, the five questio
 layout: standard
 category: self-hosting
 date: 2026-01-14
-updated: 2026-09-15
+updated: 2026-09-17
 tags: [self-hosted, operations, kubernetes, infrastructure]
 keywords: "self-hosted collaboration, self-hosted document collaboration guide, run collaboration software yourself"
 featured: true
@@ -14,6 +14,14 @@ featured: true
 Self-hosting a collaboration suite is not a heroic act and it is not a checkbox. It is an operations decision with a cost curve, and the interesting question is whether that curve sits below the alternative for your organisation.
 
 This guide covers what the work actually involves and where teams usually underestimate it.
+
+```keypoints
+title: Four things that decide the project
+- **An owner who is on call for it.** Setting the suite up is a week; running it is years, and it will hold decisions people depend on.
+- **Identity that drives permissions, not just accounts.** Directory sync that provisions users but not roles turns every join and departure into manual work.
+- **A restore you have performed and timed.** A backup exists when it has been restored, not when a cron job wrote a file.
+- **A cost model that covers steady state.** Monitoring, user administration and search tuning are permanent, monthly, and absent from a licence comparison.
+```
 
 ## What self-hosting actually means
 

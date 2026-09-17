@@ -5,6 +5,7 @@ description: "Why financial firms are moving document collaboration in-house, wh
 layout: feature
 category: industry
 date: 2026-02-02
+updated: 2026-09-17
 tags: [financial services, compliance, security, audit]
 keywords: "financial services document collaboration, secure document collaboration finance, regulatory document controls"
 ---
@@ -87,6 +88,12 @@ Who changed what, when, and what it looked like before. Version history with a p
 ### External sharing
 
 The control that fails audits most often. Every suite supports "anyone with the link", and every firm has at least one folder where it is enabled.
+
+```callout
+tone: warning
+title: A link is not a permission anyone owns
+Access granted to a person appears in an access review. Access granted by a link does not, because there is no principal to list. That is how "anyone with the link" survives the project it was created for, the leaver who created it, and the review that was meant to catch it.
+```
 
 The defensible configuration is disabled by default, enabled per workspace with justification, and time-limited when granted.
 

@@ -17,37 +17,51 @@ import { BLOCK_TYPES, renderCallout, renderFigure, renderKeyPoints, renderPullQu
 const rootDir = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 export const CONTENT_DIR = join(rootDir, 'content', 'blog')
 
-// Categories drive the listing filters, the article breadcrumb and the
-// archive grouping. Order here is the order they appear in the UI.
+// Categories drive the topic selector, the article breadcrumb, the archive
+// grouping and the six /blog/category/* topic pages. Order here is the order
+// they appear in the UI.
+//
+// `label` is what the selector shows; `heading` is what the topic page puts in
+// its <h1>, and the two are deliberately different strings. "Self-hosting" is a
+// good label next to five siblings and a terrible <h1>: it is the word this site
+// uses, not the words a reader types. When the <h1> repeated the navigation
+// label while the <title> carried the search term, the same page told a crawler
+// two different stories about what it answers.
 export const CATEGORIES = [
   {
     id: 'comparisons',
     label: 'Comparisons',
+    heading: 'Document collaboration comparisons',
     description: 'How ShimoDocs compares with Google Docs, Notion, Confluence and other collaboration tools.',
   },
   {
     id: 'self-hosting',
     label: 'Self-hosting',
+    heading: 'Self-hosted document collaboration',
     description: 'Deploying and running document collaboration on infrastructure you control.',
   },
   {
     id: 'security',
     label: 'Security & compliance',
+    heading: 'Document security and compliance',
     description: 'Data sovereignty, access control and the compliance questions teams ask before migrating.',
   },
   {
     id: 'ai',
     label: 'AI at work',
+    heading: 'AI in document collaboration',
     description: 'Putting AI agents inside documents without handing your content to someone else.',
   },
   {
     id: 'industry',
     label: 'Industry',
+    heading: 'Document collaboration by industry',
     description: 'Secure collaboration for finance, healthcare, legal, government and other regulated teams.',
   },
   {
     id: 'guides',
     label: 'Guides & workflows',
+    heading: 'Document collaboration guides',
     description: 'Practical walkthroughs for teams moving work into a private cloud workspace.',
   },
 ]
@@ -209,7 +223,7 @@ function toIsoDate(value, field, file) {
   return text
 }
 
-function loadPost(fileName) {
+export function loadPost(fileName) {
   const file = join(CONTENT_DIR, fileName)
   const raw = readFileSync(file, 'utf8')
   const { data, content } = matter(raw)

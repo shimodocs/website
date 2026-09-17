@@ -10,6 +10,7 @@
 // articles point at (derived from the editorial link map at build time, so the
 // two cannot drift), the other topics, and the download path.
 import { useLocation } from 'react-router-dom'
+import BlogTopics from '../components/BlogTopics'
 import { Eyebrow } from '../components/Section'
 import { FREE_TEAM_LIMIT_WORD } from '../pricing-facts.js'
 import { formatMonthYear } from '../format'
@@ -46,7 +47,6 @@ export default function BlogCategory() {
 
   const posts = BLOG_POSTS.filter(post => post.category === category.id)
   const docs = CATEGORY_DOCS[category.id] || []
-  const others = BLOG_CATEGORIES.filter(entry => entry.id !== category.id && entry.count > 0)
   const latest = BLOG_POSTS.filter(post => post.category !== category.id).slice(0, 3)
 
   return (
@@ -61,7 +61,10 @@ export default function BlogCategory() {
 
       <section className="section page-intro blog-intro">
         <Eyebrow>Topic</Eyebrow>
-        <h1>{category.label}</h1>
+        {/* The heading is the search term, not the navigation label. The label
+            is what the selector has room for next to five siblings; the <h1> is
+            the only place on the page that can say what the page answers. */}
+        <h1>{category.heading}</h1>
         <p>{category.description}</p>
         <p>{INTRO[category.id]}</p>
         <div className="blog-stats">
@@ -74,6 +77,13 @@ export default function BlogCategory() {
             </span>
           ) : null}
         </div>
+      </section>
+
+      {/* The same selector the archive carries, with this topic marked. Cross-
+          linking the six topics from the top of each one is what turns six
+          isolated pages into a cluster Google can see the shape of. */}
+      <section className="section blog-controls">
+        <BlogTopics current={category.id} />
       </section>
 
       <section className="section blog-archive">
@@ -113,17 +123,6 @@ export default function BlogCategory() {
           </ul>
         </section>
       ) : null}
-
-      <section className="section">
-        <h2 className="blog-section-title">Other topics</h2>
-        <div className="blog-filters topic-links" role="group" aria-label="Other topics">
-          {others.map(entry => (
-            <a key={entry.id} href={`/blog/category/${entry.id}`}>
-              {entry.label} <span>{entry.count}</span>
-            </a>
-          ))}
-        </div>
-      </section>
 
       <section className="section blog-archive">
         <h2 className="blog-section-title">Latest across the journal</h2>

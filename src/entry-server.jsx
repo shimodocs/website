@@ -86,6 +86,7 @@ export {
   blogPostJsonLd,
   blogFeedXml,
   blogIndexJsonLd,
+  topicIndexJsonLd,
   docHead,
   docJsonLd,
   docsIndexHead,

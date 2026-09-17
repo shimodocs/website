@@ -122,6 +122,14 @@ rightItems: Classification takes a year and never finishes | Repositories stay u
 caption: Figure 2. Both extremes produce the same outcome: no working control. A rough tiering delivered this quarter beats a perfect one delivered next year.
 ```
 
+```keypoints
+title: The four questions a reviewer will actually ask
+- **Where does personal data live, and who can read it?** An answer that stops at "in the document platform" is not an answer. Name the repositories, the storage and the people.
+- **How does it leave the boundary, and under what instrument?** External sharing, support access and AI inference are three different routes with three different answers.
+- **How long is it kept, and who decided that?** A retention rule nobody can point at is not a rule. The decision has to have an owner and a date.
+- **What happens when something goes wrong, and how quickly can you show it?** Breach notification runs on a clock, and the evidence is gathered long before anyone knows they need it.
+```
+
 ## A workable checklist
 
 Work through this before enabling AI or onboarding regulated content.

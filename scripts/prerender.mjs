@@ -15,7 +15,7 @@
 import { existsSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs'
 import { dirname, join, resolve, sep } from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
-import { loadPosts, relatedPosts, toClientRecord } from './blog-content.mjs'
+import { CATEGORIES, loadPosts, relatedPosts, toClientRecord } from './blog-content.mjs'
 import {
   assertRepairsApplied,
   buildNav,
@@ -29,6 +29,7 @@ import {
 } from './docs-content.mjs'
 import { ARTICLE_DOCS } from './article-docs.mjs'
 import { auditFaqsInDirectory } from './check-faq.mjs'
+import { auditFiguresInDirectory } from './check-figures.mjs'
 import { auditPricingFactsInDirectory } from './check-pricing-facts.mjs'
 import { contentDate } from './content-dates.mjs'
 import { INDEXNOW_KEY, keyFileProblem } from './indexnow.mjs'
@@ -63,6 +64,7 @@ const {
   blogPostHead,
   blogFeedXml,
   blogIndexJsonLd,
+  topicIndexJsonLd,
   docHead,
   docsIndexHead,
   absoluteUrl,
@@ -123,6 +125,19 @@ const template = readFileSync(templatePath, 'utf8')
 
 const serialise = value => JSON.stringify(value).replace(/</g, '\\u003c')
 
+// The rendered text is HTML-escaped; the structured-data copy of the same
+// string is not. "Security & compliance" arrives as "Security &amp;
+// compliance", and comparing the two without undoing that would report every
+// ampersand as a mismatch.
+function unescapeHtmlText(value) {
+  return String(value)
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&quot;/g, '"')
+    .replace(/&#x27;/g, "'")
+    .replace(/&amp;/g, '&')
+}
+
 // Assembles a full document from the Vite template: route head, rendered body,
 // and optionally no client bundle at all.
 function documentFrom(head, body, { stripClientBundle = false, language = DOCS_DEFAULT_LANGUAGE } = {}) {
@@ -181,6 +196,19 @@ for (const routePath of ROUTE_PATHS) {
     head += `    <script type="application/ld+json" id="docs-index">${serialise(
       docsIndexJsonLd(docs, absoluteUrl, ROUTE_SEO['/docs'].description),
     )}</script>\n  `
+  }
+
+  // A topic page is a collection of articles on one subject, so it says so in
+  // the same shape the documentation index uses.
+  if (routePath.startsWith('/blog/category/')) {
+    const id = routePath.split('/').pop()
+    const category = CATEGORIES.find(entry => entry.id === id)
+    const inCategory = posts.filter(post => post.category === id)
+    if (category && inCategory.length) {
+      head += `    <script type="application/ld+json" id="topic-index">${serialise(
+        topicIndexJsonLd(category, inCategory),
+      )}</script>\n  `
+    }
   }
 
   const html = documentFrom(head, renderRoute(routePath))
@@ -867,6 +895,50 @@ for (const path of ROUTE_PATHS.filter(entry => entry.startsWith('/blog/category/
   if (topicDocLinks.size < 2) problems.push(`${path} links only ${topicDocLinks.size} documentation guides`)
   if (!html.includes('rel="canonical"')) problems.push(`${path}: no canonical link`)
   if (!/application\/ld\+json/.test(html)) problems.push(`${path}: no structured data`)
+  // The page is a collection of articles on one subject, and the structured
+  // data has to say so about every one of them: a CollectionPage that quietly
+  // stopped listing its parts would still render correctly in a browser.
+  const topicScript = (html.match(/<script type="application\/ld\+json" id="topic-index">([\s\S]*?)<\/script>/) || [, ''])[1]
+  if (!topicScript) {
+    problems.push(`${path}: no CollectionPage structured data`)
+  } else {
+    const collection = JSON.parse(topicScript)
+    if (collection['@type'] !== 'CollectionPage') {
+      problems.push(`${path}: topic structured data is ${collection['@type']}, not CollectionPage`)
+    }
+    const listed = (collection.hasPart || []).length
+    if (listed !== inCategory.length) {
+      problems.push(`${path}: CollectionPage lists ${listed} of ${inCategory.length} articles`)
+    }
+  }
+  // The breadcrumb in the markup has to be the breadcrumb the page prints.
+  const visibleCrumb = unescapeHtmlText(
+    (html.match(/<span class="breadcrumb-current">([\s\S]*?)<\/span>/) || [, ''])[1],
+  ).trim()
+  const graph = (html.match(/<script type="application\/ld\+json" id="structured-data">([\s\S]*?)<\/script>/) || [, ''])[1]
+  const trail = (JSON.parse(graph)['@graph'] || [])
+    .find(node => node['@type'] === 'BreadcrumbList')
+    ?.itemListElement.map(item => item.name) || []
+  const expectedTrail = ['Home', 'Blog', visibleCrumb]
+  if (trail.join(' / ') !== expectedTrail.join(' / ')) {
+    problems.push(`${path}: breadcrumb reads "${trail.join(' / ')}" but the page prints "${expectedTrail.join(' / ')}"`)
+  }
+  // The topic page's headline has to be the search term, not the navigation
+  // label. When it was the label the page answered "Self-hosting" in its <h1>
+  // and "Self-Hosted Document Collaboration" in its <title>, which is two
+  // different answers to the same crawler, and six pages nobody clicked.
+  const category = CATEGORIES.find(entry => entry.id === id)
+  if (!category?.heading) {
+    problems.push(`${path}: category ${id} declares no heading`)
+  } else {
+    if (category.heading === category.label) {
+      problems.push(`${path}: heading repeats the nav label "${category.label}"; it has to carry the search term`)
+    }
+    const h1 = (html.match(/<h1[^>]*>([\s\S]*?)<\/h1>/) || [, ''])[1].replace(/\s+/g, ' ').trim()
+    if (!h1.includes(category.heading)) {
+      problems.push(`${path}: <h1> reads "${h1}", which does not contain "${category.heading}"`)
+    }
+  }
 }
 
 // ------------------------------------------------------ article verification
@@ -998,6 +1070,16 @@ for (const post of posts) {
 // never links them leaves six pages reachable only through the sitemap.
 for (const path of ROUTE_PATHS.filter(entry => entry.startsWith('/blog/category/'))) {
   if (!blogIndexHtml.includes(`href="${path}"`)) problems.push(`blog index does not link ${path}`)
+}
+// Position matters as much as presence here. The six topic pages are linked
+// from underneath the article rows too, and that link alone was not enough:
+// they took zero search impressions in the site's first two months. The
+// selector above the archive is the link a reader actually reaches, so that is
+// the one this build refuses to lose.
+const topicSelectorAt = blogIndexHtml.indexOf('class="blog-filters"')
+const archiveAt = blogIndexHtml.indexOf('class="section blog-archive"')
+if (topicSelectorAt === -1 || archiveAt === -1 || topicSelectorAt > archiveAt) {
+  problems.push('blog index does not carry the topic selector above the article archive')
 }
 
 const robots = readFileSync(join(distDir, 'robots.txt'), 'utf8')
@@ -1186,13 +1268,28 @@ if (generatedDocRecords.length !== docs.length) {
   problems.push('src/generated/docs-nav.js is stale; run the content generator')
 }
 
-// Layouts must produce structurally different documents, not the same markup
-// with different class names. Compared by the set of classes each layout emits.
+// No two articles may render the same document structure.
+//
+// The earlier version of this check compared one article per layout, which
+// catches a layout collapsing into another but not the failure that actually
+// happens: two articles in the same layout whose figure and block mix came out
+// identical, so a reader moving between them gets the same document twice with
+// different words. Structure here means the set of classes the body emits — the
+// layout's own scaffold plus one class per figure type and per block type — which
+// is what changes what the reader sees, not merely what the stylesheet does.
+//
+// A few classes say nothing about the structure a reader moves through — the
+// "Updated" badge is the one that matters, because an article that carries it
+// would otherwise look different from every article that does not, and two
+// articles with the same figures and blocks would pass. Structure here is the
+// layout scaffold plus one class per figure type and per block type.
+const NON_STRUCTURAL_CLASSES = new Set(['post-updated'])
+
 function structureSignature(html) {
   const markup = prerenderedMarkup(html)
   const classes = new Set()
   for (const match of markup.matchAll(/class="([^"]+)"/g)) {
-    for (const name of match[1].split(/\s+/)) if (name) classes.add(name)
+    for (const name of match[1].split(/\s+/)) if (name && !NON_STRUCTURAL_CLASSES.has(name)) classes.add(name)
   }
   return [...classes].sort().join('|')
 }
@@ -1201,17 +1298,16 @@ const signatures = new Map()
 for (const { post, file } of articles) {
   const html = readFileSync(join(distDir, file), 'utf8')
   const signature = structureSignature(html)
-  const existing = signatures.get(post.layout)
-  if (!existing) signatures.set(post.layout, { signature, slug: post.slug })
+  if (!signatures.has(signature)) signatures.set(signature, [])
+  signatures.get(signature).push(post)
 }
-const seenLayouts = [...signatures.entries()]
-for (let i = 0; i < seenLayouts.length; i += 1) {
-  for (let j = i + 1; j < seenLayouts.length; j += 1) {
-    const [layoutA, a] = seenLayouts[i]
-    const [layoutB, b] = seenLayouts[j]
-    if (a.signature === b.signature) {
-      problems.push(`layouts "${layoutA}" and "${layoutB}" render identical structure (${a.slug} vs ${b.slug})`)
-    }
+for (const group of signatures.values()) {
+  if (group.length > 1) {
+    const [first] = group
+    problems.push(
+      `${group.length} articles render an identical structure: ${group.map(post => post.slug).join(', ')} ` +
+        `(all "${first.layout}"). Give one of them a different figure type or block type.`,
+    )
   }
 }
 
@@ -1249,6 +1345,17 @@ const pricingSummary =
   `${pricingAudit.stats.freeLimitClaims} free-limit, ${pricingAudit.stats.perUserPriceClaims} price and ` +
   `${pricingAudit.stats.annualDiscountClaims} discount claims`
 
+// ----------------------------------------------------------- figure text
+//
+// A figure is inline SVG placed by coordinate, and the browser clips an SVG at
+// its viewBox instead of wrapping or shrinking what runs past it. A label that
+// does not fit is therefore not wrong-looking, it is absent — and the page gives
+// no hint that a row of a chart lost its explanation. The generators wrap to the
+// room they have; this is what checks that they still do.
+const figureAudit = auditFiguresInDirectory(distDir)
+problems.push(...figureAudit.problems)
+const figureSummary = `${figureAudit.stats.figures} figures on ${figureAudit.stats.pagesWithFigures} pages`
+
 if (problems.length) {
   console.error('Prerender verification failed:')
   for (const problem of problems) console.error(`  - ${problem}`)
@@ -1265,6 +1372,7 @@ console.log(
     `canonical links, hreflang, structured data, no client bundle. ` +
     `${linksChecked} internal links resolved on ${htmlPagesCrawled} pages. ` +
     `Layouts: ${layoutSummary}. Distinct structures: ${signatures.size}. ` +
+    `Every figure label fits inside its diagram (${figureSummary}). ` +
     `FAQ markup matches the visible text for ${faqSummary}. ` +
     `Pricing facts agree on ${pricingSummary}.`,
 )

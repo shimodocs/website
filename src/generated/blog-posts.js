@@ -3,6 +3,207 @@
 
 export const BLOG_POSTS = [
   {
+    "slug": "document-collaboration-financial-services-rollout",
+    "title": "Rolling Out Document Collaboration Across a Bank",
+    "description": "A big-bang cutover is not available in a regulated firm. How to sequence document platform waves so each one produces evidence the next can reuse.",
+    "category": "industry",
+    "categoryLabel": "Industry",
+    "layout": "feature",
+    "figures": 2,
+    "date": "2026-09-17",
+    "updated": "2026-09-17",
+    "tags": [
+      "financial services",
+      "rollout",
+      "change management",
+      "compliance"
+    ],
+    "readingTime": 8,
+    "words": 1726,
+    "featured": false
+  },
+  {
+    "slug": "document-collaboration-legal-teams",
+    "title": "Matter Files: How Legal Teams Run Document Collaboration",
+    "description": "Matter files, privilege as access control, hold against retention, redlining with outside counsel, and what an eDiscovery request really asks for.",
+    "category": "industry",
+    "categoryLabel": "Industry",
+    "layout": "feature",
+    "figures": 2,
+    "date": "2026-09-17",
+    "updated": null,
+    "tags": [
+      "legal",
+      "privilege",
+      "matter files",
+      "ediscovery"
+    ],
+    "readingTime": 8,
+    "words": 1791,
+    "featured": false
+  },
+  {
+    "slug": "document-collaboration-public-sector",
+    "title": "Document Collaboration in the Public Sector",
+    "description": "How government teams evaluate document collaboration: residency, records retention, audit evidence, restricted networks and what a tender should ask.",
+    "category": "industry",
+    "categoryLabel": "Industry",
+    "layout": "standard",
+    "figures": 2,
+    "date": "2026-09-17",
+    "updated": null,
+    "tags": [
+      "public sector",
+      "government",
+      "data residency",
+      "on-premises"
+    ],
+    "readingTime": 8,
+    "words": 1793,
+    "featured": false
+  },
+  {
+    "slug": "document-platform-adoption-plan",
+    "title": "A 30-Day Plan for Rolling Out a Document Platform",
+    "description": "Deployment is not adoption. A four-week plan for picking the first team, choosing what to move, naming owners and retiring the old tool.",
+    "category": "guides",
+    "categoryLabel": "Guides & workflows",
+    "layout": "briefing",
+    "figures": 2,
+    "date": "2026-09-17",
+    "updated": "2026-09-17",
+    "tags": [
+      "adoption",
+      "rollout",
+      "knowledge management",
+      "change management"
+    ],
+    "readingTime": 8,
+    "words": 1786,
+    "featured": false
+  },
+  {
+    "slug": "document-platform-lock-in-and-exit-planning",
+    "title": "Leaving a Document Platform: Lock-In and the Exit Path",
+    "description": "A .docx file exports. Permissions, share links, comments and embedded objects do not. How to test portability before you sign and keep the exit cheap.",
+    "category": "guides",
+    "categoryLabel": "Guides & workflows",
+    "layout": "standard",
+    "figures": 2,
+    "date": "2026-09-17",
+    "updated": "2026-09-17",
+    "tags": [
+      "lock-in",
+      "data portability",
+      "export",
+      "vendor exit"
+    ],
+    "readingTime": 7,
+    "words": 1517,
+    "featured": false
+  },
+  {
+    "slug": "document-platform-operations-cost",
+    "title": "What a Self-Hosted Document Platform Costs to Run",
+    "description": "The licence is the smallest recurring line. Where a self-hosted document platform spends money every month: storage, staff time, upgrade windows and recovery.",
+    "category": "self-hosting",
+    "categoryLabel": "Self-hosting",
+    "layout": "standard",
+    "figures": 2,
+    "date": "2026-09-17",
+    "updated": "2026-09-17",
+    "tags": [
+      "operations",
+      "cost",
+      "self-hosted",
+      "infrastructure"
+    ],
+    "readingTime": 8,
+    "words": 1776,
+    "featured": false
+  },
+  {
+    "slug": "migrating-shared-drives-to-a-document-platform",
+    "title": "Migrating a Shared Drive Without Losing Permissions",
+    "description": "Folder inheritance and document permissions are different models. How to inventory a file server, phase the cutover, and handle the files nobody claims.",
+    "category": "guides",
+    "categoryLabel": "Guides & workflows",
+    "layout": "magazine",
+    "figures": 2,
+    "date": "2026-09-17",
+    "updated": null,
+    "tags": [
+      "migration",
+      "permissions",
+      "file server",
+      "cutover",
+      "archive"
+    ],
+    "readingTime": 8,
+    "words": 1759,
+    "featured": false
+  },
+  {
+    "slug": "passing-a-document-platform-security-review",
+    "title": "Answering a Security Review of a Self-Hosted Platform",
+    "description": "A self-hosted security review asks who can reach the data, who can prove it and what changes. What to prepare, and when not to self-host at all.",
+    "category": "security",
+    "categoryLabel": "Security & compliance",
+    "layout": "standard",
+    "figures": 2,
+    "date": "2026-09-17",
+    "updated": null,
+    "tags": [
+      "security review",
+      "self-hosting",
+      "vendor assessment",
+      "operations"
+    ],
+    "readingTime": 8,
+    "words": 1724,
+    "featured": false
+  },
+  {
+    "slug": "private-model-endpoint-for-document-ai",
+    "title": "Wiring Document AI to Your Own Model Endpoint",
+    "description": "The model endpoint is the trust boundary for document AI. What running one inside your network actually decides, from latency to egress review.",
+    "category": "ai",
+    "categoryLabel": "AI at work",
+    "layout": "feature",
+    "figures": 3,
+    "date": "2026-09-17",
+    "updated": null,
+    "tags": [
+      "ai",
+      "self-hosting",
+      "inference",
+      "networking"
+    ],
+    "readingTime": 8,
+    "words": 1778,
+    "featured": false
+  },
+  {
+    "slug": "self-hosted-document-platform-pricing",
+    "title": "How Self-Hosted Document Software Is Priced",
+    "description": "The pricing models behind self-hostable document software, what counts as a user in each, and how to compare two quotes without being surprised.",
+    "category": "comparisons",
+    "categoryLabel": "Comparisons",
+    "layout": "briefing",
+    "figures": 2,
+    "date": "2026-09-17",
+    "updated": "2026-09-17",
+    "tags": [
+      "pricing",
+      "licensing",
+      "self-hosted",
+      "procurement"
+    ],
+    "readingTime": 8,
+    "words": 1799,
+    "featured": false
+  },
+  {
     "slug": "secure-cloud-collaboration",
     "title": "Secure Cloud Collaboration: Balancing Security and Productivity",
     "description": "Secure cloud collaboration helps teams protect sensitive data without slowing work down, covering sharing controls, identity and deployment choices.",
@@ -46,12 +247,12 @@ export const BLOG_POSTS = [
     "slug": "web3-security-tools-resources",
     "title": "50 Web3 Security Tools & Resources for Builders",
     "description": "A builder's guide to Web3 security tooling: static analysis, fuzzing, bytecode tooling, wallet signing safety, monitoring and the frameworks behind them.",
-    "category": "security",
-    "categoryLabel": "Security & compliance",
+    "category": "guides",
+    "categoryLabel": "Guides & workflows",
     "layout": "feature",
     "figures": 2,
     "date": "2026-08-13",
-    "updated": null,
+    "updated": "2026-09-17",
     "tags": [
       "web3",
       "security",
@@ -132,7 +333,7 @@ export const BLOG_POSTS = [
     "layout": "briefing",
     "figures": 2,
     "date": "2026-04-06",
-    "updated": "2026-09-15",
+    "updated": "2026-09-17",
     "tags": [
       "air-gapped",
       "offline",
@@ -173,7 +374,7 @@ export const BLOG_POSTS = [
     "layout": "standard",
     "figures": 2,
     "date": "2026-04-01",
-    "updated": "2026-09-15",
+    "updated": "2026-09-17",
     "tags": [
       "upgrades",
       "change management",
@@ -233,7 +434,7 @@ export const BLOG_POSTS = [
     "layout": "feature",
     "figures": 2,
     "date": "2026-03-25",
-    "updated": "2026-09-15",
+    "updated": "2026-09-17",
     "tags": [
       "database",
       "tuning",
@@ -573,7 +774,7 @@ export const BLOG_POSTS = [
     "layout": "magazine",
     "figures": 2,
     "date": "2026-02-13",
-    "updated": null,
+    "updated": "2026-09-17",
     "tags": [
       "comparison",
       "coda",
@@ -593,7 +794,7 @@ export const BLOG_POSTS = [
     "layout": "briefing",
     "figures": 2,
     "date": "2026-02-11",
-    "updated": null,
+    "updated": "2026-09-17",
     "tags": [
       "comparison",
       "slab",
@@ -613,7 +814,7 @@ export const BLOG_POSTS = [
     "layout": "briefing",
     "figures": 2,
     "date": "2026-02-09",
-    "updated": null,
+    "updated": "2026-09-17",
     "tags": [
       "comparison",
       "microsoft 365",
@@ -673,7 +874,7 @@ export const BLOG_POSTS = [
     "layout": "feature",
     "figures": 2,
     "date": "2026-02-02",
-    "updated": null,
+    "updated": "2026-09-17",
     "tags": [
       "financial services",
       "compliance",
@@ -833,7 +1034,7 @@ export const BLOG_POSTS = [
     "layout": "standard",
     "figures": 2,
     "date": "2026-01-14",
-    "updated": "2026-09-15",
+    "updated": "2026-09-17",
     "tags": [
       "self-hosted",
       "operations",
@@ -870,39 +1071,45 @@ export const BLOG_CATEGORIES = [
   {
     "id": "comparisons",
     "label": "Comparisons",
+    "heading": "Document collaboration comparisons",
     "description": "How ShimoDocs compares with Google Docs, Notion, Confluence and other collaboration tools.",
-    "count": 13
+    "count": 14
   },
   {
     "id": "self-hosting",
     "label": "Self-hosting",
+    "heading": "Self-hosted document collaboration",
     "description": "Deploying and running document collaboration on infrastructure you control.",
-    "count": 13
+    "count": 14
   },
   {
     "id": "security",
     "label": "Security & compliance",
+    "heading": "Document security and compliance",
     "description": "Data sovereignty, access control and the compliance questions teams ask before migrating.",
     "count": 13
   },
   {
     "id": "ai",
     "label": "AI at work",
+    "heading": "AI in document collaboration",
     "description": "Putting AI agents inside documents without handing your content to someone else.",
-    "count": 2
+    "count": 3
   },
   {
     "id": "industry",
     "label": "Industry",
+    "heading": "Document collaboration by industry",
     "description": "Secure collaboration for finance, healthcare, legal, government and other regulated teams.",
-    "count": 1
+    "count": 4
   },
   {
     "id": "guides",
     "label": "Guides & workflows",
+    "heading": "Document collaboration guides",
     "description": "Practical walkthroughs for teams moving work into a private cloud workspace.",
-    "count": 1
+    "count": 5
   }
 ]
 
-export const BLOG_UPDATED = "2026-08-19"
+export const BLOG_UPDATED = "2026-09-17"
