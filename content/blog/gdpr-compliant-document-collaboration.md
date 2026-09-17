@@ -5,6 +5,7 @@ description: "What GDPR actually asks of document collaboration software: contro
 layout: standard
 category: security
 date: 2026-02-27
+updated: 2026-09-17
 tags: [gdpr, compliance, personal data, retention]
 keywords: "gdpr compliant document collaboration, gdpr document management, data protection by design documents"
 ---

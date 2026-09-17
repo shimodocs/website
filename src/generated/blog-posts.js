@@ -594,7 +594,7 @@ export const BLOG_POSTS = [
     "layout": "magazine",
     "figures": 2,
     "date": "2026-03-06",
-    "updated": null,
+    "updated": "2026-09-14",
     "tags": [
       "iso 27001",
       "compliance",
@@ -654,7 +654,7 @@ export const BLOG_POSTS = [
     "layout": "standard",
     "figures": 2,
     "date": "2026-02-27",
-    "updated": null,
+    "updated": "2026-09-17",
     "tags": [
       "gdpr",
       "compliance",

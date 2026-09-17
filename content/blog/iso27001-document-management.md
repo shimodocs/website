@@ -5,6 +5,7 @@ description: "How ISO 27001 applies to document collaboration: ISMS scope, the A
 layout: magazine
 category: security
 date: 2026-03-06
+updated: 2026-09-14
 tags: [iso 27001, compliance, isms, controls]
 keywords: "iso 27001 document management, iso 27001 document collaboration, annex a controls documents"
 ---
