@@ -114,7 +114,7 @@ git tag -a v1.0.2 -m "Release v1.0.2"
 git push origin v1.0.2
 ```
 
-Replace the example with a new version each time. Pushing `main` runs build checks only. The **GitHub Actions → Deploy tagged ShimoDocs release** workflow runs when a `v*` tag is pushed. There is no branch-triggered or manual deployment entrypoint.
+Replace the example with a new version each time. Pushing `main` runs build checks only. The **GitHub Actions → Deploy tagged ShimoDocs release** workflow runs when a `v*` tag is pushed. There is no branch-triggered or manual deployment entrypoint. The same job installs `deploy/nginx/shimodocs.conf` on the origin (`nginx -t`, restore previous file on failure, then reload) before it swaps the site symlink, so origin redirects ship with the tag instead of a separate Mac SSH step.
 
 Each run creates a unique release directory, leaving previous versions available. The upload step refuses to activate a release that is missing `index.html`, `release.json`, `robots.txt`, `sitemap.xml`, `404.html`, or any of the prerendered subroutes `ai-workspace`, `blog`, `help-center`, `pricing`, `contact-sales`, `docs`, `de/docs` and `ja/docs`. That check runs **before** the symlink is swapped, so a truncated upload never reaches production. `/release.json` records the tag, commit, repository and release ID.
 

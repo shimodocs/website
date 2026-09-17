@@ -87,6 +87,38 @@ jobs:
           chmod 600 "$HOME/.ssh/id_ed25519"
           printf '%s\n' "$DEPLOY_KNOWN_HOSTS" > "$HOME/.ssh/known_hosts"
 
+      # Site files are the tarball below. Nginx lives outside that tree, so a
+      # tag that only swapped `current` used to leave origin redirects stale.
+      # Install the config from this tag before activating the release: nginx -t
+      # failure restores the previous file and fails the job without touching
+      # the site symlink.
+      - name: Install origin nginx config
+        env:
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          DEPLOY_PORT: ${{ secrets.DEPLOY_PORT || 22 }}
+          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+        run: |
+          test -n "$DEPLOY_USER"
+          ssh_options=(-o BatchMode=yes -o StrictHostKeyChecking=yes -o IdentitiesOnly=yes -o ConnectTimeout=10)
+          scp "${ssh_options[@]}" -P "$DEPLOY_PORT" deploy/nginx/shimodocs.conf "$DEPLOY_USER@$DEPLOY_HOST:/tmp/shimodocs-nginx-from-ci.conf"
+          ssh "${ssh_options[@]}" -p "$DEPLOY_PORT" "$DEPLOY_USER@$DEPLOY_HOST" 'bash -s' <<'REMOTE'
+          set -euo pipefail
+          src=/tmp/shimodocs-nginx-from-ci.conf
+          dest=/etc/nginx/sites-available/shimodocs
+          bak=/etc/nginx/sites-available/shimodocs.prev-ci
+          test -s "$src"
+          test -s "$dest"
+          sudo -n cp "$dest" "$bak"
+          sudo -n install -m 644 "$src" "$dest"
+          if ! sudo -n nginx -t; then
+            sudo -n install -m 644 "$bak" "$dest"
+            sudo -n nginx -t
+            exit 1
+          fi
+          sudo -n systemctl reload nginx
+          rm -f "$src"
+          REMOTE
+
       # `id` exists for the rollback step: activation happens before
       # verification, so a release that fails its checks is already live and the
       # run has to be able to put the previous one back.
@@ -150,6 +182,16 @@ jobs:
           RELEASE_ID: ${{ github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
         run: |
           curl --fail --silent --show-error --max-time 15 "http://$DEPLOY_HOST/release.json" -o live-release.json
+          loc="$(curl -sI --max-time 15 -H 'Host: shimodocs.com' "http://$DEPLOY_HOST/blogs/secure-cloud-collaboration" | awk 'BEGIN{IGNORECASE=1} /^location:/{print $2}' | tr -d '\r')"
+          echo "legacy /blogs redirect Location: ${loc:-<none>}"
+          if [ -z "$loc" ]; then
+            echo "expected a redirect from /blogs/secure-cloud-collaboration"
+            exit 1
+          fi
+          if printf '%s' "$loc" | grep -q '^http://'; then
+            echo "origin still writes an http:// Location; absolute_redirect is not in effect"
+            exit 1
+          fi
           node --input-type=module <<'NODE'
           import assert from 'node:assert/strict';
           import { readFileSync } from 'node:fs';
