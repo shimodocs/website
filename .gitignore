@@ -12,3 +12,8 @@ __pycache__
 # read by the build, so it is kept out of the tree deliberately rather than by
 # omission. Nothing here is referenced by src/, scripts/ or the workflows.
 seo/
+
+# Overseas GTM working material: customer archaeology, pipeline, ICP,
+# commercial operating model. Same reason as seo/: public repo, not
+# read by the build, may hold customer and campaign data.
+overseas/

@@ -3,9 +3,9 @@ import { execFileSync } from 'node:child_process';
 import { mkdtempSync, readFileSync, rmSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
+import { BASE_TOKEN, FEISHU_AUTH_COMMAND, TABLES, larkArgs, larkEnv } from './analytics-target.mjs';
 
-const BASE_TOKEN = 'QRQWbBAeUafjX5svYTHcHRkGn6b';
-const TABLE_ID = 'tblrA7s26Ehuqzqd';
+const TABLE_ID = TABLES.downloads;
 const REPO = 'shimodocs/shimodocs';
 const TZ = 'Asia/Shanghai';
 const FIELDS = ['日期', '总计', 'amd64', 'arm64', '当日增量', '备注'];
@@ -16,7 +16,7 @@ const normDate = value => typeof value === 'number' ? formatDate(new Date(value)
 const baseArgs = ['--base-token', BASE_TOKEN, '--table-id', TABLE_ID, '--as', 'user'];
 
 function cli(args) {
-  const result = JSON.parse(execFileSync('lark-cli', args, { encoding: 'utf8', timeout: 120_000, maxBuffer: 8 * 1024 * 1024 }));
+  const result = JSON.parse(execFileSync('lark-cli', larkArgs(args), { env: larkEnv, encoding: 'utf8', timeout: 120_000, maxBuffer: 8 * 1024 * 1024 }));
   if (result.ok === false || (typeof result.code === 'number' && result.code !== 0)) {
     throw new Error(`lark-cli ${args.slice(0, 2).join(' ')} failed: ${JSON.stringify(result.error || result.msg || result.code)}`);
   }
@@ -128,7 +128,7 @@ export async function main(args = process.argv.slice(2)) {
   const dryRun = args.includes('--dry-run');
   const auth = cli(['auth', 'status']);
   const user = auth.identities?.user;
-  if (user?.status !== 'ready') throw new Error(`飞书授权状态: ${user?.status || 'unknown'}；请重新登录 lark-cli`);
+  if (user?.status !== 'ready') throw new Error(`飞书授权状态: ${user?.status || 'unknown'}；请运行：${FEISHU_AUTH_COMMAND}`);
   const scopes = String(user.scope || '').split(/\s+/);
   if (!dryRun) for (const scope of ['base:record:create', 'base:record:update']) if (!scopes.includes(scope)) throw new Error(`缺少必要 scope: ${scope}`);
   const fields = cli(['base', '+field-list', ...baseArgs, '--json']);

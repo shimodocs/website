@@ -98,23 +98,36 @@ export function createGscClient({ keyPath, site = DEFAULT_SITE } = {}) {
         method: 'POST',
         body: JSON.stringify({ startDate, endDate, dimensions, rowLimit, dataState: 'final' }),
       }),
-    async inspectOne(url) {
-      const payload = await call('/v1/urlInspection/index:inspect', {
-        method: 'POST',
-        body: JSON.stringify({ inspectionUrl: url, siteUrl: site, languageCode: 'en-US' }),
-      })
-      const r = payload.inspectionResult?.indexStatusResult || {}
-      return {
-        url,
-        verdict: r.verdict || null,
-        coverage: r.coverageState || null,
-        indexing: r.indexingState || null,
-        lastCrawl: r.lastCrawlTime || null,
-        googleCanonical: r.googleCanonical || null,
-        userCanonical: r.userCanonical || null,
-        robots: r.robotsTxtState || null,
-        fetch: r.pageFetchState || null,
+    async inspectOne(url, attempts = 2) {
+      // The 20s per-request timeout occasionally fires on a single URL while the rest of
+      // the sweep is fine (2026-09-18: /airgap and /blog/category/ai timed out and left
+      // two holes in the ledger). One retry closes those holes without hiding a real outage,
+      // because a broken credential fails every URL and trips the consecutive-error stop.
+      let lastError
+      for (let attempt = 1; attempt <= attempts; attempt += 1) {
+        try {
+          const payload = await call('/v1/urlInspection/index:inspect', {
+            method: 'POST',
+            body: JSON.stringify({ inspectionUrl: url, siteUrl: site, languageCode: 'en-US' }),
+          })
+          const r = payload.inspectionResult?.indexStatusResult || {}
+          return {
+            url,
+            verdict: r.verdict || null,
+            coverage: r.coverageState || null,
+            indexing: r.indexingState || null,
+            lastCrawl: r.lastCrawlTime || null,
+            googleCanonical: r.googleCanonical || null,
+            userCanonical: r.userCanonical || null,
+            robots: r.robotsTxtState || null,
+            fetch: r.pageFetchState || null,
+          }
+        } catch (error) {
+          lastError = error
+          if (attempt < attempts) await new Promise(r => setTimeout(r, 1500))
+        }
       }
+      throw lastError
     },
     // Bounded concurrency: 4 keeps a full sweep near the 600 QPM per-site ceiling while
     // still finishing 133 URLs in about three minutes. Five consecutive failures mean the

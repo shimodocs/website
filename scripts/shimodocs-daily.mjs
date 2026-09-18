@@ -5,11 +5,13 @@ import {readFileSync,writeFileSync,mkdirSync,rmSync,existsSync} from 'node:fs'
 import {resolve,dirname,join} from 'node:path'
 import {fileURLToPath} from 'node:url'
 import {createHash} from 'node:crypto'
+import {BASE_TOKEN as BASE,FEISHU_AUTH_COMMAND,SSH_PROXY,TABLES,larkArgs,larkEnv} from './analytics-target.mjs'
+import {DEFAULT_KEY_PATH,DEFAULT_SITE,createGscClient,indexLedger,sitemapUrls} from './gsc-client.mjs'
 const root=resolve(dirname(fileURLToPath(import.meta.url)),'..');process.chdir(root)
-const BASE='QRQWbBAeUafjX5svYTHcHRkGn6b'
 const dry=process.argv.includes('--dry-run'), setup=process.argv.includes('--setup')
 const dateFlag=process.argv.indexOf('--date')
 const date=dateFlag<0?new Date(Date.now()+8*3600000-86400000).toISOString().slice(0,10):process.argv[dateFlag+1]
+const ORIGIN_FIRST_FULL_DAY='2026-09-17'
 if(!/^\d{4}-\d{2}-\d{2}$/.test(date||'') || new Date(date+'T00:00:00Z').toISOString().slice(0,10)!==date)throw Error('Invalid --date')
 if(dateFlag>=0&&!dry&&!setup)throw Error('--date is supported for dry-run inspection only; GitHub cannot backfill daily snapshots')
 const text=name=>({name,type:'text'}),num=name=>({name,type:'number'})
@@ -28,7 +30,7 @@ const sleep=ms=>Atomics.wait(new Int32Array(new SharedArrayBuffer(4)),0,0,ms)
 function cli(args,attempts=1){
  for(let i=0;;i++){
   try{
-   const raw=execFileSync('lark-cli',args,{encoding:'utf8',timeout:120000,maxBuffer:12*1024*1024})
+   const raw=execFileSync('lark-cli',larkArgs(args),{env:larkEnv,encoding:'utf8',timeout:120000,maxBuffer:12*1024*1024})
    const j=JSON.parse(raw);if(j.ok!==true)throw Error(j.error?.message||'Feishu operation failed');return j.data
   }catch(e){
    if(i>=attempts-1||!transient.test(String(e.message||'')+String(e.stderr||'')))throw e
@@ -37,12 +39,29 @@ function cli(args,attempts=1){
  }
 }
 const common=table=>['--base-token',BASE,'--table-id',table,'--as','user']
+// An expired access token does not need a new browser login: the CLI refreshes it on the
+// next user-scoped call. `auth status` alone never triggers that refresh, so a run that
+// starts more than two hours after the previous one would read `needs_refresh` and abort
+// even though the token is perfectly recoverable — measured 2026-09-17: status said
+// needs_refresh, one `base +record-list` call flipped it to valid. Probe once, then decide.
+function larkUser(){
+ return JSON.parse(execFileSync('lark-cli',larkArgs(['auth','status','--json']),{env:larkEnv,encoding:'utf8',timeout:60000})).identities?.user
+}
+function refreshLarkUser(){
+ try{
+  execFileSync('lark-cli',larkArgs(['base','+record-list',...common(TABLES.collectionStatus),'--limit','1','--json']),{env:larkEnv,encoding:'utf8',timeout:90000,maxBuffer:4*1024*1024,stdio:['ignore','ignore','ignore']})
+ }catch(error){
+  console.error(`刷新飞书 token 的探测调用失败：${String(error.message||error).slice(0,200)}`)
+ }
+ return larkUser()
+}
 function preflight(){
- const user=JSON.parse(execFileSync('lark-cli',['auth','status','--json'],{encoding:'utf8',timeout:60000})).identities?.user
- if(user?.status!=='ready'){console.error(`飞书授权不可用（${user?.status||'unknown'}）。请运行：lark-cli auth login --no-wait --json --domain base,docs\n然后在浏览器打开返回的 verification_url 完成授权，完成后重新触发本任务。`);process.exit(2)}
+ let user=larkUser()
+ if(user?.status!=='ready')user=refreshLarkUser()
+ if(user?.status!=='ready'){console.error(`飞书授权不可用（${user?.status||'unknown'}）。请运行：${FEISHU_AUTH_COMMAND}\n然后在浏览器打开返回的 verification_url，使用有 officesdk 工作区权限的账号完成授权；完成后重新触发本任务。`);process.exit(2)}
  const scopes=String(user.scope||'').split(/\s+/)
  const missing=['base:table:create','base:field:create','base:record:create','base:record:update'].filter(s=>!scopes.includes(s))
- if(missing.length){console.error(`飞书授权缺少 scope：${missing.join('、')}。请运行：lark-cli auth login --no-wait --json --domain base,docs 重新授权后重试。`);process.exit(2)}
+ if(missing.length){console.error(`飞书授权缺少 scope：${missing.join('、')}。请运行：${FEISHU_AUTH_COMMAND} 重新授权后重试。`);process.exit(2)}
 }
 function fields(table){return cli(['base','+field-list',...common(table),'--json'],5).fields||[]}
 function tableMap(){return new Map((cli(['base','+table-list','--base-token',BASE,'--as','user','--json'],5).tables||[]).map(t=>[t.name,t.id]))}
@@ -56,8 +75,8 @@ function setupTables(){
   const have=new Set(fields(tables.get(name)).map(f=>f.name));const missing=schema.filter(f=>!have.has(f.name))
   if(missing.length)cli(['base','+field-create',...common(tables.get(name)),'--json',JSON.stringify(missing)])
  }
- const have=new Set(fields('tbl7IrEmsG0q4rEh').map(f=>f.name));const missing=trafficFields.filter(f=>!have.has(f.name))
- if(missing.length)cli(['base','+field-create',...common('tbl7IrEmsG0q4rEh'),'--json',JSON.stringify(missing)])
+ const have=new Set(fields(TABLES.traffic).map(f=>f.name));const missing=trafficFields.filter(f=>!have.has(f.name))
+ if(missing.length)cli(['base','+field-create',...common(TABLES.traffic),'--json',JSON.stringify(missing)])
  return tables
 }
 const lockDir=join(root,'seo/data/.daily-update-lock')
@@ -82,7 +101,7 @@ function list(table){
   let manifest
   for(let attempt=0;;attempt++){
    try{
-    const raw=execFileSync('lark-cli',['base','+record-list',...common(table),'--format','ndjson','--output',file,'--overwrite','--limit','2000','--offset',String(offset)],{encoding:'utf8',timeout:120000,maxBuffer:2*1024*1024})
+    const raw=execFileSync('lark-cli',larkArgs(['base','+record-list',...common(table),'--format','ndjson','--output',file,'--overwrite','--limit','2000','--offset',String(offset)]),{env:larkEnv,encoding:'utf8',timeout:120000,maxBuffer:2*1024*1024})
     manifest=JSON.parse(raw);if(manifest.ok===false)throw Error('Feishu list failed');break
    }catch(e){
     if(attempt>=4||!transient.test(String(e.message||'')+String(e.stderr||'')))throw e
@@ -137,17 +156,35 @@ function run(file,args=[]){
  console.log(p.stdout.trim())
 }
 function origin(){
+ if(date<ORIGIN_FIRST_FULL_DAY)throw Error(`WARMUP: 专用日志从2026-09-16开始；首个完整北京时间日为${ORIGIN_FIRST_FULL_DAY}，2026-09-18 08:00可更新；历史数据不伪造`)
  const script=readFileSync(join(root,'scripts/analytics/origin-report.py'),'utf8')
- const raw=execFileSync('ssh',['-i',join(process.env.HOME,'.ssh/shimodocs_actions'),'-o','BatchMode=yes','-o','StrictHostKeyChecking=yes','-o','ConnectTimeout=10','ubuntu@43.172.115.22','sudo -n python3 - '+date],{input:script,encoding:'utf8',timeout:120000,maxBuffer:8*1024*1024})
- return JSON.parse(raw)
+ const args=['-i',join(process.env.HOME,'.ssh/shimodocs_actions'),'-o','BatchMode=yes','-o','StrictHostKeyChecking=yes','-o','ConnectTimeout=10','-o',`ProxyCommand=nc -x ${SSH_PROXY} -X connect %h %p`,'ubuntu@43.172.115.22','sudo -n python3 - '+date]
+ for(let attempt=0;;attempt++){
+  try{return JSON.parse(execFileSync('ssh',args,{input:script,encoding:'utf8',timeout:30000,maxBuffer:8*1024*1024}))}
+  catch(e){
+   const message=String(e.message||'')+String(e.stderr||'')
+   if(message.includes('WARMUP:')||attempt>=2||!transient.test(message))throw e
+   sleep(2000*(attempt+1))
+  }
+ }
 }
 let failed=false
 if(setup){setupTables();console.log('Schema verified.');process.exit(0)}
 const tables=tableMap();if(!dry){for(const n of Object.keys(schemas))if(!tables.has(n))throw Error('Missing table '+n+'; run --setup first')}
 const statuses=[]
+// The 08:00 automation runs outside version control and has no alerting, so a day that
+// never ran is invisible: nothing writes a row about a run that did not happen, and
+// Cloudflare's per-request dataset has a one-day window, so the miss cannot be
+// backfilled. Look for the previous day's artifact and record the gap here instead.
+const CONTINUITY_FROM=process.env.SHIMODOCS_CONTINUITY_FROM||'2026-09-16'
+const previousDay=new Date(new Date(date+'T00:00:00Z').getTime()-86400000).toISOString().slice(0,10)
+if(previousDay>=CONTINUITY_FROM&&!existsSync(join(root,'seo/data/daily',previousDay,'run.json'))){
+ console.error(`采集连续性：${previousDay} 没有 run.json`)
+ statuses.push({数据源:'采集连续性（前一日）',状态:'失败',说明:`${previousDay} 没有 run.json：当天 08:00 采集未运行或未落盘。Cloudflare per-request 数据集只有 1 天窗口，该日数据已无法回补；源站日志保留 14 天，可按需补读。`})
+}
 async function stage(name,fn){
- try{await fn();statuses.push({数据源:name,状态:'成功',说明:'采集及回读验证通过'})}
- catch(e){const msg=e.message.replace(/zone '[^']+'/g,'zone');const warmup=msg.includes('WARMUP:');if(!warmup)failed=true;console.error(name+': '+msg);statuses.push({数据源:name,状态:warmup?'待累计完整日':'失败',说明:msg})}
+ try{const note=await fn();statuses.push({数据源:name,状态:'成功',说明:typeof note==='string'&&note?note:'采集及回读验证通过'});return note}
+ catch(e){const msg=e.message.replace(/zone '[^']+'/g,'zone');const warmup=msg.includes('WARMUP:');if(!warmup)failed=true;console.error(name+': '+msg);statuses.push({数据源:name,状态:warmup?'待累计完整日':'失败',说明:msg});return null}
 }
 await stage('Cloudflare / SEO-GEO抓取',()=>{
  const output=join(artifactDir,'cloudflare.json')
@@ -163,12 +200,12 @@ await stage('源站来源 / 疑似人类',()=>{
  const rows=data.sourceRows.map(r=>({...r,记录键:key([r.日期,r.渠道,r.来源域名,r.来源URL,r.落地页,r.utm_source,r.utm_medium,r.utm_campaign])}))
  if(!dry){
   upsert(tables.get('来源与落地页日报'),rows)
-  const dayRows=list('tbl7IrEmsG0q4rEh').filter(r=>String(r.日期).slice(0,10)===date)
+  const dayRows=list(TABLES.traffic).filter(r=>String(r.日期).slice(0,10)===date)
   if(dayRows.length!==1)throw Error('Need exactly one Cloudflare daily row before attaching origin summary')
-  cli(['base','+record-batch-update',...common('tbl7IrEmsG0q4rEh'),'--json',JSON.stringify({update_records:{[dayRows[0].record_id]:{...data.summary,源站统计口径:JSON.stringify(data.coverage)}}})])
+  cli(['base','+record-batch-update',...common(TABLES.traffic),'--json',JSON.stringify({update_records:{[dayRows[0].record_id]:{...data.summary,源站统计口径:JSON.stringify(data.coverage)}}})])
   let verified
   for(let attempt=0;;attempt++){
-   verified=list('tbl7IrEmsG0q4rEh').find(r=>r.record_id===dayRows[0].record_id)
+   verified=list(TABLES.traffic).find(r=>r.record_id===dayRows[0].record_id)
    if(!Object.entries(data.summary).some(([k,v])=>!same(verified?.[k],v)))break
    if(attempt>=4)throw Error('Origin summary readback mismatch')
    sleep(2000)
@@ -178,10 +215,41 @@ await stage('源站来源 / 疑似人类',()=>{
 })
 await stage('GitHub下载快照',()=>run('scripts/github-downloads-daily.mjs',dry?['--dry-run']:[]))
 await stage('Cloudflare RUM 真实用户',()=>run('scripts/rum-daily.mjs',dry?['--dry-run']:[]))
-statuses.push({数据源:'Google Search Console收录',状态:'未接入',说明:'现有数据为手工导出基线；无自动API授权，不重写旧数据，不把未采集写0'})
+// Google Search Console is a point-in-time reading, not a daily aggregate: the sitemap's
+// last-download date and the per-URL index verdicts describe the moment of collection.
+// Coverage (Indexing > Pages) has no API, so this replaces it as the daily index signal
+// and the two must never be added together. The full sweep is 133 inspections against a
+// 2,000/day quota; --no-gsc-inspect keeps the rest of the run fast when that is enough.
+let gscNote='GSC API：本次未运行（--no-gsc-inspect）'
+if(process.argv.includes('--no-gsc-inspect')){
+ statuses.push({数据源:'Google Search Console API',状态:'已跳过',说明:'--no-gsc-inspect：本次只跑其余四个数据源'})
+}else{
+gscNote=await stage('Google Search Console API',async()=>{
+ const gsc=createGscClient({keyPath:join(root,process.env.GSC_SERVICE_ACCOUNT||DEFAULT_KEY_PATH),site:process.env.GSC_SITE||DEFAULT_SITE})
+ const sites=await gsc.listSites()
+ const entry=(sites.siteEntry||[]).find(e=>e.siteUrl===gsc.site)
+ if(!entry)throw Error(`服务账号 ${gsc.clientEmail} 看不到 ${gsc.site}；检查 Search Console 的用户与权限`)
+ const sitemaps=await gsc.listSitemaps()
+ const urls=await sitemapUrls(300)
+ const rows=await gsc.inspect(urls,{concurrency:4})
+ // Only the stable buckets go into the note. The discovered-vs-unknown split flips on
+ // repeated calls for the same URL, so quoting it would make the status row churn daily.
+ const ledger=indexLedger(rows)
+ const end=new Date(Date.now()-86400000).toISOString().slice(0,10)
+ const start=new Date(Date.now()-28*86400000).toISOString().slice(0,10)
+ const queries=await gsc.searchAnalytics(['query'],{startDate:start,endDate:end})
+ const totals=(queries.rows||[]).reduce((a,r)=>({clicks:a.clicks+(r.clicks||0),impressions:a.impressions+(r.impressions||0)}),{clicks:0,impressions:0})
+ writeFileSync(join(artifactDir,'gsc-sitemaps.json'),JSON.stringify(sitemaps,null,2)+'\n')
+ writeFileSync(join(artifactDir,'gsc-index.json'),JSON.stringify({site:gsc.site,inspectedAt:new Date().toISOString(),ledger,rows},null,2)+'\n')
+ writeFileSync(join(artifactDir,'gsc-analytics.json'),JSON.stringify({startDate:start,endDate:end,totals,queries},null,2)+'\n')
+ const first=(sitemaps.sitemap||[])[0]||{}
+ return `采集时刻读数（非当日聚合）：sitemap lastDownloaded=${first.lastDownloaded||'-'} ${(first.contents||[]).map(c=>`${c.type}:${c.submitted}`).join(' ')}；索引 ${ledger.total} 条 sitemap URL：${ledger.indexed} 已收录 / ${ledger.notIndexed} 未收录（${ledger.queued} 已排队或未知 + ${ledger.crawled} 抓过未收录 + ${ledger.excluded} noindex + ${ledger.errored} 查询失败）；Search Analytics ${start}→${end} ${totals.clicks} 点击 / ${totals.impressions} 展示`
+})
+}
 const now=new Date().toISOString()
 const rows=statuses.map(r=>({...r,说明:String(r.说明).replace(/\s+/g,' ').slice(0,500),日期:date,采集时间:now,记录键:key([date,r.数据源])}))
 writeFileSync(join(artifactDir,'run.json'),JSON.stringify({date,dryRun:dry,collectedAt:now,statuses},null,2)+'\n',{mode:0o600})
 if(!dry){try{upsert(tables.get('每日采集状态'),rows)}catch(e){console.error('Status write failed:',e.message);failed=true}}
-console.log(`${date} | ${dry?'dry-run':'更新'} | ${failed?'部分失败':'完成'} | GSC未接入`)
+console.log(`${date} | ${dry?'dry-run':'更新'} | ${failed?'部分失败':'完成'}`)
+console.log(`  GSC：${gscNote||'采集失败'}`)
 process.exitCode=failed?1:0

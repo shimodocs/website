@@ -21,22 +21,30 @@ A session opened in this repository is not a general coding task. It is
 true from the first message: the operator should not have to restate the job or
 hand work over again each time.
 
-The job is the discovery surface of the international product — what search
-engines and AI answer engines can find, read and cite. Pages exist in English,
-German and Japanese; search discovery currently prioritises English. In practice: organic search (index coverage, positions, CTR), the
-answer-engine surfaces (`robots.txt` content signals, `llms.txt`, the FAQ
-blocks), the articles and guides that earn the traffic, the competitor SERPs
-those pages compete in, and the daily measurement that shows whether any of it
-worked.
+The job has two tracks, kept in separate working directories:
+
+- **GTM** (`overseas/`): customer archaeology, ICP, pipeline, non-relationship
+  acquisition. Start here when the question is who buys, why, and how we find
+  the next one.
+- **Discovery** (`seo/`): what search engines and AI answer engines can find,
+  read and cite. Pages exist in English, German and Japanese; search discovery
+  currently prioritises English. In practice: organic search (index coverage,
+  positions, CTR), the answer-engine surfaces (`robots.txt` content signals,
+  `llms.txt`, the FAQ blocks), the articles and guides that earn the traffic,
+  the competitor SERPs those pages compete in, and the daily measurement that
+  shows whether any of it worked.
+
+Coverage / sitemap / 404 is discovery-motion ops. It does not define ICP.
 
 Get up to speed from the state on disk rather than from a briefing:
 
-1. `seo/HANDOFF-CODEX.md` — the current brief, rewritten in place each round.
-2. The newest `seo/<date>-*.md` — what the last round concluded, and what it
+1. `overseas/HANDOFF.md` — GTM / 海外运营当前简报（客户考古、管道、ICP）。
+2. `seo/HANDOFF-CODEX.md` — 搜索发现面简报，rewritten in place each round.
+3. The newest `seo/<date>-*.md` — what the last search round concluded, and what it
    left open.
-3. `seo/data/` — raw evidence: GSC exports, Cloudflare snapshots, the daily
+4. `seo/data/` — raw evidence: GSC exports, Cloudflare snapshots, the daily
    NDJSON written into the Feishu base.
-4. This file — the build rules the site enforces on you.
+5. This file — the build rules the site enforces on you.
 
 Rules that hold in every round:
 
@@ -44,8 +52,9 @@ Rules that hold in every round:
   observation, no sample size left out, no summing across different
   denominators (see the Cloudflare-versus-origin caveat in
   `scripts/analytics/README.md`). If the data does not exist, say so.
-- **`seo/` never enters git.** It holds credentials and campaign material and
-  this repository is public: `git add seo/` and `git add .` are both wrong.
+- **`seo/` and `overseas/` never enter git.** Search working material and
+  GTM/customer files both sit outside the public tree: `git add seo/`、
+  `git add overseas/` and `git add .` are all wrong.
 - **Every conclusion needs a source that can be re-read.** Cite the file,
   export or URL that was measured, so the next round can check it instead of
   trusting it.
@@ -63,7 +72,7 @@ Rules that hold in every round:
 | Add a page without an entry in `src/seo.js` | A route and its metadata are checked against each other at import time | `src/routes.jsx` throws |
 | Ship two pages with the same title or description | They compete for one query | `scripts/prerender.mjs` |
 | Link to a page that does not exist | Internal links are resolved against the pages actually built | `scripts/prerender.mjs` |
-| Commit anything under `seo/` | It holds credentials and campaign material; the repository is public | `.gitignore` |
+| Commit anything under `seo/` or `overseas/` | Credentials, campaign material, customer and GTM files; the repository is public | `.gitignore` |
 
 ## Conventions worth knowing
 

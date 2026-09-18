@@ -9,10 +9,10 @@ import { existsSync, readFileSync, mkdtempSync, rmSync } from 'node:fs'
 import { createHash } from 'node:crypto'
 import { dirname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { BASE_TOKEN, TABLES, larkArgs, larkEnv } from './analytics-target.mjs'
 
 const rootDir = resolve(dirname(fileURLToPath(import.meta.url)), '..')
-const BASE_TOKEN = 'QRQWbBAeUafjX5svYTHcHRkGn6b'
-const TRAFFIC_TABLE = 'tbl7IrEmsG0q4rEh'
+const TRAFFIC_TABLE = TABLES.traffic
 const ACCOUNT_ID = process.env.CLOUDFLARE_ACCOUNT_ID || 'be716c28f8452804d41c7e2e45a30dfb'
 const SITE_TAG = process.env.CLOUDFLARE_RUM_SITE_TAG || 'd7e53e718da84f3da53d63118076fe0e'
 const TZ = 'Asia/Shanghai'
@@ -79,7 +79,7 @@ const sleep = ms => Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0,
 function cli(cliArgs, attempts = 1) {
   for (let i = 0; ; i++) {
     try {
-      const raw = execFileSync('lark-cli', cliArgs, { encoding: 'utf8', timeout: 120000, maxBuffer: 12 * 1024 * 1024 })
+      const raw = execFileSync('lark-cli', larkArgs(cliArgs), { env: larkEnv, encoding: 'utf8', timeout: 120000, maxBuffer: 12 * 1024 * 1024 })
       const json = JSON.parse(raw)
       if (json.ok !== true) throw new Error(json.error?.message || 'Feishu operation failed')
       return json.data
@@ -102,7 +102,7 @@ function list(table) {
       let manifest
       for (let attempt = 0; ; attempt++) {
         try {
-          const raw = execFileSync('lark-cli', ['base', '+record-list', ...common(table), '--format', 'ndjson', '--output', file, '--overwrite', '--limit', '2000', '--offset', String(offset)], { encoding: 'utf8', timeout: 120000, maxBuffer: 2 * 1024 * 1024 })
+          const raw = execFileSync('lark-cli', larkArgs(['base', '+record-list', ...common(table), '--format', 'ndjson', '--output', file, '--overwrite', '--limit', '2000', '--offset', String(offset)]), { env: larkEnv, encoding: 'utf8', timeout: 120000, maxBuffer: 2 * 1024 * 1024 })
           manifest = JSON.parse(raw)
           break
         } catch (error) {

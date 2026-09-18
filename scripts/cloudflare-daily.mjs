@@ -5,9 +5,9 @@ import { execFileSync } from 'node:child_process'
 import { existsSync, readFileSync, writeFileSync, mkdtempSync, rmSync } from 'node:fs'
 import { dirname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { BASE_TOKEN, TABLES, larkArgs, larkEnv } from './analytics-target.mjs'
 const rootDir = resolve(dirname(fileURLToPath(import.meta.url)), '..')
-const BASE_TOKEN = 'QRQWbBAeUafjX5svYTHcHRkGn6b'
-const TABLE_ID = 'tbl7IrEmsG0q4rEh'
+const TABLE_ID = TABLES.traffic
 const args = process.argv.slice(2)
 const dryRun = args.includes('--dry-run')
 function option(name) {
@@ -97,7 +97,7 @@ async function collect(zone) {
   return {counts,bots,bytes,cached,sampleIntervalMax,intervals,crawlerRows:[...crawlers.values()],top:[...countries].sort((a,b)=>b[1]-a[1]).slice(0,5).map(([c,n])=>`${c} ${n}`).join(' / ')}
 }
 function lark(args) {
-  const json = JSON.parse(execFileSync('lark-cli',args,{encoding:'utf8',timeout:90000,maxBuffer:8*1024*1024}))
+  const json = JSON.parse(execFileSync('lark-cli',larkArgs(args),{env:larkEnv,encoding:'utf8',timeout:90000,maxBuffer:8*1024*1024}))
   if (json.ok === false || json.success === false || (json.code !== undefined && json.code !== 0)) throw new Error(`lark-cli failed: ${JSON.stringify(json)}`)
   return json
 }
