@@ -28,7 +28,7 @@ jobs:
       # a unique title, canonical link or structured data.
       - name: Build and prerender
         env:
-          VITE_SITE_URL: ${{ vars.SITE_URL || 'http://43.172.115.22' }}
+          VITE_SITE_URL: ${{ vars.SITE_URL || 'https://shimodocs.com' }}
         run: npm run build
       - name: Report crawler surfaces
         run: |

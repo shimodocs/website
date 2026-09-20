@@ -40,9 +40,9 @@ jobs:
       - name: Build
         env:
           # Canonical URLs, the sitemap and social images all derive from this.
-          # Set the repository variable SITE_URL once the production domain is
-          # ready, for example https://shimodocs.com, and tag a new release.
-          VITE_SITE_URL: ${{ vars.SITE_URL || 'http://43.172.115.22' }}
+          # Set SITE_URL for a preview or alternate production hostname. The
+          # fallback stays on the canonical HTTPS production domain.
+          VITE_SITE_URL: ${{ vars.SITE_URL || 'https://shimodocs.com' }}
         run: npm run build
 
       # The contact form submits by Teable field id. If the columns in Teable

@@ -50,7 +50,6 @@ export function applySeo(pathname) {
   document.documentElement.setAttribute('lang', 'en')
 
   upsertMeta('name', 'description', meta.description)
-  upsertMeta('name', 'keywords', meta.keywords)
   upsertMeta('name', 'robots', 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1')
 
   upsertMeta('property', 'og:type', 'website')

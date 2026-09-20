@@ -14,7 +14,11 @@ import {
 } from './pricing-facts.js'
 import { DOCS_DEFAULT_LANGUAGE, LANGUAGE_META, docsBase, docsUi } from './docs-languages'
 
-const FALLBACK_SITE_URL = 'http://43.172.115.22'
+// Canonicals, OG URLs, sitemaps and llms.txt must never fall back to an origin
+// IP or plain HTTP when a build forgets to provide VITE_SITE_URL. Keeping the
+// production hostname here makes the safe default explicit for local and CI
+// builds; previews should still pass their own HTTPS origin through the env.
+const FALLBACK_SITE_URL = 'https://shimodocs.com'
 
 // Vite inlines import.meta.env at build time for both the client and the SSR
 // bundle, so the prerenderer sees the same origin the browser would.
@@ -40,6 +44,9 @@ export const ORGANIZATION_ID = `${SITE_URL}/#organization`
 export const WEBSITE_ID = `${SITE_URL}/#website`
 export const SOFTWARE_ID = `${SITE_URL}/#software`
 
+// Editorial target terms for route planning and structured content. They are
+// intentionally not emitted as <meta name="keywords">: Google and Bing do not
+// use that tag for ranking, while title, headings, copy and internal links do.
 const DEFAULT_KEYWORDS =
   'ShimoDocs, private cloud document collaboration, self-hosted office suite, secure document collaboration, AI agents, data sovereignty, enterprise document management'
 
@@ -840,13 +847,11 @@ export function jsonLdFor(pathname) {
     })
   }
 
-  // The pricing page describes the same product entity as the home page, under
-  // the same @id, and carries the plans itself. It is the page a buyer reaches
-  // from "how much does this cost", so leaving the offers only on the home page
-  // meant the pricing page answered that query in prose and told a crawler
-  // nothing about the price. `mainEntity` ties the page to the product it is
-  // about.
-  if (clean === '/pricing') {
+  // Pricing and download describe the same product entity as the home page,
+  // under the same @id. Pricing carries the plans itself; download carries the
+  // installer and version. `mainEntity` ties each page to the product a buyer
+  // is actually evaluating instead of leaving the relationship implicit.
+  if (clean === '/pricing' || clean === '/download') {
     graph.push(softwareApplication())
     graph[2].mainEntity = { '@id': SOFTWARE_ID }
   }
@@ -876,7 +881,6 @@ export function headFor(pathname, options = {}) {
   const tags = [
     `<title>${esc(meta.title)}</title>`,
     `<meta name="description" content="${esc(meta.description)}"/>`,
-    `<meta name="keywords" content="${esc(meta.keywords)}"/>`,
     `<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"/>`,
     `<link rel="canonical" href="${esc(meta.canonical)}"/>`,
     // Only the documentation routes are translated, so only they receive
@@ -1053,7 +1057,6 @@ export function blogPostHead(post, options = {}) {
   const tags = [
     `<title>${esc(post.seoTitle)}</title>`,
     `<meta name="description" content="${esc(post.description)}"/>`,
-    `<meta name="keywords" content="${esc(post.keywords || post.tags.join(', '))}"/>`,
     `<meta name="robots" content="${ROBOTS_CONTENT}"/>`,
     `<link rel="canonical" href="${esc(canonical)}"/>`,
     `<meta property="og:type" content="article"/>`,

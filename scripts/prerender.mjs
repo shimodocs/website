@@ -837,8 +837,10 @@ for (const { language, file } of docsIndexFiles) {
 const publishedDocUrls = new Set(docs.map(doc => doc.url))
 const helpHtml = readFileSync(join(distDir, 'help-center', 'index.html'), 'utf8')
 const helpDocLinks = new Set([...helpHtml.matchAll(/href="(\/docs\/[^"#]*)"/g)].map(match => match[1]))
-if (helpDocLinks.size < 15) {
-  problems.push(`help-center: only ${helpDocLinks.size} links into the published guides`)
+if (helpDocLinks.size !== publishedDocUrls.size) {
+  problems.push(
+    `help-center: ${helpDocLinks.size} links into the published guides, expected ${publishedDocUrls.size}`,
+  )
 }
 for (const href of helpDocLinks) {
   if (!publishedDocUrls.has(href)) problems.push(`help-center: ${href} does not match any published guide`)
@@ -871,6 +873,9 @@ let htmlPagesCrawled = 0
 for (const htmlFile of [...siteFiles].filter(file => file.endsWith('.html'))) {
   const html = readFileSync(join(distDir, htmlFile.slice(1)), 'utf8')
   htmlPagesCrawled += 1
+  if (/<meta\s+name=["']keywords["']/i.test(html)) {
+    problems.push(`${htmlFile}: emits unsupported meta keywords; keep target terms in visible content and structured data`)
+  }
   for (const match of html.matchAll(/href="([^"]+)"/g)) {
     const href = match[1]
     if (/^(https?:|mailto:|tel:|data:|#|\/\/)/i.test(href)) continue
