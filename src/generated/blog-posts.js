@@ -1047,14 +1047,14 @@ export const BLOG_POSTS = [
   },
   {
     "slug": "what-is-private-cloud-document-collaboration",
-    "title": "Private Cloud Collaboration: A Guide for Document Teams",
-    "description": "A private cloud collaboration guide for document teams: understand the deployment boundary, compare it with SaaS and decide who will own operations.",
+    "title": "Private Cloud Document Collaboration: Self-Hosted Guide",
+    "description": "Learn what private cloud document collaboration means, which layers must be self-hosted, and how regulated teams can compare private deployment with SaaS.",
     "category": "self-hosting",
     "categoryLabel": "Self-hosting",
     "layout": "standard",
     "figures": 2,
     "date": "2026-01-12",
-    "updated": "2026-09-16",
+    "updated": "2026-09-20",
     "tags": [
       "private cloud",
       "self-hosted",
@@ -1062,7 +1062,7 @@ export const BLOG_POSTS = [
       "data sovereignty"
     ],
     "readingTime": 7,
-    "words": 1539,
+    "words": 1535,
     "featured": true
   }
 ]

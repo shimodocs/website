@@ -1,11 +1,11 @@
 ---
-title: "Private Cloud Collaboration: A Guide for Document Teams"
-seoTitle: "Private Cloud Collaboration Guide for Documents | ShimoDocs"
-description: "A private cloud collaboration guide for document teams: understand the deployment boundary, compare it with SaaS and decide who will own operations."
+title: "Private Cloud Document Collaboration: Self-Hosted Guide"
+seoTitle: "Private Cloud Document Collaboration Guide | ShimoDocs"
+description: "Learn what private cloud document collaboration means, which layers must be self-hosted, and how regulated teams can compare private deployment with SaaS."
 layout: standard
 category: self-hosting
 date: 2026-01-12
-updated: 2026-09-16
+updated: 2026-09-20
 tags: [private cloud, self-hosted, architecture, data sovereignty]
 keywords: "private cloud document collaboration, self-hosted document collaboration, what is private cloud collaboration"
 featured: true
@@ -24,7 +24,7 @@ faq:
     answer: "As a self-hosted suite covering documents, writers, spreadsheets, presentations, forms and tables, with the AI workspace included. It runs on a single node or a high-availability Kubernetes cluster, connects to your MySQL, Redis and object storage, and runs AI against the model endpoint you nominate."
 ---
 
-Private cloud collaboration for documents means running real-time editing, comments, storage and search on infrastructure your organisation controls. The deployment boundary, rather than the editing experience, is what distinguishes it from a public SaaS suite.
+Private cloud document collaboration means running the editor, real-time sync, storage, search and AI on infrastructure your organisation controls. It is the self-hosted alternative to a public SaaS document suite.
 
 This guide explains which layers belong inside that boundary, what your operations team takes on and when private deployment is the wrong choice. Self-hosting the storage alone does not put the editor or an external AI service under your control.
 
