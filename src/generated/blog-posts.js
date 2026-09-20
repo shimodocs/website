@@ -987,14 +987,14 @@ export const BLOG_POSTS = [
   },
   {
     "slug": "google-docs-alternative-private-cloud",
-    "title": "A Google Docs Alternative in Your Private Cloud",
-    "description": "Evaluate a private cloud Google Docs alternative: real-time editing, identity, AI data flows, file fidelity and a migration plan you can test.",
+    "title": "Self-Hosted Google Docs Alternative for Private Deployment",
+    "description": "Evaluate a Google Docs alternative for private deployment: self-hosted editing, identity, AI data flows, file fidelity and migration.",
     "category": "comparisons",
     "categoryLabel": "Comparisons",
     "layout": "standard",
     "figures": 2,
     "date": "2026-01-19",
-    "updated": "2026-09-16",
+    "updated": "2026-09-20",
     "tags": [
       "google docs alternative",
       "private cloud",
@@ -1002,7 +1002,7 @@ export const BLOG_POSTS = [
       "comparison"
     ],
     "readingTime": 9,
-    "words": 1908,
+    "words": 1911,
     "featured": false
   },
   {
@@ -1112,4 +1112,4 @@ export const BLOG_CATEGORIES = [
   }
 ]
 
-export const BLOG_UPDATED = "2026-09-17"
+export const BLOG_UPDATED = "2026-09-20"
