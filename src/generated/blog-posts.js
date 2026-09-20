@@ -206,21 +206,21 @@ export const BLOG_POSTS = [
   {
     "slug": "secure-cloud-collaboration",
     "title": "Secure Cloud Collaboration: Balancing Security and Productivity",
-    "description": "Secure cloud collaboration helps teams protect sensitive data without slowing work down, covering sharing controls, identity and deployment choices.",
+    "description": "Secure cloud collaboration protects document access across sharing, identity changes, permission reviews and audit trails without slowing teams down.",
     "category": "security",
     "categoryLabel": "Security & compliance",
     "layout": "briefing",
     "figures": 2,
     "date": "2026-08-19",
-    "updated": null,
+    "updated": "2026-09-20",
     "tags": [
       "security",
       "collaboration",
       "access control",
       "private cloud"
     ],
-    "readingTime": 8,
-    "words": 1698,
+    "readingTime": 9,
+    "words": 1901,
     "featured": false
   },
   {
