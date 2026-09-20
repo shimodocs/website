@@ -18,6 +18,7 @@ export const TABLES = Object.freeze({
   collectionStatus: 'tblEddgjy5u1QbpX',
   humanSources: 'tbl0ADn8jTDZJnvv',
   humanAudience: 'tblYZYGUmPngcszy',
+  queryPage: 'tbluM5JhOhNfZ5lc',
 })
 
 export const larkArgs = args => ['--profile', FEISHU_PROFILE, ...args]

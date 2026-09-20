@@ -21,6 +21,12 @@ const schemas={
  '每日采集状态':[...['记录键','日期','数据源','状态','采集时间','说明'].map(text)],
  '真实用户来源日报':[...['记录键','日期','来源域名','来源路径','落地页','口径'].map(text),...['页面浏览','会话'].map(num)],
  '真实用户画像日报':[...['记录键','日期','国家','设备','浏览器','系统','口径'].map(text),...['页面浏览','会话'].map(num)],
+ 'Google搜索查询×页面明细':[
+  ...['记录键','采集日','窗口起始','窗口截止','查询','页面','品牌分类','机会分类','意图簇','数据源','口径'].map(text),
+  ...['点击','曝光'].map(num),
+  {name:'点击率',type:'number',style:{type:'plain',precision:4,percentage:true}},
+  {name:'平均排名',type:'number',style:{type:'plain',precision:2,percentage:false}},
+ ],
 }
 const trafficFields=[...['采集起始','采集截止','采集时间','统计口径','采样情况','源站统计口径'].map(text),...['疑似人类页面浏览','疑似人类独立IP','未知页面请求','已知自动化页面请求','真实用户页面浏览','真实用户会话'].map(num)]
 // lark-cli intermittently fails with "TLS handshake timeout" against open.feishu.cn.
@@ -238,12 +244,45 @@ gscNote=await stage('Google Search Console API',async()=>{
  const end=new Date(Date.now()-86400000).toISOString().slice(0,10)
  const start=new Date(Date.now()-28*86400000).toISOString().slice(0,10)
  const queries=await gsc.searchAnalytics(['query'],{startDate:start,endDate:end})
+ const queryPages=await gsc.searchAnalytics(['query','page'],{startDate:start,endDate:end,rowLimit:1000})
  const totals=(queries.rows||[]).reduce((a,r)=>({clicks:a.clicks+(r.clicks||0),impressions:a.impressions+(r.impressions||0)}),{clicks:0,impressions:0})
  writeFileSync(join(artifactDir,'gsc-sitemaps.json'),JSON.stringify(sitemaps,null,2)+'\n')
  writeFileSync(join(artifactDir,'gsc-index.json'),JSON.stringify({site:gsc.site,inspectedAt:new Date().toISOString(),ledger,rows},null,2)+'\n')
  writeFileSync(join(artifactDir,'gsc-analytics.json'),JSON.stringify({startDate:start,endDate:end,totals,queries},null,2)+'\n')
+ writeFileSync(join(artifactDir,'gsc-query-page.json'),JSON.stringify({startDate:start,endDate:end,queryPages},null,2)+'\n')
+ const queryPageTable=tables.get('Google搜索查询×页面明细') || TABLES.queryPage
+ if(!dry&&queryPageTable){
+  const classifyBrand=query=>/\bshimo(?:docs?|office)?\b/i.test(query)?'品牌':'非品牌'
+  const classifyIntent=query=>{
+   const q=query.toLowerCase()
+   if(/nextcloud/.test(q))return'Nextcloud竞品'
+   if(/google\s*docs?|google\s*document/.test(q)&&/(alternative|replacement|private|self.hosted|on.?prem|deployment|cloud)/.test(q))return'Google Docs私有化替代'
+   if(/private.?cloud|self.hosted|on.?prem|air.?gapped|data sovereignty/.test(q))return'私有化/部署'
+   if(/secure|security|compliance|sovereignty|gdpr|iso/.test(q))return'安全/合规'
+   return'其他'
+  }
+  const classifyOpportunity=row=>{
+   if((row.clicks||0)>0)return'已有点击'
+   if((row.impressions||0)>=10&&(row.position||999)<=10)return'高排名零点击'
+   if((row.impressions||0)>=5&&(row.position||999)<=20)return'中排名零点击'
+   if((row.impressions||0)>=5)return'有量待观察'
+   return'低样本'
+  }
+  const queryPageRows=(queryPages.rows||[]).map(row=>{
+   const query=String(row.keys?.[0]||''),page=String(row.keys?.[1]||'')
+   return {
+    '记录键':key([date,start,end,query,page]),'采集日':date,'窗口起始':start,'窗口截止':end,
+    '查询':query,'页面':page,'品牌分类':classifyBrand(query),'机会分类':classifyOpportunity(row),
+    '意图簇':classifyIntent(query),'数据源':'Google Search Console',
+    '口径':'28天 Search Analytics query×page 聚合；按窗口快照保存；不与访问日志相加',
+    '点击':row.clicks||0,'曝光':row.impressions||0,'点击率':row.ctr||0,'平均排名':row.position||0,
+   }
+  })
+  upsert(queryPageTable,queryPageRows)
+  console.log('Query×page rows:',queryPageRows.length)
+ }
  const first=(sitemaps.sitemap||[])[0]||{}
- return `采集时刻读数（非当日聚合）：sitemap lastDownloaded=${first.lastDownloaded||'-'} ${(first.contents||[]).map(c=>`${c.type}:${c.submitted}`).join(' ')}；索引 ${ledger.total} 条 sitemap URL：${ledger.indexed} 已收录 / ${ledger.notIndexed} 未收录（${ledger.queued} 已排队或未知 + ${ledger.crawled} 抓过未收录 + ${ledger.excluded} noindex + ${ledger.errored} 查询失败）；Search Analytics ${start}→${end} ${totals.clicks} 点击 / ${totals.impressions} 展示`
+ return `采集时刻读数（非当日聚合）：sitemap lastDownloaded=${first.lastDownloaded||'-'} ${(first.contents||[]).map(c=>`${c.type}:${c.submitted}`).join(' ')}；索引 ${ledger.total} 条 sitemap URL：${ledger.indexed} 已收录 / ${ledger.notIndexed} 未收录（${ledger.queued} 已排队或未知 + ${ledger.crawled} 抓过未收录 + ${ledger.excluded} noindex + ${ledger.errored} 查询失败）；Search Analytics ${start}→${end} ${totals.clicks} 点击 / ${totals.impressions} 展示；query×page ${(queryPages.rows||[]).length} 行`
 })
 }
 const now=new Date().toISOString()
