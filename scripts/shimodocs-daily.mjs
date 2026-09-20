@@ -22,7 +22,7 @@ const schemas={
  '真实用户来源日报':[...['记录键','日期','来源域名','来源路径','落地页','口径'].map(text),...['页面浏览','会话'].map(num)],
  '真实用户画像日报':[...['记录键','日期','国家','设备','浏览器','系统','口径'].map(text),...['页面浏览','会话'].map(num)],
  'Google搜索查询×页面明细':[
-  ...['记录键','采集日','窗口起始','窗口截止','查询','页面','品牌分类','机会分类','意图簇','数据源','口径'].map(text),
+  ...['记录键','采集日','窗口起始','窗口截止','查询','页面','规范页面','品牌分类','机会分类','意图簇','数据源','口径'].map(text),
   ...['点击','曝光'].map(num),
   {name:'点击率',type:'number',style:{type:'plain',precision:4,percentage:true}},
   {name:'平均排名',type:'number',style:{type:'plain',precision:2,percentage:false}},
@@ -121,6 +121,20 @@ function list(table){
 }
 function key(row){return createHash('sha256').update(JSON.stringify(row)).digest('hex').slice(0,32)}
 const same=(a,b)=>(a??'')===(b??'')
+const canonicalBlogPages=new Map([
+ ['/blogs/private-cloud-collaboration-guide','https://shimodocs.com/blog/what-is-private-cloud-document-collaboration'],
+ ['/blogs/secure-cloud-collaboration','https://shimodocs.com/blog/secure-cloud-collaboration'],
+ ['/blogs/google-docs-alternative-private-cloud','https://shimodocs.com/blog/google-docs-alternative-private-cloud'],
+ ['/blogs/data-sovereignty-enterprise-control','https://shimodocs.com/blog/data-sovereignty-document-collaboration'],
+ ['/blogs/private-cloud-vs-public-cloud-document-collaboration','https://shimodocs.com/blog/what-is-private-cloud-document-collaboration'],
+ ['/blogs/web3-security-tools-resources','https://shimodocs.com/blog/web3-security-tools-resources'],
+])
+function canonicalPage(page){
+ try{
+  const value=String(page||''),url=new URL(value)
+  return canonicalBlogPages.get(url.pathname.replace(/\/+$/,'')||'/') || value
+ }catch{return String(page||'')}
+}
 // Feishu reads can return the pre-write revision; re-read before calling a write wrong.
 function verifyRows(table,rows){
  for(let attempt=0;;attempt++){
@@ -272,7 +286,7 @@ gscNote=await stage('Google Search Console API',async()=>{
    const query=String(row.keys?.[0]||''),page=String(row.keys?.[1]||'')
    return {
     '记录键':key([date,start,end,query,page]),'采集日':date,'窗口起始':start,'窗口截止':end,
-    '查询':query,'页面':page,'品牌分类':classifyBrand(query),'机会分类':classifyOpportunity(row),
+    '查询':query,'页面':page,'规范页面':canonicalPage(page),'品牌分类':classifyBrand(query),'机会分类':classifyOpportunity(row),
     '意图簇':classifyIntent(query),'数据源':'Google Search Console',
     '口径':'28天 Search Analytics query×page 聚合；按窗口快照保存；不与访问日志相加',
     '点击':row.clicks||0,'曝光':row.impressions||0,'点击率':row.ctr||0,'平均排名':row.position||0,
