@@ -258,7 +258,7 @@ gscNote=await stage('Google Search Console API',async()=>{
    if(/nextcloud/.test(q))return'Nextcloud竞品'
    if(/google\s*docs?|google\s*document/.test(q)&&/(alternative|replacement|private|self.hosted|on.?prem|deployment|cloud)/.test(q))return'Google Docs私有化替代'
    if(/private.?cloud|self.hosted|on.?prem|air.?gapped|data sovereignty/.test(q))return'私有化/部署'
-   if(/secure|security|compliance|sovereignty|gdpr|iso/.test(q))return'安全/合规'
+   if(/\b(?:secure|security|compliance|sovereignty|gdpr|iso(?:27001)?)\b/.test(q))return'安全/合规'
    return'其他'
   }
   const classifyOpportunity=row=>{
