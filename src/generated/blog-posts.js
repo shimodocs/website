@@ -988,7 +988,7 @@ export const BLOG_POSTS = [
   {
     "slug": "google-docs-alternative-private-cloud",
     "title": "Self-Hosted Google Docs Alternative for Private Deployment",
-    "description": "Evaluate a Google Docs alternative for private deployment: self-hosted editing, identity, AI data flows, file fidelity and migration.",
+    "description": "Compare a self-hosted Google Docs alternative for private deployment, from real-time editing and identity to AI data flows, migration and export fidelity.",
     "category": "comparisons",
     "categoryLabel": "Comparisons",
     "layout": "standard",
@@ -1002,7 +1002,7 @@ export const BLOG_POSTS = [
       "comparison"
     ],
     "readingTime": 9,
-    "words": 1911,
+    "words": 2025,
     "featured": false
   },
   {
