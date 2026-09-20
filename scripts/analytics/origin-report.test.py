@@ -18,4 +18,13 @@ class Aggregation(unittest.TestCase):
    (d/'shimodocs-analytics.log').write_text('\n'.join(map(json.dumps,entries)))
    out=m.report('2026-09-16',str(d),str(root))
    self.assertEqual(out['summary']['疑似人类页面浏览'],1);self.assertEqual(out['summary']['已知自动化页面请求'],1);self.assertEqual(out['sourceRows'][0]['渠道'],'AI引荐');self.assertNotIn('192.0.2.10',json.dumps(out))
+ def test_event_beacon_is_aggregated_without_becoming_pageview(self):
+  with tempfile.TemporaryDirectory() as tmp:
+   d=pathlib.Path(tmp);root=d/'site';(root/'download').mkdir(parents=True);(root/'download/index.html').write_text('page')
+   entries=[]
+   base={'time':'2026-09-16T01:00:00+00:00','peer':'173.245.48.1','client':'192.0.2.10','host':'shimodocs.com','method':'POST','uri':'/__analytics/event?event=download_click&arch=amd64&surface=download_package&page=%2Fdownload&entry_host=clickvisual.shimodocs.com&entry_path=%2Fdocs','status':204,'referer':'https://shimodocs.com/download','ua':'Mozilla/5.0 Chrome/130 Safari/537'}
+   entries.append(base);entries.append({**base,'client':'192.0.2.11'});entries.append({**base,'uri':base['uri'].replace('event=download_click','event=ignored')})
+   (d/'shimodocs-analytics.log').write_text('\n'.join(map(json.dumps,entries)))
+   out=m.report('2026-09-16',str(d),str(root))
+   self.assertEqual(out['summary']['疑似人类页面浏览'],0);self.assertEqual(len(out['eventRows']),1);self.assertEqual(out['eventRows'][0]['点击次数'],2);self.assertEqual(out['eventRows'][0]['独立IP估算'],2);self.assertEqual(out['eventRows'][0]['来源域名'],'clickvisual.shimodocs.com')
 if __name__=='__main__':unittest.main()

@@ -3,12 +3,18 @@ import { Route, Routes, useLocation } from 'react-router-dom'
 import Shell from './components/Shell'
 import { ROUTES } from './routes'
 import { applySeo } from './seo-dom'
+import { installAnalytics } from './analytics'
 
 function SeoManager() {
   const { pathname } = useLocation()
   useEffect(() => {
     applySeo(pathname)
   }, [pathname])
+  return null
+}
+
+function AnalyticsManager() {
+  useEffect(() => installAnalytics(), [])
   return null
 }
 
@@ -27,6 +33,7 @@ export default function App() {
   return (
     <Shell>
       <SeoManager />
+      <AnalyticsManager />
       <Routes>
         {ROUTES.map(({ path, Component }) => (
           <Route key={path} path={path} element={<Component />} />

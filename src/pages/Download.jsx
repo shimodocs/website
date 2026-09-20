@@ -36,7 +36,14 @@ export default function Download() {
           as a zip archive with the deployment assets inside.
         </p>
         <div className="hero-actions">
-          <a className="button download-cta" href={DOWNLOADS.amd64.url}>
+          <a
+            className="button download-cta"
+            href={DOWNLOADS.amd64.url}
+            data-analytics-event="download_click"
+            data-download-arch="amd64"
+            data-download-release={DOWNLOADS.version}
+            data-analytics-surface="download_primary"
+          >
             Download for Linux · amd64
           </a>
           <a className="text-link" href={DOWNLOADS.latest} target="_blank" rel="noreferrer">
@@ -66,7 +73,14 @@ export default function Download() {
               <h3>Linux · {pkg.arch}</h3>
               <p>{pkg.audience}</p>
               <p className="download-meta">Archive size {pkg.size}</p>
-              <a className="button download-cta" href={pkg.url}>
+              <a
+                className="button download-cta"
+                href={pkg.url}
+                data-analytics-event="download_click"
+                data-download-arch={pkg.arch}
+                data-download-release={DOWNLOADS.version}
+                data-analytics-surface="download_package"
+              >
                 Download {pkg.arch}
               </a>
             </article>
@@ -102,7 +116,12 @@ export default function Download() {
           licence for teams of {FREE_TEAM_LIMIT_WORD} or fewer; larger teams are quoted by the sales team.
         </p>
         <div className="hero-actions">
-          <a className="button outline license-cta" href={LICENSE_REQUEST_URL}>
+          <a
+            className="button outline license-cta"
+            href={LICENSE_REQUEST_URL}
+            data-analytics-event="license_request_click"
+            data-analytics-surface="download_license"
+          >
             Get a free perpetual license
           </a>
           <Link className="text-link" to="/pricing">

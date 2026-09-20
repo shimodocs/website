@@ -9,7 +9,7 @@ import { existsSync, readFileSync, mkdtempSync, rmSync } from 'node:fs'
 import { createHash } from 'node:crypto'
 import { dirname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { BASE_TOKEN, TABLES, larkArgs, larkEnv } from './analytics-target.mjs'
+import { BASE_TOKEN, FEISHU_IDENTITY, TABLES, larkArgs, larkEnv } from './analytics-target.mjs'
 
 const rootDir = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const TRAFFIC_TABLE = TABLES.traffic
@@ -24,8 +24,10 @@ const num = name => ({ name, type: 'number' })
 const schemas = {
   '真实用户来源日报': [...['记录键', '日期', '来源域名', '来源路径', '落地页', '口径'].map(text), ...['页面浏览', '会话'].map(num)],
   '真实用户画像日报': [...['记录键', '日期', '国家', '设备', '浏览器', '系统', '口径'].map(text), ...['页面浏览', '会话'].map(num)],
+  '真实用户净分析日报': [...['记录键', '日期', '排除规则', '口径', '数据状态', '采集时间'].map(text), ...['原始页面浏览', 'ClickVisual页面浏览', '净页面浏览', '原始会话', 'ClickVisual会话', '净会话'].map(num)],
 }
 const trafficFields = ['真实用户页面浏览', '真实用户会话'].map(num)
+const NET_RULE = '来源域名包含 clickvisual（不区分大小写）'
 const args = process.argv.slice(2)
 const dryRun = args.includes('--dry-run')
 function option(name) {
@@ -89,8 +91,8 @@ function cli(cliArgs, attempts = 1) {
     }
   }
 }
-const common = table => ['--base-token', BASE_TOKEN, '--table-id', table, '--as', 'user']
-function tableMap() { return new Map((cli(['base', '+table-list', '--base-token', BASE_TOKEN, '--as', 'user', '--json'], 5).tables || []).map(t => [t.name, t.id])) }
+const common = table => ['--base-token', BASE_TOKEN, '--table-id', table, '--as', FEISHU_IDENTITY]
+function tableMap() { return new Map((cli(['base', '+table-list', '--base-token', BASE_TOKEN, '--as', FEISHU_IDENTITY, '--json'], 5).tables || []).map(t => [t.name, t.id])) }
 const tables = dryRun ? new Map() : tableMap()
 for (const name of Object.keys(schemas)) if (!dryRun && !tables.has(name)) throw new Error(`Missing table ${name}; run scripts/shimodocs-daily.mjs --setup first`)
 function list(table) {
@@ -120,7 +122,13 @@ function list(table) {
   } finally { rmSync(dir, { recursive: true, force: true }) }
 }
 const key = row => createHash('sha256').update(JSON.stringify(row)).digest('hex').slice(0, 32)
-const same = (a, b) => (a ?? '') === (b ?? '')
+function same(a, b) {
+  if ((a ?? '') === (b ?? '')) return true
+  if (typeof a === 'number' && typeof b === 'number' && Number.isFinite(a) && Number.isFinite(b)) {
+    return Math.abs(a - b) <= 1e-9 * Math.max(1, Math.abs(a), Math.abs(b))
+  }
+  return false
+}
 function upsert(table, rows) {
   if (!rows.length) return
   const existing = list(table)
@@ -164,6 +172,30 @@ function audienceRows(day, rows, capped) {
     页面浏览: row.count, 会话: row.sum?.visits ?? 0, 口径: SCOPE + (capped ? `；仅保留页面浏览前 ${ROWS_PER_DAY} 行` : ''),
   })).map(row => ({ ...row, 记录键: key([row.日期, row.国家, row.设备, row.浏览器, row.系统]) }))
 }
+function isClickvisualSource(row) {
+  return /clickvisual/i.test(String(row.dimensions?.refererHost || ''))
+}
+function netSummary(day, total, sourceRaw) {
+  const excluded = sourceRaw.filter(isClickvisualSource)
+  const excludedPageviews = excluded.reduce((sum, row) => sum + (row.count || 0), 0)
+  const excludedSessions = excluded.reduce((sum, row) => sum + (row.sum?.visits || 0), 0)
+  const pageviews = total.count || 0
+  const sessions = total.sum?.visits || 0
+  const invalid = excludedPageviews > pageviews || excludedSessions > sessions
+  return {
+    日期: day,
+    排除规则: NET_RULE,
+    原始页面浏览: pageviews,
+    ClickVisual页面浏览: excludedPageviews,
+    净页面浏览: Math.max(0, pageviews - excludedPageviews),
+    原始会话: sessions,
+    ClickVisual会话: excludedSessions,
+    净会话: Math.max(0, sessions - excludedSessions),
+    口径: `${SCOPE}；净值按来源域名排除 ClickVisual 后计算；保留原始数据供回溯`,
+    数据状态: invalid ? '异常（排除值超过原始值，净值已封顶为0）' : '有效',
+    采集时间: new Date().toISOString(),
+  }
+}
 async function main() {
   const summary = []
   const trafficByDay = new Map()
@@ -173,12 +205,15 @@ async function main() {
     const audienceRaw = await rum('count sum{visits} dimensions{countryName deviceType userAgentBrowser userAgentOS}', day)
     const sources = sourceRows(day, sourceRaw.slice(0, ROWS_PER_DAY), sourceRaw.length > ROWS_PER_DAY)
     const audience = audienceRows(day, audienceRaw.slice(0, ROWS_PER_DAY), audienceRaw.length > ROWS_PER_DAY)
+    const net = netSummary(day, totals, sourceRaw)
+    net.记录键 = key([day, NET_RULE])
     if (!dryRun) {
       upsert(tables.get('真实用户来源日报'), sources)
       upsert(tables.get('真实用户画像日报'), audience)
+      upsert(tables.get('真实用户净分析日报'), [net])
     }
     trafficByDay.set(day, { 真实用户页面浏览: totals.count, 真实用户会话: totals.sum?.visits ?? 0 })
-    summary.push({ 日期: day, 页面浏览: totals.count, 会话: totals.sum?.visits ?? 0, 来源行: sources.length, 画像行: audience.length })
+    summary.push({ 日期: day, 页面浏览: totals.count, 会话: totals.sum?.visits ?? 0, ClickVisual页面浏览: net.ClickVisual页面浏览, ClickVisual会话: net.ClickVisual会话, 净页面浏览: net.净页面浏览, 净会话: net.净会话, 来源行: sources.length, 画像行: audience.length })
   }
   if (!dryRun) {
     const traffic = list(TRAFFIC_TABLE)

@@ -3,7 +3,7 @@ import { execFileSync } from 'node:child_process';
 import { mkdtempSync, readFileSync, rmSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
-import { BASE_TOKEN, FEISHU_AUTH_COMMAND, TABLES, larkArgs, larkEnv } from './analytics-target.mjs';
+import { BASE_TOKEN, FEISHU_AUTH_COMMAND, FEISHU_IDENTITY, TABLES, larkArgs, larkEnv } from './analytics-target.mjs';
 
 const TABLE_ID = TABLES.downloads;
 const REPO = 'shimodocs/shimodocs';
@@ -13,7 +13,7 @@ const SOURCE = 'GitHub releases asset download_count（累计下载请求，含�
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 const formatDate = date => new Intl.DateTimeFormat('en-CA', { timeZone: TZ, year: 'numeric', month: '2-digit', day: '2-digit' }).format(date);
 const normDate = value => typeof value === 'number' ? formatDate(new Date(value)) : String(value || '').match(/\d{4}-\d{2}-\d{2}/)?.[0];
-const baseArgs = ['--base-token', BASE_TOKEN, '--table-id', TABLE_ID, '--as', 'user'];
+const baseArgs = ['--base-token', BASE_TOKEN, '--table-id', TABLE_ID, '--as', FEISHU_IDENTITY];
 
 function cli(args) {
   const result = JSON.parse(execFileSync('lark-cli', larkArgs(args), { env: larkEnv, encoding: 'utf8', timeout: 120_000, maxBuffer: 8 * 1024 * 1024 }));
@@ -127,9 +127,9 @@ export async function main(args = process.argv.slice(2)) {
   if (args.some(arg => arg !== '--dry-run')) throw new Error('Usage: github-downloads-daily.mjs [--dry-run]');
   const dryRun = args.includes('--dry-run');
   const auth = cli(['auth', 'status']);
-  const user = auth.identities?.user;
-  if (user?.status !== 'ready') throw new Error(`飞书授权状态: ${user?.status || 'unknown'}；请运行：${FEISHU_AUTH_COMMAND}`);
-  const scopes = String(user.scope || '').split(/\s+/);
+  const identity = auth.identities?.[FEISHU_IDENTITY];
+  if (identity?.status !== 'ready') throw new Error(`飞书 ${FEISHU_IDENTITY} 授权状态: ${identity?.status || 'unknown'}；请运行：${FEISHU_AUTH_COMMAND}`);
+  const scopes = String(identity.scope || '').split(/\s+/);
   if (!dryRun) for (const scope of ['base:record:create', 'base:record:update']) if (!scopes.includes(scope)) throw new Error(`缺少必要 scope: ${scope}`);
   const fields = cli(['base', '+field-list', ...baseArgs, '--json']);
   const names = (fields.data?.fields || []).map(field => field.name);
@@ -154,7 +154,7 @@ export async function main(args = process.argv.slice(2)) {
     if (verified) break;
   }
   if (!verified) throw new Error('回读验证失败');
-  const refreshWarning = user.refreshExpiresAt && new Date(user.refreshExpiresAt).getTime() - Date.now() < 3 * 864e5;
+  const refreshWarning = identity.refreshExpiresAt && new Date(identity.refreshExpiresAt).getTime() - Date.now() < 3 * 864e5;
   console.log(JSON.stringify({ date: plan.date, verified, releases: releases.length, action: plan.existingId ? 'updated' : 'created', ...plan.payload, ...(refreshWarning ? { warning: '飞书授权即将过期' } : {}) }));
 }
 

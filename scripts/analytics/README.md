@@ -34,6 +34,16 @@ Crawler activity is evidence of fetching, not evidence of AI citation or convers
 
 Each table answers a different question; no single cell is the answer.
 
+## Feishu credentials
+
+The collector never stores a Base token in this repository. Set
+`SHIMODOCS_BASE_TOKEN` in the scheduler environment, or put the token in
+`~/.config/shimodocs/base-token` with mode `600`; `SHIMODOCS_BASE_TOKEN_FILE`
+can override that path. The Feishu identity is explicit through
+`SHIMODOCS_FEISHU_IDENTITY=user|bot` and defaults to `user` until the app
+identity has the required Base scopes. A successful `user` run is therefore
+not proof that the bot identity is ready for production automation.
+
 | Question | Table | Columns |
 | --- | --- | --- |
 | How much traffic, how much of it is automation, from where | `流量观测` | `总请求`, `爬虫请求`, `疑似人类页面浏览`, `疑似人类独立IP`, `未知页面请求`, `404数`, `Top国家` |
@@ -42,6 +52,7 @@ Each table answers a different question; no single cell is the answer.
 | Whether the collection ran and which source broke | `每日采集状态` | `数据源`, `状态`, `说明`, `采集时间` |
 | Where visitors came from, with the full referring URL | `真实用户来源日报` | `来源域名`, `来源路径`, `落地页`, `页面浏览`, `会话` |
 | Who the visitors were | `真实用户画像日报` | `国家`, `设备`, `浏览器`, `系统`, `页面浏览`, `会话` |
+| Which conversion actions were attempted | `网站事件日报` | `事件`, `页面`, `位置`, `架构`, `来源域名`, `点击次数`, `独立IP估算` |
 
 `渠道` splits 站内 / 推广（UTM）/ AI引荐 / 搜索引荐 / 外部引荐 / 直接-来源未知.
 An absent Referer is "unknown", not "direct": HTTPS clients, privacy settings and
@@ -53,14 +64,26 @@ and only UTM parameters or same-site navigation carry a full path.
 The human columns are a heuristic, not person counts. `疑似人类页面浏览` accepts
 successful GETs to real prerendered pages whose user agent is not a known
 automated one; `疑似人类独立IP` deduplicates those per day by client address, so
-two devices are two and a browser-shaped scanner is one. There are no sessions,
-no events and no conversion tracking: a download click or a form submission is
-not observable from the origin, and the GitHub rows are a demand proxy rather
-than a per-source outcome.
+two devices are two and a browser-shaped scanner is one.
+The browser event table records download clicks, licence-request clicks and
+contact-sales submit attempts, but an event is not proof of a GitHub asset
+download, an installation, an email being sent, or a qualified sales lead. The
+GitHub rows remain a demand proxy rather than a per-source outcome.
 
 The origin only sees what reached it — no edge cache hits, no edge-blocked
 requests — while Cloudflare Adaptive totals are sampled estimates that can read
 below the origin count. Never add or subtract the two.
+
+## Browser conversion events
+
+The site marks download links, licence-request links and contact-sales form
+attempts with a small same-origin beacon at `/__analytics/event`. Nginx records
+the request in the dedicated analytics log; `origin-report.py` validates the
+allow-listed event name, aggregates it by day and writes `网站事件日报`. The
+browser stores the first referrer in session memory so events can be grouped by
+entry source; that value may be absent or client-controlled. Dashboard event
+blocks apply the same source-domain contains-`clickvisual` exclusion as the net
+traffic analysis.
 
 ## Cloudflare Web Analytics (RUM)
 
@@ -71,7 +94,10 @@ arrives as `https://www.google.com/` and nothing more, so external rows rarely
 carry a path while same-site rows carry a full one.
 `真实用户来源日报` and `真实用户画像日报` come from it, and the two `真实用户*`
 columns on `流量观测` are its daily totals. Sessions count entries only, so
-same-site rows carry zero sessions by design.
+same-site rows carry zero sessions by design. A ClickVisual source row can
+therefore have page views but zero sessions when those views belong to sessions
+that started elsewhere; that is a measurement property, not evidence of zero
+visitors.
 
 The beacon is injected by Cloudflare's edge (automatic setup is on for this
 proxied zone), so the repository still ships no JavaScript to article or guide

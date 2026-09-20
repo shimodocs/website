@@ -5,7 +5,7 @@ import { execFileSync } from 'node:child_process'
 import { existsSync, readFileSync, writeFileSync, mkdtempSync, rmSync } from 'node:fs'
 import { dirname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { BASE_TOKEN, TABLES, larkArgs, larkEnv } from './analytics-target.mjs'
+import { BASE_TOKEN, FEISHU_IDENTITY, TABLES, larkArgs, larkEnv } from './analytics-target.mjs'
 const rootDir = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const TABLE_ID = TABLES.traffic
 const args = process.argv.slice(2)
@@ -107,7 +107,7 @@ function records(fields) {
   try {
     for(let offset=0;;) {
       const file=join(dir,`${offset}.ndjson`)
-      const meta=lark(['base','+record-list','--base-token',BASE_TOKEN,'--table-id',TABLE_ID,'--as','user','--format','ndjson','--output',file,'--limit','2000','--offset',String(offset),...fields.flatMap(x=>['--field-id',x])])
+      const meta=lark(['base','+record-list','--base-token',BASE_TOKEN,'--table-id',TABLE_ID,'--as',FEISHU_IDENTITY,'--format','ndjson','--output',file,'--limit','2000','--offset',String(offset),...fields.flatMap(x=>['--field-id',x])])
       all.push(...readFileSync(file,'utf8').split('\n').filter(Boolean).map(x=>JSON.parse(x)))
       if(meta.has_more === false) return all
       if(!Number.isInteger(meta.next_offset)||meta.next_offset<=offset) throw new Error('Incomplete record pagination')
@@ -126,7 +126,7 @@ async function main() {
   if(dryRun) {console.log('--dry-run：未写入飞书。');return}
   const matches=records(['日期']).filter(r=>String(r.日期).slice(0,10)===day)
   if(matches.length>1) throw new Error(`Duplicate traffic date ${day}; refusing arbitrary update`)
-  const common=['--base-token',BASE_TOKEN,'--table-id',TABLE_ID,'--as','user']
+  const common=['--base-token',BASE_TOKEN,'--table-id',TABLE_ID,'--as',FEISHU_IDENTITY]
   if(matches[0]) lark(['base','+record-batch-update',...common,'--json',JSON.stringify({update_records:{[matches[0].record_id]:row}})])
   else lark(['base','+record-batch-create',...common,'--json',JSON.stringify({create_records:[row]})])
   for(let attempt=0;attempt<5;attempt++) {

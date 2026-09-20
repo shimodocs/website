@@ -5,7 +5,7 @@ import {readFileSync,writeFileSync,mkdirSync,rmSync,existsSync} from 'node:fs'
 import {resolve,dirname,join} from 'node:path'
 import {fileURLToPath} from 'node:url'
 import {createHash} from 'node:crypto'
-import {BASE_TOKEN as BASE,FEISHU_AUTH_COMMAND,SSH_PROXY,TABLES,larkArgs,larkEnv} from './analytics-target.mjs'
+import {BASE_TOKEN as BASE,FEISHU_AUTH_COMMAND,FEISHU_IDENTITY,SSH_PROXY,TABLES,larkArgs,larkEnv} from './analytics-target.mjs'
 import {DEFAULT_KEY_PATH,DEFAULT_SITE,createGscClient,indexLedger,sitemapUrls} from './gsc-client.mjs'
 const root=resolve(dirname(fileURLToPath(import.meta.url)),'..');process.chdir(root)
 const dry=process.argv.includes('--dry-run'), setup=process.argv.includes('--setup')
@@ -21,6 +21,8 @@ const schemas={
  '每日采集状态':[...['记录键','日期','数据源','状态','采集时间','说明'].map(text)],
  '真实用户来源日报':[...['记录键','日期','来源域名','来源路径','落地页','口径'].map(text),...['页面浏览','会话'].map(num)],
  '真实用户画像日报':[...['记录键','日期','国家','设备','浏览器','系统','口径'].map(text),...['页面浏览','会话'].map(num)],
+ '真实用户净分析日报':[...['记录键','日期','排除规则','口径','数据状态','采集时间'].map(text),...['原始页面浏览','ClickVisual页面浏览','净页面浏览','原始会话','ClickVisual会话','净会话'].map(num)],
+ '网站事件日报':[...['记录键','日期','事件','页面','位置','架构','来源域名','来源路径','口径','数据状态','采集时间'].map(text),...['点击次数','独立IP估算'].map(num)],
  'Google搜索查询×页面明细':[
   ...['记录键','采集日','窗口起始','窗口截止','查询','页面','规范页面','品牌分类','机会分类','意图簇','数据源','口径'].map(text),
   ...['点击','曝光'].map(num),
@@ -44,14 +46,14 @@ function cli(args,attempts=1){
   }
  }
 }
-const common=table=>['--base-token',BASE,'--table-id',table,'--as','user']
+const common=table=>['--base-token',BASE,'--table-id',table,'--as',FEISHU_IDENTITY]
 // An expired access token does not need a new browser login: the CLI refreshes it on the
 // next user-scoped call. `auth status` alone never triggers that refresh, so a run that
 // starts more than two hours after the previous one would read `needs_refresh` and abort
 // even though the token is perfectly recoverable — measured 2026-09-17: status said
 // needs_refresh, one `base +record-list` call flipped it to valid. Probe once, then decide.
-function larkUser(){
- return JSON.parse(execFileSync('lark-cli',larkArgs(['auth','status','--json']),{env:larkEnv,encoding:'utf8',timeout:60000})).identities?.user
+function larkIdentity(){
+ return JSON.parse(execFileSync('lark-cli',larkArgs(['auth','status','--json']),{env:larkEnv,encoding:'utf8',timeout:60000})).identities?.[FEISHU_IDENTITY]
 }
 function refreshLarkUser(){
  try{
@@ -59,23 +61,23 @@ function refreshLarkUser(){
  }catch(error){
   console.error(`刷新飞书 token 的探测调用失败：${String(error.message||error).slice(0,200)}`)
  }
- return larkUser()
+ return larkIdentity()
 }
 function preflight(){
- let user=larkUser()
- if(user?.status!=='ready')user=refreshLarkUser()
- if(user?.status!=='ready'){console.error(`飞书授权不可用（${user?.status||'unknown'}）。请运行：${FEISHU_AUTH_COMMAND}\n然后在浏览器打开返回的 verification_url，使用有 officesdk 工作区权限的账号完成授权；完成后重新触发本任务。`);process.exit(2)}
- const scopes=String(user.scope||'').split(/\s+/)
+ let identity=larkIdentity()
+ if(FEISHU_IDENTITY==='user'&&identity?.status!=='ready')identity=refreshLarkUser()
+ if(identity?.status!=='ready'){console.error(`飞书 ${FEISHU_IDENTITY} 授权不可用（${identity?.status||'unknown'}）。${FEISHU_IDENTITY==='user'?`请运行：${FEISHU_AUTH_COMMAND}\n然后在浏览器打开返回的 verification_url，使用有 officesdk 工作区权限的账号完成授权；`:''}完成后重新触发本任务。`);process.exit(2)}
+ const scopes=String(identity.scope||'').split(/\s+/)
  const missing=['base:table:create','base:field:create','base:record:create','base:record:update'].filter(s=>!scopes.includes(s))
  if(missing.length){console.error(`飞书授权缺少 scope：${missing.join('、')}。请运行：${FEISHU_AUTH_COMMAND} 重新授权后重试。`);process.exit(2)}
 }
 function fields(table){return cli(['base','+field-list',...common(table),'--json'],5).fields||[]}
-function tableMap(){return new Map((cli(['base','+table-list','--base-token',BASE,'--as','user','--json'],5).tables||[]).map(t=>[t.name,t.id]))}
+function tableMap(){return new Map((cli(['base','+table-list','--base-token',BASE,'--as',FEISHU_IDENTITY,'--json'],5).tables||[]).map(t=>[t.name,t.id]))}
 function setupTables(){
  const tables=tableMap()
  for(const [name,schema] of Object.entries(schemas)){
   if(!tables.has(name)){
-   const data=cli(['base','+table-create','--base-token',BASE,'--name',name,'--fields',JSON.stringify(schema),'--as','user','--json'])
+   const data=cli(['base','+table-create','--base-token',BASE,'--name',name,'--fields',JSON.stringify(schema),'--as',FEISHU_IDENTITY,'--json'])
    console.log('Created table:',name);tables.clear();for(const [n,id]of tableMap())tables.set(n,id)
   }
   const have=new Set(fields(tables.get(name)).map(f=>f.name));const missing=schema.filter(f=>!have.has(f.name))
@@ -120,7 +122,13 @@ function list(table){
  }
 }
 function key(row){return createHash('sha256').update(JSON.stringify(row)).digest('hex').slice(0,32)}
-const same=(a,b)=>(a??'')===(b??'')
+function same(a,b){
+ if((a??'')===(b??''))return true
+ if(typeof a==='number'&&typeof b==='number'&&Number.isFinite(a)&&Number.isFinite(b)){
+  return Math.abs(a-b)<=1e-9*Math.max(1,Math.abs(a),Math.abs(b))
+ }
+ return false
+}
 const canonicalBlogPages=new Map([
  ['/blogs/private-cloud-collaboration-guide','https://shimodocs.com/blog/what-is-private-cloud-document-collaboration'],
  ['/blogs/secure-cloud-collaboration','https://shimodocs.com/blog/secure-cloud-collaboration'],
@@ -146,12 +154,13 @@ function verifyRows(table,rows){
  }
 }
 function upsert(table,rows){
- const dimensionTable=table===tables.get('来源与落地页日报')||table===tables.get('爬虫抓取明细')
+ const dimensionName=Object.entries(TABLES).find(([,id])=>id===table)?.[0] || Object.keys(schemas).find(name=>tables.get(name)===table)
+ const dimensionTable=['来源与落地页日报','爬虫抓取明细','网站事件日报'].includes(dimensionName)
  const existing=list(table),index=new Map()
  if(dimensionTable){
   rows=rows.map(r=>({...r,数据状态:'有效'}))
   const wanted=new Set(rows.map(r=>r['记录键']))
-  const schema=schemas[table===tables.get('来源与落地页日报')?'来源与落地页日报':'爬虫抓取明细']
+  const schema=schemas[dimensionName]
   for(const old of existing){
    if(old.日期===date&&!wanted.has(old['记录键'])){
     const expired={记录键:old['记录键'],数据状态:'已失效（本次采集未出现）'}
@@ -160,7 +169,10 @@ function upsert(table,rows){
    }
   }
  }
- if(!rows.length)return
+ // Dimension tables also need an empty-run pass: a day with no current
+ // events must invalidate yesterday's same-day rows instead of leaving stale
+ // clicks marked as valid. Non-dimension tables still return immediately.
+ if(!rows.length && !dimensionTable)return
  for(const row of existing){if(index.has(row['记录键']))throw Error('Duplicate record key in '+table);index.set(row['记录键'],row.record_id)}
  for(let i=0;i<rows.length;i+=100){
   const create=[],update={}
@@ -218,8 +230,10 @@ await stage('Cloudflare / SEO-GEO抓取',()=>{
 await stage('源站来源 / 疑似人类',()=>{
  const data=origin();writeFileSync(join(artifactDir,'origin.json'),JSON.stringify(data,null,2)+'\n',{mode:0o600})
  const rows=data.sourceRows.map(r=>({...r,记录键:key([r.日期,r.渠道,r.来源域名,r.来源URL,r.落地页,r.utm_source,r.utm_medium,r.utm_campaign])}))
+ const eventRows=(data.eventRows||[]).map(r=>({...r,采集时间:new Date().toISOString(),记录键:key([r.日期,r.事件,r.页面,r.位置,r.架构,r.来源域名,r.来源路径])}))
  if(!dry){
   upsert(tables.get('来源与落地页日报'),rows)
+  upsert(tables.get('网站事件日报'),eventRows)
   const dayRows=list(TABLES.traffic).filter(r=>String(r.日期).slice(0,10)===date)
   if(dayRows.length!==1)throw Error('Need exactly one Cloudflare daily row before attaching origin summary')
   cli(['base','+record-batch-update',...common(TABLES.traffic),'--json',JSON.stringify({update_records:{[dayRows[0].record_id]:{...data.summary,源站统计口径:JSON.stringify(data.coverage)}}})])
@@ -231,7 +245,7 @@ await stage('源站来源 / 疑似人类',()=>{
    sleep(2000)
   }
  }
- console.log('Source rows:',rows.length,'Origin summary:',JSON.stringify(data.summary))
+ console.log('Source rows:',rows.length,'Event rows:',eventRows.length,'Origin summary:',JSON.stringify(data.summary))
 })
 await stage('GitHub下载快照',()=>run('scripts/github-downloads-daily.mjs',dry?['--dry-run']:[]))
 await stage('Cloudflare RUM 真实用户',()=>run('scripts/rum-daily.mjs',dry?['--dry-run']:[]))

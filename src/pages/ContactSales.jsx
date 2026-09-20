@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Eyebrow } from '../components/Section'
 import { CONTACT_FALLBACK_EMAIL, submitInquiry } from '../contact'
+import { trackEvent } from '../analytics'
 
 const TEAM_SIZES = ['5–20 people', '21–100 people', '100+ people']
 // Deliberately loose: the server is the only place that can reject an address
@@ -45,6 +46,7 @@ export default function ContactSales() {
     }
 
     setStatus('sending')
+    trackEvent('contact_sales_submit', { surface: 'contact_sales_form' })
     try {
       await submitInquiry({
         name,

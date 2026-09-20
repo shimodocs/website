@@ -102,7 +102,12 @@ export default function Shell({ children }) {
                 // nothing.
                 if (to.startsWith('mailto:')) {
                   return (
-                    <a key={to} href={to}>
+                    <a
+                      key={to}
+                      href={to}
+                      data-analytics-event="license_request_click"
+                      data-analytics-surface="footer"
+                    >
                       {label}
                     </a>
                   )

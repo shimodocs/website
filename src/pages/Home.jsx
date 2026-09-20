@@ -80,7 +80,14 @@ export default function Home() {
             forms and tables, with AI agents that work alongside your team — all inside your own private cloud.
           </p>
           <div className="hero-actions">
-            <a className="button download-cta" href={DOWNLOADS.amd64.url}>
+            <a
+              className="button download-cta"
+              href={DOWNLOADS.amd64.url}
+              data-analytics-event="download_click"
+              data-download-arch="amd64"
+              data-download-release={DOWNLOADS.version}
+              data-analytics-surface="home_hero"
+            >
               <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false">
                 <path
                   d="M10 2.5v9m0 0-3.6-3.6M10 11.5l3.6-3.6M3.5 16.5h13"
@@ -93,7 +100,12 @@ export default function Home() {
               </svg>
               Download for Linux · amd64
             </a>
-            <a className="button outline license-cta" href={LICENSE_REQUEST_URL}>
+            <a
+              className="button outline license-cta"
+              href={LICENSE_REQUEST_URL}
+              data-analytics-event="license_request_click"
+              data-analytics-surface="home_hero"
+            >
               <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false">
                 <path
                   d="M10 2.4 4.2 4.5v5c0 3.3 2.3 6.3 5.8 7.6 3.5-1.3 5.8-4.3 5.8-7.6v-5L10 2.4Z"
@@ -119,7 +131,15 @@ export default function Home() {
           </div>
           <div className="download-meta">
             Self-hosted installer · {DOWNLOADS.amd64.size} ·{' '}
-            <a href={DOWNLOADS.arm64.url}>arm64 build ↗</a> ·{' '}
+            <a
+              href={DOWNLOADS.arm64.url}
+              data-analytics-event="download_click"
+              data-download-arch="arm64"
+              data-download-release={DOWNLOADS.version}
+              data-analytics-surface="home_meta"
+            >
+              arm64 build ↗
+            </a>{' '}
             <a href={DOWNLOADS.latest} target="_blank" rel="noreferrer">
               All releases ↗
             </a>
