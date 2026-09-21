@@ -9,7 +9,7 @@ import { trackEvent } from '../analytics'
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/
 
 const EMPTY_FORM = {
-  email: '', company: '',
+  name: '', email: '', message: '', company: '',
 }
 
 export default function ContactSales() {
@@ -35,10 +35,12 @@ export default function ContactSales() {
     event.preventDefault()
     if (status === 'sending') return // a double click must not create two rows
 
+    const name = values.name.trim()
     const email = values.email.trim()
+    const message = values.message.trim()
 
-    // Work email is the only visitor-facing field and the only value required
-    // to continue the conversation.
+    // Work email is the only required value. Name and description stay
+    // optional so a visitor can submit without completing either one.
     if (!EMAIL_PATTERN.test(email)) {
       setError('Please check the email address — we reply to every inquiry by email.')
       return
@@ -61,8 +63,9 @@ export default function ContactSales() {
         typeof document !== 'undefined' && document.referrer ? `Previous page: ${document.referrer}` : '',
       ].filter(Boolean).join('\n')
       await submitInquiry({
+        name,
         email,
-        message: context,
+        message: [message, context].filter(Boolean).join('\n\n'),
       })
       trackEvent('contact_sales_success', { surface: 'contact_sales_form' })
       setStatus('sent')
@@ -109,7 +112,19 @@ export default function ContactSales() {
         ) : (
           <form className="contact-form" onSubmit={handleSubmit} onFocusCapture={markStarted} noValidate>
             <Eyebrow>Let’s talk</Eyebrow>
-            <p className="contact-form-intro">Just leave your work email. We’ll follow up to learn the rest.</p>
+            <p className="contact-form-intro">Only your work email is required.</p>
+
+            <label htmlFor="contact-name">
+              Name (optional)
+              <input
+                id="contact-name"
+                name="name"
+                value={values.name}
+                onChange={change('name')}
+                autoComplete="name"
+                placeholder="Your name"
+              />
+            </label>
 
             <label htmlFor="contact-email">
               Work email
@@ -122,6 +137,17 @@ export default function ContactSales() {
                 autoComplete="email"
                 placeholder="you@company.com"
                 required
+              />
+            </label>
+
+            <label htmlFor="contact-message">
+              What are you working on? (optional)
+              <textarea
+                id="contact-message"
+                name="message"
+                value={values.message}
+                onChange={change('message')}
+                placeholder="A sentence or two is enough."
               />
             </label>
 
