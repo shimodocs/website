@@ -1037,21 +1037,13 @@ if (!/mailto:support\.global@shimo\.im/.test(homeHtml)) {
   problems.push('home: free licence request link is missing')
 }
 
-// The contact page must keep a working submission path. The fields are checked
-// in the prerendered markup because a rewrite that drops one of them would look
-// fine in a browser and quietly lose inquiries; the endpoint is checked in the
-// client bundle because the form cannot submit without it.
+// The contact page deliberately asks for one visible field only. Keep that
+// low-friction contract in the prerendered markup; the endpoint is checked in
+// the client bundle because the form cannot submit without it.
 const contactHtml = readFileSync(join(distDir, 'contact-sales', 'index.html'), 'utf8')
-for (const marker of [
-  'contact-name',
-  'contact-email',
-  'contact-team-size',
-  'contact-inquiry-type',
-  'contact-environment',
-  'contact-timeline',
-  'contact-message',
-]) {
-  if (!contactHtml.includes(`id="${marker}"`)) problems.push(`contact-sales: the form is missing #${marker}`)
+if (!contactHtml.includes('id="contact-email"')) problems.push('contact-sales: the form is missing #contact-email')
+for (const marker of ['contact-name', 'contact-team-size', 'contact-inquiry-type', 'contact-environment', 'contact-timeline', 'contact-message']) {
+  if (contactHtml.includes(`id="${marker}"`)) problems.push(`contact-sales: the low-friction form unexpectedly includes #${marker}`)
 }
 if (!/<button class="button" type="submit"/.test(contactHtml)) {
   problems.push('contact-sales: the submit button is missing')

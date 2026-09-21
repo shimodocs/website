@@ -4,39 +4,18 @@ import { Eyebrow } from '../components/Section'
 import { CONTACT_FALLBACK_EMAIL, submitInquiry } from '../contact'
 import { trackEvent } from '../analytics'
 
-const TEAM_SIZES = ['5–20 people', '21–100 people', '100+ people']
-const INQUIRY_TYPES = [
-  'Private deployment assessment',
-  'Integrate editing into an existing system',
-  'Migration from another workspace',
-  'Security or compliance review',
-  'Private AI and model integration',
-  'Something else',
-]
-const TIMELINES = ['Exploring options', 'Within 3 months', 'Within 6 months', 'No fixed timeline']
 // Deliberately loose: the server is the only place that can reject an address
 // properly, so the browser only catches what a typo looks like.
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/
 
 const EMPTY_FORM = {
-  name: '', email: '', teamSize: TEAM_SIZES[0], inquiryType: INQUIRY_TYPES[0],
-  environment: '', timeline: TIMELINES[0], message: '', company: '',
-}
-
-function inquiryTypeForIntent(intent) {
-  if (intent === '/migration' || intent?.startsWith('/solutions/')) return 'Migration from another workspace'
-  if (intent === '/security' || intent === '/airgap') return 'Security or compliance review'
-  if (intent === '/ai-workspace') return 'Private AI and model integration'
-  return INQUIRY_TYPES[0]
+  email: '', company: '',
 }
 
 export default function ContactSales() {
   const { search } = useLocation()
   const requestedIntent = new URLSearchParams(search).get('intent')?.slice(0, 80) || ''
-  const [values, setValues] = useState(() => ({
-    ...EMPTY_FORM,
-    inquiryType: inquiryTypeForIntent(requestedIntent),
-  }))
+  const [values, setValues] = useState(EMPTY_FORM)
   const [status, setStatus] = useState('idle') // idle | sending | sent | error
   const [error, setError] = useState('')
   const started = useRef(false)
@@ -56,13 +35,10 @@ export default function ContactSales() {
     event.preventDefault()
     if (status === 'sending') return // a double click must not create two rows
 
-    const name = values.name.trim()
     const email = values.email.trim()
-    const message = values.message.trim()
 
-    // Only the work email is required: it is the one field we cannot reply
-    // without. An empty name is simply left out of the submission, which is why
-    // the 姓名 column must stay optional in Teable (see deploy/README.md).
+    // Work email is the only visitor-facing field and the only value required
+    // to continue the conversation.
     if (!EMAIL_PATTERN.test(email)) {
       setError('Please check the email address — we reply to every inquiry by email.')
       return
@@ -81,17 +57,12 @@ export default function ContactSales() {
     trackEvent('contact_sales_submit', { surface: 'contact_sales_form' })
     try {
       const context = [
-        `Inquiry type: ${values.inquiryType}`,
-        `Current environment: ${values.environment.trim() || 'Not provided'}`,
-        `Timeline: ${values.timeline}`,
         requestedIntent ? `Page intent: ${requestedIntent}` : '',
         typeof document !== 'undefined' && document.referrer ? `Previous page: ${document.referrer}` : '',
       ].filter(Boolean).join('\n')
       await submitInquiry({
-        name,
         email,
-        teamSize: values.teamSize,
-        message: `${context}\n\nAdditional context:\n${message || 'Not provided'}`,
+        message: context,
       })
       trackEvent('contact_sales_success', { surface: 'contact_sales_form' })
       setStatus('sent')
@@ -138,18 +109,7 @@ export default function ContactSales() {
         ) : (
           <form className="contact-form" onSubmit={handleSubmit} onFocusCapture={markStarted} noValidate>
             <Eyebrow>Let’s talk</Eyebrow>
-
-            <label htmlFor="contact-name">
-              Name (optional)
-              <input
-                id="contact-name"
-                name="name"
-                value={values.name}
-                onChange={change('name')}
-                autoComplete="name"
-                placeholder="Your name"
-              />
-            </label>
+            <p className="contact-form-intro">Just leave your work email. We’ll follow up to learn the rest.</p>
 
             <label htmlFor="contact-email">
               Work email
@@ -162,64 +122,6 @@ export default function ContactSales() {
                 autoComplete="email"
                 placeholder="you@company.com"
                 required
-              />
-            </label>
-
-            <label htmlFor="contact-team-size">
-              Team size
-              <select
-                id="contact-team-size"
-                name="teamSize"
-                value={values.teamSize}
-                onChange={change('teamSize')}
-              >
-                {TEAM_SIZES.map(size => <option key={size} value={size}>{size}</option>)}
-              </select>
-            </label>
-
-            <label htmlFor="contact-inquiry-type">
-              What do you need?
-              <select
-                id="contact-inquiry-type"
-                name="inquiryType"
-                value={values.inquiryType}
-                onChange={change('inquiryType')}
-              >
-                {INQUIRY_TYPES.map(type => <option key={type} value={type}>{type}</option>)}
-              </select>
-            </label>
-
-            <label htmlFor="contact-environment">
-              Current environment (optional)
-              <input
-                id="contact-environment"
-                name="environment"
-                value={values.environment}
-                onChange={change('environment')}
-                placeholder="For example: Nextcloud, DMS, private cloud"
-              />
-            </label>
-
-            <label htmlFor="contact-timeline">
-              Project timing
-              <select
-                id="contact-timeline"
-                name="timeline"
-                value={values.timeline}
-                onChange={change('timeline')}
-              >
-                {TIMELINES.map(timeline => <option key={timeline} value={timeline}>{timeline}</option>)}
-              </select>
-            </label>
-
-            <label htmlFor="contact-message">
-              What are you working on?
-              <textarea
-                id="contact-message"
-                name="message"
-                value={values.message}
-                onChange={change('message')}
-                placeholder="A sentence or two is enough."
               />
             </label>
 

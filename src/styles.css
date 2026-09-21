@@ -439,6 +439,7 @@
 /* Contact-sales form states. The prerendered document ships the idle form, so
    these rules only take effect once the page hydrates and someone submits. */
 .contact-form .contact-honeypot{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+.contact-form .contact-form-intro{margin:0 0 4px;color:var(--muted);font-size:13px;line-height:1.5}
 .contact-form .contact-error{margin:0;padding:10px 12px;border:1px solid #ff006e59;border-radius:7px;background:#ff006e17;color:#ffc2d8;font-size:12.5px;line-height:1.5}
 .contact-form .contact-error a{color:#fff}
 .contact-form .button[disabled]{opacity:.65;cursor:progress}
