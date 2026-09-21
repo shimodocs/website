@@ -27,4 +27,16 @@ class Aggregation(unittest.TestCase):
    (d/'shimodocs-analytics.log').write_text('\n'.join(map(json.dumps,entries)))
    out=m.report('2026-09-16',str(d),str(root))
    self.assertEqual(out['summary']['疑似人类页面浏览'],0);self.assertEqual(len(out['eventRows']),1);self.assertEqual(out['eventRows'][0]['点击次数'],2);self.assertEqual(out['eventRows'][0]['独立IP估算'],2);self.assertEqual(out['eventRows'][0]['来源域名'],'clickvisual.shimodocs.com')
+ def test_contact_funnel_events_remain_separate(self):
+  with tempfile.TemporaryDirectory() as tmp:
+   d=pathlib.Path(tmp);root=d/'site';(root/'contact-sales').mkdir(parents=True);(root/'contact-sales/index.html').write_text('page');(root/'security').mkdir();(root/'security/index.html').write_text('page')
+   base={'time':'2026-09-16T01:00:00+00:00','peer':'173.245.48.1','client':'192.0.2.10','host':'shimodocs.com','method':'POST','status':204,'ua':'Mozilla/5.0 Chrome/130 Safari/537','entry_host':'www.google.com'}
+   entries=[]
+   for event in ['contact_sales_start','contact_sales_submit','contact_sales_success']:
+    entries.append({**base,'uri':f'/__analytics/event?event={event}&surface=contact_sales_form&page=%2Fcontact-sales&entry_host=www.google.com&entry_path=%2Fsecurity','referer':'https://shimodocs.com/contact-sales'})
+   entries.append({**base,'uri':'/__analytics/event?event=contact_sales_cta&surface=hub_cta&page=%2Fsecurity&entry_host=www.google.com&entry_path=%2Fsecurity','referer':'https://shimodocs.com/security'})
+   (d/'shimodocs-analytics.log').write_text('\n'.join(map(json.dumps,entries)))
+   out=m.report('2026-09-16',str(d),str(root))
+   self.assertEqual({row['事件'] for row in out['eventRows']},{'contact_sales_cta','contact_sales_start','contact_sales_submit','contact_sales_success'})
+   self.assertTrue(all(row['点击次数']==1 for row in out['eventRows']))
 if __name__=='__main__':unittest.main()

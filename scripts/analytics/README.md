@@ -76,14 +76,21 @@ below the origin count. Never add or subtract the two.
 
 ## Browser conversion events
 
-The site marks download links, licence-request links and contact-sales form
-attempts with a small same-origin beacon at `/__analytics/event`. Nginx records
+The site marks download links, licence-request links, contact-sales CTA clicks,
+form starts, submit attempts and confirmed 2xx deliveries with a small same-origin
+beacon at `/__analytics/event`. Nginx records
 the request in the dedicated analytics log; `origin-report.py` validates the
 allow-listed event name, aggregates it by day and writes `网站事件日报`. The
 browser stores the first referrer in session memory so events can be grouped by
 entry source; that value may be absent or client-controlled. Dashboard event
 blocks apply the same source-domain contains-`clickvisual` exclusion as the net
 traffic analysis.
+
+`contact_sales_start` means a visitor focused any form control;
+`contact_sales_submit` is an attempt after browser validation; and
+`contact_sales_success` means the public Teable endpoint returned 2xx. None of
+the three proves that the row is a qualified lead. Qualification remains a
+manual review of the submitted organisation, need, environment and timing.
 
 ## Cloudflare Web Analytics (RUM)
 

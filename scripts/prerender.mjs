@@ -1042,7 +1042,15 @@ if (!/mailto:support\.global@shimo\.im/.test(homeHtml)) {
 // fine in a browser and quietly lose inquiries; the endpoint is checked in the
 // client bundle because the form cannot submit without it.
 const contactHtml = readFileSync(join(distDir, 'contact-sales', 'index.html'), 'utf8')
-for (const marker of ['contact-name', 'contact-email', 'contact-team-size', 'contact-message']) {
+for (const marker of [
+  'contact-name',
+  'contact-email',
+  'contact-team-size',
+  'contact-inquiry-type',
+  'contact-environment',
+  'contact-timeline',
+  'contact-message',
+]) {
   if (!contactHtml.includes(`id="${marker}"`)) problems.push(`contact-sales: the form is missing #${marker}`)
 }
 if (!/<button class="button" type="submit"/.test(contactHtml)) {

@@ -150,7 +150,11 @@ export default function Hub() {
           </p>
         </div>
         <div className="hub-cta-actions">
-          <a className="button" href="/contact-sales">
+          <a
+            className="button"
+            href={`/contact-sales?intent=${encodeURIComponent(path)}`}
+            data-analytics-surface="hub_cta"
+          >
             Request a private cloud demo
           </a>
           <a className="button outline" href="/docs">

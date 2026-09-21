@@ -72,7 +72,9 @@ def report(date,log_dir='/var/log/nginx',root='/var/www/shimodocs/current'):
                                event=='license_request_click' and not arch and
                                (surface=='footer' or (page=='/' and surface=='home_hero') or
                                 (page=='/download' and surface=='download_license'))) or (
-                               event=='contact_sales_submit' and not arch and page=='/contact-sales' and surface=='contact_sales_form')
+                               event in {'contact_sales_start','contact_sales_submit','contact_sales_success'} and
+                               not arch and page=='/contact-sales' and surface=='contact_sales_form') or (
+                               event=='contact_sales_cta' and not arch and surface in {'contact_link','hub_cta'})
                         if not valid: continue
                         entry_host=query.get('entry_host',[''])[0].lower()
                         if entry_host and (len(entry_host)>120 or not re.fullmatch(r'[a-z0-9]+(?:[.-][a-z0-9]+)*',entry_host)): continue

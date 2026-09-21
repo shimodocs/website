@@ -1,19 +1,51 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
+import { useLocation } from 'react-router-dom'
 import { Eyebrow } from '../components/Section'
 import { CONTACT_FALLBACK_EMAIL, submitInquiry } from '../contact'
 import { trackEvent } from '../analytics'
 
 const TEAM_SIZES = ['5–20 people', '21–100 people', '100+ people']
+const INQUIRY_TYPES = [
+  'Private deployment assessment',
+  'Integrate editing into an existing system',
+  'Migration from another workspace',
+  'Security or compliance review',
+  'Private AI and model integration',
+  'Something else',
+]
+const TIMELINES = ['Exploring options', 'Within 3 months', 'Within 6 months', 'No fixed timeline']
 // Deliberately loose: the server is the only place that can reject an address
 // properly, so the browser only catches what a typo looks like.
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/
 
-const EMPTY_FORM = { name: '', email: '', teamSize: TEAM_SIZES[0], message: '', company: '' }
+const EMPTY_FORM = {
+  name: '', email: '', teamSize: TEAM_SIZES[0], inquiryType: INQUIRY_TYPES[0],
+  environment: '', timeline: TIMELINES[0], message: '', company: '',
+}
+
+function inquiryTypeForIntent(intent) {
+  if (intent === '/migration' || intent?.startsWith('/solutions/')) return 'Migration from another workspace'
+  if (intent === '/security' || intent === '/airgap') return 'Security or compliance review'
+  if (intent === '/ai-workspace') return 'Private AI and model integration'
+  return INQUIRY_TYPES[0]
+}
 
 export default function ContactSales() {
-  const [values, setValues] = useState(EMPTY_FORM)
+  const { search } = useLocation()
+  const requestedIntent = new URLSearchParams(search).get('intent')?.slice(0, 80) || ''
+  const [values, setValues] = useState(() => ({
+    ...EMPTY_FORM,
+    inquiryType: inquiryTypeForIntent(requestedIntent),
+  }))
   const [status, setStatus] = useState('idle') // idle | sending | sent | error
   const [error, setError] = useState('')
+  const started = useRef(false)
+
+  function markStarted() {
+    if (started.current) return
+    started.current = true
+    trackEvent('contact_sales_start', { surface: 'contact_sales_form' })
+  }
 
   const change = key => event => {
     const { value } = event.target
@@ -48,12 +80,20 @@ export default function ContactSales() {
     setStatus('sending')
     trackEvent('contact_sales_submit', { surface: 'contact_sales_form' })
     try {
+      const context = [
+        `Inquiry type: ${values.inquiryType}`,
+        `Current environment: ${values.environment.trim() || 'Not provided'}`,
+        `Timeline: ${values.timeline}`,
+        requestedIntent ? `Page intent: ${requestedIntent}` : '',
+        typeof document !== 'undefined' && document.referrer ? `Previous page: ${document.referrer}` : '',
+      ].filter(Boolean).join('\n')
       await submitInquiry({
         name,
         email,
         teamSize: values.teamSize,
-        message,
+        message: `${context}\n\nAdditional context:\n${message || 'Not provided'}`,
       })
+      trackEvent('contact_sales_success', { surface: 'contact_sales_form' })
       setStatus('sent')
     } catch {
       setStatus('error')
@@ -64,6 +104,7 @@ export default function ContactSales() {
     setValues(EMPTY_FORM)
     setError('')
     setStatus('idle')
+    started.current = false
   }
 
   return (
@@ -95,7 +136,7 @@ export default function ContactSales() {
             <button className="button" type="button" onClick={reset}>Send another inquiry</button>
           </div>
         ) : (
-          <form className="contact-form" onSubmit={handleSubmit} noValidate>
+          <form className="contact-form" onSubmit={handleSubmit} onFocusCapture={markStarted} noValidate>
             <Eyebrow>Let’s talk</Eyebrow>
 
             <label htmlFor="contact-name">
@@ -133,6 +174,41 @@ export default function ContactSales() {
                 onChange={change('teamSize')}
               >
                 {TEAM_SIZES.map(size => <option key={size} value={size}>{size}</option>)}
+              </select>
+            </label>
+
+            <label htmlFor="contact-inquiry-type">
+              What do you need?
+              <select
+                id="contact-inquiry-type"
+                name="inquiryType"
+                value={values.inquiryType}
+                onChange={change('inquiryType')}
+              >
+                {INQUIRY_TYPES.map(type => <option key={type} value={type}>{type}</option>)}
+              </select>
+            </label>
+
+            <label htmlFor="contact-environment">
+              Current environment (optional)
+              <input
+                id="contact-environment"
+                name="environment"
+                value={values.environment}
+                onChange={change('environment')}
+                placeholder="For example: Nextcloud, DMS, private cloud"
+              />
+            </label>
+
+            <label htmlFor="contact-timeline">
+              Project timing
+              <select
+                id="contact-timeline"
+                name="timeline"
+                value={values.timeline}
+                onChange={change('timeline')}
+              >
+                {TIMELINES.map(timeline => <option key={timeline} value={timeline}>{timeline}</option>)}
               </select>
             </label>
 

@@ -1,6 +1,13 @@
 const EVENT_ENDPOINT = '/__analytics/event'
 const FIRST_TOUCH_KEY = 'shimodocs:first-touch'
-const EVENTS = new Set(['download_click', 'license_request_click', 'contact_sales_submit'])
+const EVENTS = new Set([
+  'download_click',
+  'license_request_click',
+  'contact_sales_cta',
+  'contact_sales_start',
+  'contact_sales_submit',
+  'contact_sales_success',
+])
 
 function parseReferrer(value) {
   try {
@@ -60,11 +67,21 @@ export function installAnalytics() {
   if (typeof document === 'undefined') return () => {}
   try { rememberFirstTouch() } catch { /* Tracking is best effort. */ }
   const onClick = event => {
-    const target = event.target instanceof Element ? event.target.closest('a[data-analytics-event]') : null
+    const target = event.target instanceof Element ? event.target.closest('a') : null
     if (!target) return
-    trackEvent(target.dataset.analyticsEvent, {
+    let analyticsEvent = target.dataset.analyticsEvent
+    if (!analyticsEvent) {
+      try {
+        const href = new URL(target.href, window.location.href)
+        if (href.origin === window.location.origin && href.pathname === '/contact-sales') {
+          analyticsEvent = 'contact_sales_cta'
+        }
+      } catch { /* Ignore malformed or non-HTTP links. */ }
+    }
+    if (!analyticsEvent) return
+    trackEvent(analyticsEvent, {
       arch: target.dataset.downloadArch,
-      surface: target.dataset.analyticsSurface,
+      surface: target.dataset.analyticsSurface || (analyticsEvent === 'contact_sales_cta' ? 'contact_link' : ''),
       release: target.dataset.downloadRelease,
     })
   }
