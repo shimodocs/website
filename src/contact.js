@@ -25,7 +25,6 @@ export const CONTACT_ENDPOINT =
 const FIELD_IDS = {
   email: 'fldh3njWoBjMxgBtxHD', // 工作邮箱 (primary field)
   name: 'fldF2EPy8psae3sJcPa', // 姓名
-  teamSize: 'fld5h0Y4WhyAy47DOo3', // 团队规模
   message: 'fldQa4NIZtbzbvibX2C', // 需求描述
 }
 
@@ -33,7 +32,6 @@ const FIELD_IDS = {
 export const FIELD_NAMES = {
   email: '工作邮箱',
   name: '姓名',
-  teamSize: '团队规模',
   message: '需求描述',
 }
 
@@ -50,7 +48,7 @@ const TIMEOUT_MS = 15000
  * record) and rejects otherwise, so the caller can choose between the success
  * and the error state without inspecting the response body.
  *
- * @param {{ name: string, email: string, teamSize: string, message: string }} inquiry
+ * @param {{ name?: string, email: string, message?: string }} inquiry
  */
 export async function submitInquiry(inquiry, { timeoutMs = TIMEOUT_MS } = {}) {
   const fields = {}
