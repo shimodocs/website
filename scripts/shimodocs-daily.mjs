@@ -284,6 +284,7 @@ gscNote=await stage('Google Search Console API',async()=>{
   const classifyIntent=query=>{
    const q=query.toLowerCase()
    if(/nextcloud/.test(q))return'Nextcloud竞品'
+   if(/\b(?:google\s*)?document\s*ai\b/.test(q))return'Google Document AI/模型服务'
    if(/google\s*docs?|google\s*document/.test(q)&&/(alternative|replacement|private|self.hosted|on.?prem|deployment|cloud)/.test(q))return'Google Docs私有化替代'
    if(/private.?cloud|self.hosted|on.?prem|air.?gapped|data sovereignty/.test(q))return'私有化/部署'
    if(/\b(?:secure|security|compliance|sovereignty|gdpr|iso(?:27001)?)\b/.test(q))return'安全/合规'
