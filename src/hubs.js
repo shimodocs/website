@@ -67,6 +67,7 @@ export const HUBS = {
         links: [
           ['/docs/deployment/troubleshooting/data-backup', 'Backup and restore guide'],
           ['/docs/deployment/troubleshooting/incident-response-sop', 'Incident response procedure'],
+          ['/blog/secure-cloud-collaboration', 'Secure cloud collaboration checklist'],
           ['/blog/self-hosted-collaboration-guide', 'What running self-hosted collaboration actually involves'],
         ],
       },
@@ -196,6 +197,7 @@ export const HUBS = {
           ['/docs/deployment/getting-started/high-availability-kubernetes', 'High availability Kubernetes deployment'],
           ['/docs/deployment/system-requirements', 'System and network requirements'],
           ['/airgap', 'Air-gapped and offline deployment'],
+          ['/blog/secure-cloud-collaboration', 'Secure cloud collaboration checklist'],
         ],
       },
       {
