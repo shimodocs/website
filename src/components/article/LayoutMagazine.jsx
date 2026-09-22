@@ -8,6 +8,8 @@ import {
   PostTags,
   RelatedArticles,
 } from './shared'
+import { ProductFacts } from '../ProductFacts'
+import { articleShowsProductFacts } from '../../product-facts.js'
 import { formatDate } from '../../format'
 
 export default function LayoutMagazine({ post, related, older, newer }) {
@@ -38,6 +40,12 @@ export default function LayoutMagazine({ post, related, older, newer }) {
           </dl>
         </div>
       </section>
+
+      {articleShowsProductFacts(post.slug) ? (
+        <div className="page">
+          <ProductFacts />
+        </div>
+      ) : null}
 
       <article className="mag-body post-body" dangerouslySetInnerHTML={{ __html: post.html }} />
 

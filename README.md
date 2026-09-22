@@ -73,6 +73,13 @@ JavaScript still receives headings, copy and internal links.
   of them states a different number. The articles state the free limit in
   hand-written Markdown, which no import can reach; this is what keeps them
   honest. `npm run check:pricing` runs it alone.
+- The product definition is written once in `src/product-facts.js`. The home
+  hero, the about lead, Organization JSON-LD, the `llms.txt` blockquote and the
+  "What is ShimoDocs?" FAQ all print that same sentence. The numeric facts strip
+  on the commercial pages and the vs-articles reads installer sizes from
+  `src/downloads.js` and prices from `src/pricing-facts.js`.
+  `scripts/check-product-facts.mjs` fails the build when any of those surfaces
+  drift. `npm run check:product` runs it alone.
 - Every FAQ answer in the structured data has to be the same string a reader
   sees. `scripts/check-faq.mjs` strips the markup first and compares, so an
   answer that was rewritten in one place and not the other fails the build
@@ -112,13 +119,19 @@ another:
   rendered page and fails the build when one of them states a different number.
   Changing a constant therefore updates the templated pages and names the
   articles that still need editing.
+- **Product definition and numeric facts** (`scripts/check-product-facts.mjs`).
+  `src/product-facts.js` holds the one-sentence definition and the unit-bearing
+  numbers the commercial pages have to show. The check reads the prerendered
+  home page, about page, `llms.txt` and the facts strip, and fails when any copy
+  is no longer the constant.
 
-Both run as part of `npm run build` and on their own against any built directory
+These run as part of `npm run build` and on their own against any built directory
 or a live release (point them at a downloaded copy):
 
 ```bash
 npm run check:faq       # node scripts/check-faq.mjs dist
 npm run check:pricing   # node scripts/check-pricing-facts.mjs dist
+npm run check:product   # node scripts/check-product-facts.mjs dist
 ```
 
 ### Canonical origin
@@ -142,32 +155,36 @@ and renewed by `certbot.timer`; see
 crawler and allows it, then states the policy with a Content-Signal line:
 retrieval is welcome (`ai-input=yes`), training is not (`ai-train=no`). The
 allowances are per crawler rather than left to `User-agent: *` because
-Cloudflare prepends a managed block to this file at the edge.
+Cloudflare has prepended a managed block to this file before.
 
-**Known issue: that managed block is currently on, and it contradicts the file.**
-It adds `Disallow: /` for nine agents before our own rules. Five of them are
-agents this repository explicitly allows:
+The managed robots.txt prefix is currently **off**: a fetch of
+`https://shimodocs.com/robots.txt` is the file this build emits. The remaining
+CDN problem is not robots, it is Bot Fight / AI Crawl Control. Official
+`GPTBot`, `ClaudeBot`, `Amazonbot` and `Bytespider` user-agents receive HTTP
+403 and a 25-byte `Your request was blocked.` body on HTML, `sitemap.xml` and
+`llms.txt`, while `robots.txt` itself still returns 200. Origin nginx on
+port 80 does not discriminate: the same GPTBot request against
+`43.172.115.22` with `Host: shimodocs.com` returns 200 and the prerendered
+page. `ChatGPT-User`, `OAI-SearchBot`, `PerplexityBot`, `Googlebot` and
+`Bingbot` already receive 200 at the edge.
 
-| Disallowed by the CDN, allowed here | Consequence |
-| --- | --- |
-| `ClaudeBot`, `Amazonbot`, `meta-externalagent` | These fetch pages to answer a question, so they are the ones that cost us citations |
-| `Google-Extended`, `Applebot-Extended` | These are training opt-out tokens; blocking them agrees with `ai-train=no`, so nothing is lost |
+The analytics token in `seo/data/cloudflare-token.txt` can read Adaptive
+traffic and cannot change Bot Fight or WAF. Allowing the citing / agreed
+training crawlers needs zone-level dashboard access:
 
-Search engines and the answering crawlers that matter most are not affected:
-`Googlebot`, `Bingbot`, `DuckDuckBot`, `Applebot`, `OAI-SearchBot`,
-`ChatGPT-User`, `PerplexityBot` and `Claude-User` are absent from the managed
-block. The same block also emits its own `Content-Signal` line, which does not
-carry `ai-input=yes`.
+1. Cloudflare → `shimodocs.com` → **Security → Bots** (or **AI Crawl Control**).
+2. Allow `GPTBot`, `ClaudeBot` and `Amazonbot`.
+3. Keep `Bytespider` blocked.
+4. Confirm managed robots.txt is still off.
 
-Turning it off needs zone-level access to Cloudflare: **AI Crawl Control →
-Managed robots.txt** (older dashboards: Security → Bots). Nobody with repository
-access can change it from here, and the deploy check cannot see it either,
-because the check fetches the origin directly and the block is added at the edge.
-To see the real policy:
+Then run the edge check, which fetches the public hostname on purpose:
 
 ```bash
-curl -s https://shimodocs.com/robots.txt | grep -n "BEGIN Cloudflare Managed" -A 40
+npm run check:crawlers   # node scripts/check-ai-crawlers.mjs
 ```
+
+A build that curls the origin would report green while GPTBot still sees the
+block, which is why this check is not part of `npm run build`.
 
 ### Discovery surfaces
 

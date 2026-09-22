@@ -31,6 +31,8 @@ import { ARTICLE_DOCS } from './article-docs.mjs'
 import { auditFaqsInDirectory } from './check-faq.mjs'
 import { auditFiguresInDirectory } from './check-figures.mjs'
 import { auditPricingFactsInDirectory } from './check-pricing-facts.mjs'
+import { auditProductFactsInDirectory } from './check-product-facts.mjs'
+import { PRODUCT_DEFINITION } from '../src/product-facts.js'
 import { contentDate } from './content-dates.mjs'
 import { INDEXNOW_KEY, keyFileProblem } from './indexnow.mjs'
 import { DOCS_DEFAULT_LANGUAGE, DOCS_LANGUAGES, DOCS_SITEMAP_LANGUAGES, docsBase } from '../src/docs-languages.js'
@@ -542,9 +544,7 @@ function llmsTxt() {
   const lines = [
     '# ShimoDocs',
     '',
-    '> ShimoDocs is a self-hosted document collaboration suite — real-time docs, writers, spreadsheets,',
-    '> presentations, forms and tables — deployed into infrastructure you control, with AI agents that',
-    '> work inside documents against a model endpoint your organisation has approved.',
+    `> ${PRODUCT_DEFINITION}`,
     '',
     'ShimoDocs runs in a single-node or high-availability Kubernetes cluster. Documents, metadata,',
     'permissions, audit logs and AI context stay inside the customer network boundary. It is free for',
@@ -1380,6 +1380,10 @@ const pricingSummary =
   `${pricingAudit.stats.freeLimitClaims} free-limit, ${pricingAudit.stats.perUserPriceClaims} price and ` +
   `${pricingAudit.stats.annualDiscountClaims} discount claims`
 
+const productFactAudit = auditProductFactsInDirectory(distDir)
+problems.push(...productFactAudit.problems)
+const productFactSummary = `${productFactAudit.stats.factStrips} facts strips, ${productFactAudit.stats.factValues} values`
+
 // ----------------------------------------------------------- figure text
 //
 // A figure is inline SVG placed by coordinate, and the browser clips an SVG at
@@ -1409,5 +1413,6 @@ console.log(
     `Layouts: ${layoutSummary}. Distinct structures: ${signatures.size}. ` +
     `Every figure label fits inside its diagram (${figureSummary}). ` +
     `FAQ markup matches the visible text for ${faqSummary}. ` +
-    `Pricing facts agree on ${pricingSummary}.`,
+    `Pricing facts agree on ${pricingSummary}. ` +
+    `Product definition and numeric facts agree on ${productFactSummary}.`,
 )

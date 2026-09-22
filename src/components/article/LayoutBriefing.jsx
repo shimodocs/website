@@ -10,6 +10,8 @@ import {
   RelatedArticles,
   splitIntoSections,
 } from './shared'
+import { ProductFacts } from '../ProductFacts'
+import { articleShowsProductFacts } from '../../product-facts.js'
 import { DOWNLOADS } from '../../downloads'
 import { FREE_TEAM_LIMIT_WORD } from '../../pricing-facts.js'
 
@@ -27,6 +29,7 @@ export default function LayoutBriefing({ post, related, older, newer }) {
       <div className="brief-grid">
         <div className="brief-main">
           {preamble ? <div className="brief-preamble post-body" dangerouslySetInnerHTML={{ __html: preamble }} /> : null}
+          {articleShowsProductFacts(post.slug) ? <ProductFacts /> : null}
 
           {sections.map((section, index) => (
             <section className="brief-section" key={section.id || index}>

@@ -1,4 +1,6 @@
 import { Link } from 'react-router-dom'
+import { ProductFacts } from '../components/ProductFacts'
+import { PRODUCT_DEFINITION } from '../product-facts.js'
 import { Eyebrow } from '../components/Section'
 
 // The company page the previous site published at /about. The URL is kept
@@ -27,10 +29,7 @@ export default function About() {
           <br />
           <span className="gradient">under your control.</span>
         </h1>
-        <p>
-          ShimoDocs brings modern collaboration to private cloud environments, giving teams control over their data,
-          their access and their deployment.
-        </p>
+        <p>{PRODUCT_DEFINITION}</p>
         <div className="hero-actions">
           <Link className="button" to="/contact-sales">
             Contact Sales
@@ -39,6 +38,10 @@ export default function About() {
             Explore the workspace ↗
           </Link>
         </div>
+      </section>
+
+      <section className="section">
+        <ProductFacts showDefinition={false} />
       </section>
 
       <section className="section">

@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { ProductFacts } from '../components/ProductFacts'
 import { Eyebrow } from '../components/Section'
 import { ROUTE_SEO } from '../seo'
 import { ANNUAL_DISCOUNT_PERCENT, FREE_TEAM_LIMIT_WORD, TEAM_PRICE_PER_USER } from '../pricing-facts.js'
@@ -20,6 +21,10 @@ export default function Pricing() {
           <span className="gradient">Scale with clarity.</span>
         </h1>
         <p>One straightforward plan for teams that want docs, data and AI in one connected workspace.</p>
+      </section>
+
+      <section className="section">
+        <ProductFacts />
       </section>
 
       <section className="section pricing-grid">

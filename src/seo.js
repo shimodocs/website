@@ -5,6 +5,7 @@
 // build-time prerenderer, and by the sitemap/robots generators. Keeping one
 // table means a route can never drift between the router and the crawler.
 import { DOWNLOADS } from './downloads'
+import { PRODUCT_DEFINITION } from './product-facts.js'
 import {
   ANNUAL_DISCOUNT_PERCENT,
   FREE_TEAM_LIMIT,
@@ -632,8 +633,7 @@ export function canonicalFor(pathname) {
 export const FAQS = [
   {
     question: 'What is ShimoDocs?',
-    answer:
-      'ShimoDocs is a self-hosted document collaboration suite for real-time docs, writers, spreadsheets, presentations, forms and tables. It runs inside your own private cloud and includes configurable AI agents built into every product.',
+    answer: PRODUCT_DEFINITION,
   },
   {
     question: 'Is ShimoDocs self-hosted?',
@@ -733,8 +733,7 @@ function softwareApplication() {
     url: canonicalFor('/'),
     downloadUrl: DOWNLOADS.amd64.url,
     softwareVersion: DOWNLOADS.version,
-    description:
-      'Self-hosted document collaboration platform with real-time docs, sheets, slides, forms, tables and configurable AI agents for private cloud deployments.',
+    description: PRODUCT_DEFINITION,
     featureList: [
       'Real-time collaborative documents',
       'Spreadsheets, presentations, forms and tables',
@@ -778,8 +777,7 @@ export function jsonLdFor(pathname) {
       alternateName: SITE_ALTERNATE_NAME,
       url: canonicalFor('/'),
       logo: { '@type': 'ImageObject', url: LOGO_URL, width: 512, height: 512 },
-      description:
-        'ShimoDocs is a self-hosted document collaboration suite for real-time docs, sheets, slides, forms and tables, with configurable AI agents in your private cloud.',
+      description: PRODUCT_DEFINITION,
       sameAs: [GITHUB_URL],
       contactPoint: [
         {

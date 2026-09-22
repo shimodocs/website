@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { ProductFacts } from '../components/ProductFacts'
 import { Eyebrow } from '../components/Section'
 import { FREE_TEAM_LIMIT_WORD } from '../pricing-facts.js'
 import { DOWNLOADS, LICENSE_EMAIL, LICENSE_REQUEST_URL } from '../downloads'
@@ -51,9 +52,13 @@ export default function Download() {
           </a>
         </div>
         <p className="download-meta">
-          Current installer version {DOWNLOADS.version} · the licence key is requested separately and is free for up to
+          Current installer version {DOWNLOADS.version} · the licence key is requested separately and is free for up to{' '}
           {FREE_TEAM_LIMIT_WORD} users.
         </p>
+      </section>
+
+      <section className="section">
+        <ProductFacts />
       </section>
 
       <section className="section">

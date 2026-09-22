@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Eyebrow } from '../components/Section'
 import { DOWNLOADS, LICENSE_REQUEST_URL } from '../downloads'
+import { ProductFacts } from '../components/ProductFacts'
+import { PRODUCT_DEFINITION } from '../product-facts.js'
 import { FAQS } from '../seo'
 
 const words = ['Docs', 'Teams', 'AI']
@@ -75,10 +77,7 @@ export default function Home() {
             </span>{' '}
             <span className="gradient">in your private cloud.</span>
           </h1>
-          <p>
-            ShimoDocs is a self-hosted document collaboration platform: real-time docs, spreadsheets, presentations,
-            forms and tables, with AI agents that work alongside your team — all inside your own private cloud.
-          </p>
+          <p>{PRODUCT_DEFINITION}</p>
           <div className="hero-actions">
             <a
               className="button download-cta"
@@ -185,6 +184,10 @@ export default function Home() {
             </div>
           </div>
         </div>
+      </section>
+
+      <section className="section">
+        <ProductFacts showDefinition={false} />
       </section>
 
       <section className="section">

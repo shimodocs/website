@@ -10,6 +10,8 @@ import {
   RelatedArticles,
   TableOfContents,
 } from './shared'
+import { ProductFacts } from '../ProductFacts'
+import { articleShowsProductFacts } from '../../product-facts.js'
 
 export default function LayoutStandard({ post, related, older, newer }) {
   return (
@@ -26,6 +28,8 @@ export default function LayoutStandard({ post, related, older, newer }) {
             </p>
           ) : null}
         </header>
+
+        {articleShowsProductFacts(post.slug) ? <ProductFacts /> : null}
 
         <div className="post-layout">
           <TableOfContents headings={post.headings} />

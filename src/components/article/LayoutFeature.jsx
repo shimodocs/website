@@ -2,6 +2,8 @@
 // then a single narrow column. No sidebar and no table of contents, so the
 // reading experience is deliberately different from the standard layout.
 import { Breadcrumb, Pager, PostCta, PostTags, RelatedArticles } from './shared'
+import { ProductFacts } from '../ProductFacts'
+import { articleShowsProductFacts } from '../../product-facts.js'
 import { formatDate } from '../../format'
 
 export default function LayoutFeature({ post, related, older, newer }) {
@@ -35,6 +37,7 @@ export default function LayoutFeature({ post, related, older, newer }) {
       </section>
 
       <article className="feat-column">
+        {articleShowsProductFacts(post.slug) ? <ProductFacts /> : null}
         <div className="post-body" dangerouslySetInnerHTML={{ __html: post.html }} />
         <PostTags post={post} />
       </article>

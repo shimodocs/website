@@ -67,6 +67,7 @@ Rules that hold in every round:
 | --- | --- | --- |
 | Write the free limit, the per-user price or the annual discount as prose | One price change would leave the site contradicting itself in public | `check-pricing-facts.mjs` reads the rendered pages |
 | State a commercial fact differently from `src/pricing-facts.js` | Same reason: that file is the single source | same, plus `npm run check:pricing` |
+| Reword the product definition on the home hero, about lead, Organization JSON-LD, `llms.txt` or the "What is ShimoDocs?" FAQ | Answer engines copy whichever sentence they hit | `src/product-facts.js` plus `check-product-facts.mjs` |
 | Publish a FAQ answer in the markup that differs from the visible text | Google requires the markup to describe visible content | `check-faq.mjs`, `npm run check:faq` |
 | Hand-edit anything under `content/docs/` | It is a mirror of the product repository and the next sync overwrites it | `npm run check:docs` |
 | Add a page without an entry in `src/seo.js` | A route and its metadata are checked against each other at import time | `src/routes.jsx` throws |
@@ -80,6 +81,12 @@ Rules that hold in every round:
 the pricing cards, the FAQ answers, the product structured data and the article
 CTAs all read from it. Articles state the free limit in hand-written Markdown too,
 which no import can reach — that is what `check-pricing-facts.mjs` exists for.
+
+**The product definition** lives in `src/product-facts.js`. The home hero, the
+about lead, Organization JSON-LD, `llms.txt` and the "What is ShimoDocs?" FAQ
+print that one sentence. The numeric facts strip on the commercial hubs and the
+vs-articles reads from the same module. `check-product-facts.mjs` fails the
+build when any of those surfaces drift.
 
 **FAQs** are declared in `src/seo.js` (or in article front matter) and rendered
 from that same string, so the markup and the visible text cannot drift. Two

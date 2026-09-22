@@ -7,6 +7,7 @@
 // FAQPage structured data, so the written answer and the marked-up answer are
 // the same string by construction.
 import { useLocation } from 'react-router-dom'
+import { ProductFacts } from '../components/ProductFacts'
 import { Eyebrow } from '../components/Section'
 import { FREE_TEAM_LIMIT_WORD } from '../pricing-facts.js'
 import { HUBS } from '../hubs'
@@ -96,6 +97,10 @@ export default function Hub() {
             Read the deployment guides ↗
           </a>
         </div>
+      </section>
+
+      <section className="hub-section">
+        <ProductFacts />
       </section>
 
       {hub.sections.map(section => (

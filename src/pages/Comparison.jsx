@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { ProductFacts } from '../components/ProductFacts'
 import { Eyebrow } from '../components/Section'
 import { TEAM_PRICE_PER_USER } from '../pricing-facts.js'
 
@@ -59,6 +60,10 @@ export default function Comparison() {
           How ShimoDocs compares with Google Docs, Microsoft 365, Nextcloud, ONLYOFFICE and Notion on private
           deployment, data ownership, editing experience, permissions and price.
         </p>
+      </section>
+
+      <section className="section">
+        <ProductFacts />
       </section>
 
       <section className="section">

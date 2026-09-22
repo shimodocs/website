@@ -16,6 +16,8 @@
     "check:figures": "node scripts/check-figures.mjs dist",
     "check:faq": "node scripts/check-faq.mjs dist",
     "check:pricing": "node scripts/check-pricing-facts.mjs dist",
+    "check:product": "node scripts/check-product-facts.mjs dist",
+    "check:crawlers": "node scripts/check-ai-crawlers.mjs",
     "assets": "python3 scripts/make-assets.py",
     "fonts": "python3 scripts/make-font-subsets.py",
     "indexnow": "node scripts/indexnow.mjs",
