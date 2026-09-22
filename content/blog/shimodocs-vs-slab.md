@@ -132,4 +132,4 @@ If most of your content never leaves the organisation, an internal knowledge bas
 5. **Map the data handling requirement.** Hosted or self-hosted is an architectural question, not a preference.
 6. **Check the AI path.** See the [AI agents checklist](/blog/ai-agents-in-documents-security) for the questions that matter.
 
-Product packaging and capability change regularly in this category; confirm current specifics with each vendor. The structural difference between a post-centric and a file-centric product is the part that persists. For the wider comparison set, see [ShimoDocs vs Confluence](/blog/shimodocs-vs-confluence) and the [best Google Docs alternatives](/blog/best-google-docs-alternatives).
+Product packaging and capability change regularly in this category; confirm current specifics with each vendor. The structural difference between a post-centric and a file-centric product is the part that persists. For the wider comparison set, see [ShimoDocs vs Confluence](/blog/shimodocs-vs-confluence), [self-hosted office suite versus wiki](/blog/self-hosted-office-suite-vs-wiki) and the [best Google Docs alternatives](/blog/best-google-docs-alternatives).

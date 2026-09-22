@@ -3,6 +3,106 @@
 
 export const BLOG_POSTS = [
   {
+    "slug": "self-hosted-office-suite-vs-wiki",
+    "title": "Self-Hosted Office Suite vs Wiki: Which Shape of Work?",
+    "description": "A wiki is pages, a tree and search. A suite is documents, sheets and slides. Outline and Docmost for handbooks; a suite for files people edit together.",
+    "category": "comparisons",
+    "categoryLabel": "Comparisons",
+    "layout": "feature",
+    "figures": 2,
+    "date": "2026-09-22",
+    "updated": null,
+    "tags": [
+      "wiki",
+      "office suite",
+      "outline",
+      "docmost"
+    ],
+    "readingTime": 5,
+    "words": 1166,
+    "featured": false
+  },
+  {
+    "slug": "migrating-without-confluence-connector",
+    "title": "Migrating from Confluence Without a Connector",
+    "description": "There is no Confluence, Google Workspace, SharePoint or Notion connector. What file import can move, what you rebuild, and how to plan the cost.",
+    "category": "guides",
+    "categoryLabel": "Guides & workflows",
+    "layout": "briefing",
+    "figures": 2,
+    "date": "2026-09-21",
+    "updated": null,
+    "tags": [
+      "migration",
+      "confluence",
+      "import",
+      "lock-in"
+    ],
+    "readingTime": 5,
+    "words": 1191,
+    "featured": false
+  },
+  {
+    "slug": "collabora-nextcloud-vs-document-suite",
+    "title": "Collabora in Nextcloud vs a Document Suite",
+    "description": "Collabora on a file platform is an editor hung on object storage. A document suite makes the document the object. Architecture, not another Google Docs list.",
+    "category": "comparisons",
+    "categoryLabel": "Comparisons",
+    "layout": "standard",
+    "figures": 2,
+    "date": "2026-09-20",
+    "updated": null,
+    "tags": [
+      "collabora",
+      "nextcloud",
+      "architecture",
+      "self-hosted"
+    ],
+    "readingTime": 6,
+    "words": 1337,
+    "featured": false
+  },
+  {
+    "slug": "shimodocs-vs-onlyoffice",
+    "title": "ShimoDocs vs ONLYOFFICE: Fidelity, Open Core, Controls",
+    "description": "ONLYOFFICE wins on OOXML fidelity and desktop editors. A document suite wins on document-layer permissions, audit and in-boundary AI. How to choose.",
+    "category": "comparisons",
+    "categoryLabel": "Comparisons",
+    "layout": "feature",
+    "figures": 2,
+    "date": "2026-09-19",
+    "updated": null,
+    "tags": [
+      "comparison",
+      "onlyoffice",
+      "fidelity",
+      "self-hosted"
+    ],
+    "readingTime": 6,
+    "words": 1226,
+    "featured": false
+  },
+  {
+    "slug": "shimodocs-vs-nextcloud",
+    "title": "ShimoDocs vs Nextcloud: File Platform or Document Suite?",
+    "description": "Nextcloud is a file platform you may already run. ShimoDocs is a document suite. When the Collabora plugin is enough, and when it is not.",
+    "category": "comparisons",
+    "categoryLabel": "Comparisons",
+    "layout": "magazine",
+    "figures": 2,
+    "date": "2026-09-18",
+    "updated": null,
+    "tags": [
+      "comparison",
+      "nextcloud",
+      "self-hosted",
+      "files"
+    ],
+    "readingTime": 7,
+    "words": 1493,
+    "featured": false
+  },
+  {
     "slug": "document-collaboration-financial-services-rollout",
     "title": "Rolling Out Document Collaboration Across a Bank",
     "description": "A big-bang cutover is not available in a regulated firm. How to sequence document platform waves so each one produces evidence the next can reuse.",
@@ -99,7 +199,7 @@ export const BLOG_POSTS = [
       "vendor exit"
     ],
     "readingTime": 7,
-    "words": 1517,
+    "words": 1531,
     "featured": false
   },
   {
@@ -742,7 +842,7 @@ export const BLOG_POSTS = [
       "evaluation"
     ],
     "readingTime": 10,
-    "words": 2242,
+    "words": 2296,
     "featured": true
   },
   {
@@ -762,7 +862,7 @@ export const BLOG_POSTS = [
       "office suite"
     ],
     "readingTime": 8,
-    "words": 1689,
+    "words": 1739,
     "featured": false
   },
   {
@@ -802,7 +902,7 @@ export const BLOG_POSTS = [
       "wiki"
     ],
     "readingTime": 5,
-    "words": 1192,
+    "words": 1203,
     "featured": false
   },
   {
@@ -862,7 +962,7 @@ export const BLOG_POSTS = [
       "knowledge base"
     ],
     "readingTime": 8,
-    "words": 1725,
+    "words": 1765,
     "featured": false
   },
   {
@@ -941,8 +1041,8 @@ export const BLOG_POSTS = [
       "cutover",
       "planning"
     ],
-    "readingTime": 6,
-    "words": 1415,
+    "readingTime": 7,
+    "words": 1445,
     "featured": false
   },
   {
@@ -1062,7 +1162,7 @@ export const BLOG_POSTS = [
       "data sovereignty"
     ],
     "readingTime": 7,
-    "words": 1535,
+    "words": 1585,
     "featured": true
   }
 ]
@@ -1073,7 +1173,7 @@ export const BLOG_CATEGORIES = [
     "label": "Comparisons",
     "heading": "Document collaboration comparisons",
     "description": "How ShimoDocs compares with Google Docs, Notion, Confluence and other collaboration tools.",
-    "count": 14
+    "count": 18
   },
   {
     "id": "self-hosting",
@@ -1108,7 +1208,7 @@ export const BLOG_CATEGORIES = [
     "label": "Guides & workflows",
     "heading": "Document collaboration guides",
     "description": "Practical walkthroughs for teams moving work into a private cloud workspace.",
-    "count": 5
+    "count": 6
   }
 ]
 

@@ -143,6 +143,8 @@ Before you commit, get specific answers to these:
 
 The answers separate products that were designed to be self-hosted from products that were designed to be hosted and happen to have a deployment option.
 
+Self-hosting still leaves a product-shape question. A file platform with an editor hung on the tree is not a document suite; [ShimoDocs versus Nextcloud](/blog/shimodocs-vs-nextcloud) and [Collabora in Nextcloud versus a document suite](/blog/collabora-nextcloud-vs-document-suite) are that distinction. The [platform comparison](/comparison) is the capability matrix.
+
 ## Frequently asked questions
 
 ### What is private cloud document collaboration?

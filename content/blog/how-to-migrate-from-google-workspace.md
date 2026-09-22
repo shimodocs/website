@@ -163,6 +163,8 @@ Two things determine whether the migration sticks.
 
 **AI availability.** A self-hosted suite with a configurable AI endpoint gives you something the old system could not — an assistant that reads your documents without sending them anywhere. Announce it early; it is the strongest argument for the change. See [AI agents in documents](/blog/ai-agents-in-documents-security).
 
+The same staged order applies when the source is Confluence rather than Drive. There is still no connector; [migrating from Confluence without one](/blog/migrating-without-confluence-connector) is the rebuild list.
+
 If you are still choosing a destination, start with [what private cloud document collaboration is](/blog/what-is-private-cloud-document-collaboration) and the [Google Docs alternative](/blog/google-docs-alternative-private-cloud) breakdown.
 
 Once the destination is settled, the [migration hub](/migration) covers what imports, what has to be rebuilt rather than transferred, and how to verify the move before the old system is retired.

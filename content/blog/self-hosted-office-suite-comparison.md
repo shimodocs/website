@@ -175,7 +175,7 @@ Rather than a weighted matrix, use gates:
 
 The gate approach prevents the most common failure: a product that scores brilliantly on features and cannot satisfy the identity or file-fidelity requirement that a regulated environment depends on.
 
-For the wider decision about whether to self-host at all, start with [what private cloud document collaboration is](/blog/what-is-private-cloud-document-collaboration).
+For the wider decision about whether to self-host at all, start with [what private cloud document collaboration is](/blog/what-is-private-cloud-document-collaboration). If the shortlist is a file platform with an editor hung on it, read [Collabora in Nextcloud versus a document suite](/blog/collabora-nextcloud-vs-document-suite) and [ShimoDocs versus Nextcloud](/blog/shimodocs-vs-nextcloud) before you score features. [ShimoDocs versus ONLYOFFICE](/blog/shimodocs-vs-onlyoffice) is the fidelity-versus-controls fork on the same framework.
 
 ## Frequently asked questions
 

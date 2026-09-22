@@ -43,6 +43,8 @@ const DEEP_DIVES = [
   ['/blog/shimodocs-vs-notion', 'ShimoDocs vs Notion'],
   ['/blog/shimodocs-vs-confluence', 'ShimoDocs vs Confluence'],
   ['/blog/shimodocs-vs-sharepoint', 'ShimoDocs vs SharePoint'],
+  ['/blog/shimodocs-vs-nextcloud', 'ShimoDocs vs Nextcloud'],
+  ['/blog/shimodocs-vs-onlyoffice', 'ShimoDocs vs ONLYOFFICE'],
   ['/blog/best-google-docs-alternatives', 'The best Google Docs alternatives'],
 ]
 

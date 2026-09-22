@@ -69,6 +69,8 @@ export const HUBS = {
           ['/docs/deployment/troubleshooting/incident-response-sop', 'Incident response procedure'],
           ['/blog/secure-cloud-collaboration', 'Secure cloud collaboration checklist'],
           ['/blog/self-hosted-collaboration-guide', 'What running self-hosted collaboration actually involves'],
+          ['/blog/shimodocs-vs-nextcloud', 'File platform versus document suite, if you already run Nextcloud'],
+          ['/blog/collabora-nextcloud-vs-document-suite', 'Collabora hung on files versus a document layer'],
         ],
       },
       {
@@ -337,6 +339,8 @@ export const HUBS = {
         ],
         links: [
           ['/blog/shimodocs-vs-confluence', 'ShimoDocs compared with Confluence in detail'],
+          ['/blog/self-hosted-office-suite-vs-wiki', 'Self-hosted suite versus wiki, if Confluence was the handbook'],
+          ['/blog/migrating-without-confluence-connector', 'Migration without a Confluence connector'],
           ['/docs', 'The deployment documentation'],
         ],
       },
@@ -443,6 +447,8 @@ export const HUBS = {
           'A read-only Confluence left reachable after cutover is the most reliable way to double the length of a migration. Retire it on a date, and tell people the date.',
         links: [
           ['/blog/shimodocs-vs-confluence', 'A working comparison, including where Confluence wins'],
+          ['/blog/migrating-without-confluence-connector', 'What moving looks like when there is no connector'],
+          ['/blog/self-hosted-office-suite-vs-wiki', 'Wiki versus suite, with Outline and Docmost as the wiki column'],
           ['/blog/how-to-migrate-from-google-workspace', 'The staged migration plan this follows'],
           ['/docs/deployment/getting-started/quick-start', 'Install the suite and try the import yourself'],
         ],
@@ -611,6 +617,7 @@ export const HUBS = {
             '/blog/how-to-migrate-from-google-workspace',
             'A staged Google Workspace migration plan, with cutover and rollback',
           ],
+          ['/blog/migrating-without-confluence-connector', 'Confluence with no connector: what import can and cannot do'],
           ['/solutions/confluence-alternative', 'What replacing Confluence actually involves'],
         ],
       },

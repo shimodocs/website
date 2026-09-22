@@ -48,6 +48,10 @@ export const ARTICLE_DOCS = {
     'deployment/getting-started/resource-planning',
     'deployment/operations-platform/system-services/toolset/static-resource-monitoring',
   ],
+  'collabora-nextcloud-vs-document-suite': [
+    'deployment/getting-started/quick-start',
+    'deployment/middleware/object-storage/configuration',
+  ],
   'data-residency-requirements-guide': [
     'deployment/system-requirements',
     'deployment/getting-started/resource-planning',
@@ -138,6 +142,10 @@ export const ARTICLE_DOCS = {
     'deployment/getting-started/quick-start',
     'deployment/troubleshooting/data-backup',
   ],
+  'migrating-without-confluence-connector': [
+    'deployment/operations-platform/suite/configuration/editor-configuration',
+    'deployment/operations-platform/suite/configuration/system-configuration',
+  ],
   'monitoring-self-hosted-document-platform': [
     'deployment/troubleshooting/monitoring-metrics',
     'deployment/operations-platform/system-services/control-panel/notification-channels',
@@ -186,6 +194,10 @@ export const ARTICLE_DOCS = {
     'deployment/getting-started/quick-start',
     'deployment/system-requirements',
   ],
+  'self-hosted-office-suite-vs-wiki': [
+    'deployment/getting-started/quick-start',
+    'deployment/operations-platform/suite/user-management',
+  ],
   'shimodocs-vs-coda': [
     'deployment/getting-started/quick-start',
     'deployment/system-requirements',
@@ -199,7 +211,15 @@ export const ARTICLE_DOCS = {
     'deployment/getting-started/quick-start',
     'deployment/getting-started/resource-planning',
   ],
+  'shimodocs-vs-nextcloud': [
+    'deployment/getting-started/quick-start',
+    'deployment/system-requirements',
+  ],
   'shimodocs-vs-notion': ['deployment/getting-started/quick-start'],
+  'shimodocs-vs-onlyoffice': [
+    'deployment/getting-started/quick-start',
+    'deployment/operations-platform/suite/user-management',
+  ],
   'shimodocs-vs-sharepoint': [
     'deployment/getting-started/quick-start',
     'deployment/getting-started/resource-planning',
