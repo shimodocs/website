@@ -1,11 +1,11 @@
 ---
 title: "Private Cloud Document Collaboration: Self-Hosted Guide"
-seoTitle: "Private Cloud Document Collaboration Guide | ShimoDocs"
-description: "Learn what private cloud document collaboration means, which layers must be self-hosted, and how regulated teams can compare private deployment with SaaS."
+seoTitle: "What Private Cloud Collaboration Means | ShimoDocs"
+description: "Private cloud collaboration means the editor, sync, storage and AI run in your boundary, not a multi-tenant SaaS — and when that move is the wrong choice."
 layout: standard
 category: self-hosting
 date: 2026-01-12
-updated: 2026-09-20
+updated: 2026-09-22
 tags: [private cloud, self-hosted, architecture, data sovereignty]
 keywords: "private cloud document collaboration, self-hosted document collaboration, what is private cloud collaboration"
 featured: true

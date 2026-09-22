@@ -1048,13 +1048,13 @@ export const BLOG_POSTS = [
   {
     "slug": "what-is-private-cloud-document-collaboration",
     "title": "Private Cloud Document Collaboration: Self-Hosted Guide",
-    "description": "Learn what private cloud document collaboration means, which layers must be self-hosted, and how regulated teams can compare private deployment with SaaS.",
+    "description": "Private cloud collaboration means the editor, sync, storage and AI run in your boundary, not a multi-tenant SaaS — and when that move is the wrong choice.",
     "category": "self-hosting",
     "categoryLabel": "Self-hosting",
     "layout": "standard",
     "figures": 2,
     "date": "2026-01-12",
-    "updated": "2026-09-20",
+    "updated": "2026-09-22",
     "tags": [
       "private cloud",
       "self-hosted",
@@ -1112,4 +1112,4 @@ export const BLOG_CATEGORIES = [
   }
 ]
 
-export const BLOG_UPDATED = "2026-09-20"
+export const BLOG_UPDATED = "2026-09-22"
