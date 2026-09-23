@@ -58,11 +58,13 @@ export default function Shell({ children }) {
           <img src="/assets/logo-shimodocs.svg" alt="ShimoDocs" width="500" height="110" />
         </Link>
         <nav className="nav-tabs" aria-label="Primary navigation">
-          <details className="nav-menu">
-            <summary className={solutionsActive ? 'active' : undefined}>
+          <span className="nav-indicator" aria-hidden="true" />
+          <div className={solutionsActive ? 'nav-menu active' : 'nav-menu'}>
+            <input className="nav-toggle" id="nav-solutions" type="checkbox" />
+            <label htmlFor="nav-solutions">
               Solutions
               <span className="nav-caret" aria-hidden="true" />
-            </summary>
+            </label>
             <div className="nav-panel">
               {SOLUTION_GROUPS.map(group => (
                 <div key={group.label}>
@@ -75,12 +77,45 @@ export default function Shell({ children }) {
                 </div>
               ))}
             </div>
-          </details>
+          </div>
           {NAV_LINKS.map(([to, label]) => (
             <NavLink key={to} to={to} className={({ isActive }) => (isActive ? 'active' : '')}>
               {label}
             </NavLink>
           ))}
+          <script
+            dangerouslySetInnerHTML={{
+              __html: `(function(){
+  var nav=document.querySelector('.nav-tabs');
+  if(!nav||nav.dataset.ready)return;
+  nav.dataset.ready='1';
+  var indicator=nav.querySelector('.nav-indicator');
+  function item(node){
+    var el=node&&node.closest?node.closest('a,label'):null;
+    if(!el||!nav.contains(el)||el.closest('.nav-panel'))return null;
+    return el;
+  }
+  function place(el,animate){
+    if(!indicator||!el)return;
+    var navBox=nav.getBoundingClientRect();
+    var box=el.getBoundingClientRect();
+    if(!animate)indicator.style.transition='none';
+    indicator.style.width=box.width+'px';
+    indicator.style.height=box.height+'px';
+    indicator.style.transform='translate('+(box.left-navBox.left)+'px,'+(box.top-navBox.top)+'px)';
+    indicator.style.opacity='1';
+    if(!animate){indicator.offsetWidth;indicator.style.transition='';}
+  }
+  function active(){return nav.querySelector(':scope > a.active, :scope > .nav-menu.active > label');}
+  function sync(animate){place(active(),animate);}
+  sync(false);
+  window.addEventListener('resize',function(){sync(false);});
+  nav.addEventListener('mouseover',function(event){var el=item(event.target);if(el)place(el,true);});
+  nav.addEventListener('mouseleave',function(){sync(true);});
+  new MutationObserver(function(){sync(true);}).observe(nav,{attributes:true,subtree:true,attributeFilter:['class']});
+})();`,
+            }}
+          />
         </nav>
         <div className="nav-actions">
           <a

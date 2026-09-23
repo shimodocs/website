@@ -139,33 +139,35 @@
 .scene-screen{animation:scene-in var(--duration-fast) var(--ease-smooth-out)}
 @keyframes scene-in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 
-/* Solutions opens on hover. The links stay in the HTML while the panel is
-   visually closed, including on pages that ship no client JavaScript. */
+/* Solutions is a plain hover target. A closed <details> element hides its
+   contents, which is why the caret turned and the menu never appeared. */
+.site-nav{position:relative;z-index:40}
 .nav-tabs{position:relative}
+.nav-tabs>a,.nav-menu>label{position:relative;z-index:1;font-size:15px;padding:10px 15px}
+.nav-indicator{position:absolute;left:0;top:0;z-index:0;border-radius:999px;background:#ffffff1f;pointer-events:none;opacity:0;transition:transform var(--duration-fast) var(--ease-smooth-out),width var(--duration-fast) var(--ease-smooth-out),height var(--duration-fast) var(--ease-smooth-out),opacity var(--duration-quick) linear}
 .nav-menu{position:relative}
-.nav-menu summary{display:inline-flex;align-items:center;gap:6px;color:var(--muted);font-size:13px;padding:10px 12px;border-radius:999px;white-space:nowrap;cursor:pointer;list-style:none}
-.nav-menu summary::-webkit-details-marker{display:none}
-.nav-menu summary::marker{content:''}
+.nav-toggle{position:absolute;opacity:0;pointer-events:none}
+.nav-menu>label{display:inline-flex;align-items:center;gap:7px;color:var(--muted);border-radius:999px;white-space:nowrap;cursor:pointer}
 .nav-caret{width:0;height:0;border-left:4px solid transparent;border-right:4px solid transparent;border-top:5px solid currentColor;transform-origin:center 40%;transition:transform var(--duration-fast) var(--ease-smooth-out)}
-.nav-menu:hover .nav-caret,
-.nav-menu:focus-within .nav-caret,
-.nav-menu[open] .nav-caret{transform:rotate(180deg)}
-.nav-menu summary.active,.nav-menu summary:hover,.nav-menu[open] summary,.nav-menu:hover summary,.nav-menu:focus-within summary{color:#fff;background:#ffffff1f}
-.nav-menu:not([open])>.nav-panel{display:grid}
-.nav-panel{position:absolute;top:100%;left:0;z-index:30;display:grid;grid-template-columns:repeat(2,minmax(160px,1fr));gap:8px 22px;min-width:360px;margin-top:10px;padding:16px 18px;border:1px solid var(--line);border-radius:16px;background:#120f1cf2;box-shadow:0 18px 50px #00000073;transform:translateY(4px) scale(.97);transform-origin:top center;opacity:0;visibility:hidden;pointer-events:none;transition:opacity var(--duration-quick) var(--ease-smooth-out),transform var(--duration-quick) var(--ease-smooth-out),visibility 0s linear var(--duration-quick)}
-.nav-panel::before{content:"";position:absolute;left:0;right:0;top:-12px;height:12px}
-.nav-menu:hover>.nav-panel,
+.nav-menu:hover .nav-caret,.nav-menu:focus-within .nav-caret,.nav-toggle:checked~label .nav-caret{transform:rotate(180deg)}
+.nav-menu.active>label,.nav-menu:hover>label,.nav-menu:focus-within>label,.nav-toggle:checked~label{color:#fff}
+.nav-tabs>a.active,.nav-tabs>a:hover{background:transparent}
+.nav-panel{position:absolute;top:calc(100% + 10px);left:0;z-index:30;display:grid;grid-template-columns:repeat(2,minmax(160px,1fr));gap:8px 22px;min-width:360px;padding:16px 18px;border:1px solid var(--line);border-radius:16px;background:#161226f5;box-shadow:0 18px 50px #00000080;transform:translateY(6px) scale(.97);transform-origin:top center;opacity:0;visibility:hidden;pointer-events:none;transition:opacity var(--duration-quick) var(--ease-smooth-out),transform var(--duration-quick) var(--ease-smooth-out),visibility 0s linear var(--duration-quick)}
+.nav-panel::before{content:"";position:absolute;left:0;right:0;top:-14px;height:14px}
 .nav-menu:focus-within>.nav-panel,
-.nav-menu[open]>.nav-panel{opacity:1;visibility:visible;transform:none;pointer-events:auto;transition-duration:var(--duration-fast);transition-delay:0s}
+.nav-toggle:checked~.nav-panel,
+.nav-menu:hover>.nav-panel{opacity:1;visibility:visible;transform:none;pointer-events:auto;transition-duration:var(--duration-fast);transition-delay:0s}
 .nav-panel b{display:block;margin:0 0 6px;color:#6f6a86;font:600 11px 'DM Sans';letter-spacing:.13em;text-transform:uppercase}
 .nav-panel a{display:block;padding:7px 0;color:var(--ink);font-size:14px;text-decoration:none;border-radius:0;background:none}
 .nav-panel a:hover{color:var(--cyan);background:none}
 .footer-nav{grid-template-columns:repeat(4,minmax(0,1fr))}
 @media(max-width:980px){
   .nav-tabs{overflow:visible;flex-wrap:wrap}
-  .nav-menu:not([open])>.nav-panel{display:none}
-  .nav-menu[open]>.nav-panel{position:static;min-width:0;width:100%;margin-top:8px;transform:none}
+  .nav-panel{position:static;min-width:0;width:min(100%,420px);margin-top:8px}
   .footer-nav{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(hover:hover) and (pointer:fine){
+  .nav-menu:hover>.nav-panel{opacity:1;visibility:visible;transform:none;pointer-events:auto;transition-duration:var(--duration-fast);transition-delay:0s}
 }
 @media(max-width:700px){
   .footer-nav{grid-template-columns:1fr}
