@@ -69,7 +69,7 @@ export const ROUTE_SEO = {
   '/': {
     changeFrequency: 'weekly',
     priority: '1.0',
-    title: 'ShimoDocs | Private Cloud Document Collaboration with AI',
+    title: 'ShimoDocs | Self-Hosted Office Suite with AI',
     description:
       'Self-hosted document collaboration in your private cloud — docs, sheets, slides, forms, tables and AI agents, with enterprise permissions and full data control.',
     keywords: DEFAULT_KEYWORDS,
@@ -123,11 +123,11 @@ export const ROUTE_SEO = {
   '/blog': {
     changeFrequency: 'weekly',
     priority: '0.7',
-    title: 'ShimoDocs Blog | Private Cloud Collaboration Insights',
+    title: 'ShimoDocs Blog | Self-Hosted Document Collaboration',
     description:
-      'Insights on private cloud collaboration, document security, data sovereignty and enterprise AI — practical guides and field notes from the ShimoDocs team.',
+      'Field notes on self-hosted document collaboration: on-premises and air-gapped deployment, replacing Confluence, and the security review before a move.',
     keywords:
-      'private cloud collaboration blog, document security, data sovereignty, enterprise productivity, secure digital workplace, self-hosted collaboration guide',
+      'self-hosted document collaboration, on-premises document suite, air-gapped documents, confluence alternative, self-hosted office suite',
     ogAlt: 'ShimoDocs journal cover artwork',
   },
   // Topic pages. Each one is a real subject with its own search demand —

@@ -1,13 +1,13 @@
 ---
 title: "Private Cloud Document Collaboration: Self-Hosted Guide"
-seoTitle: "What Private Cloud Collaboration Means | ShimoDocs"
-description: "Private cloud collaboration means the editor, sync, storage and AI run in your boundary, not a multi-tenant SaaS — and when that move is the wrong choice."
+seoTitle: "Self-Hosted Docs: What Actually Has to Move | ShimoDocs"
+description: "The editor, sync, storage and AI have to run on infrastructure you control. What that takes to operate, and when self-hosting the suite is the wrong choice."
 layout: standard
 category: self-hosting
 date: 2026-01-12
-updated: 2026-09-22
+updated: 2026-09-23
 tags: [private cloud, self-hosted, architecture, data sovereignty]
-keywords: "private cloud document collaboration, self-hosted document collaboration, what is private cloud collaboration"
+keywords: "self-hosted document collaboration, on-premises document suite, air-gapped document collaboration"
 featured: true
 faq:
   - question: "What is private cloud document collaboration?"
@@ -28,7 +28,7 @@ Private cloud document collaboration means running the editor, real-time sync, s
 
 This guide explains which layers belong inside that boundary, what your operations team takes on and when private deployment is the wrong choice. Self-hosting the storage alone does not put the editor or an external AI service under your control.
 
-If you already understand the deployment model, continue with the [self-hosting operations guide](/blog/self-hosted-collaboration-guide). To evaluate a replacement for an existing suite, use the [private cloud Google Docs alternative guide](/blog/google-docs-alternative-private-cloud).
+If the documents cannot sit on Microsoft 365 or Google, the next page is the boundary you actually need: [on-premises document collaboration](/on-premises), [air-gapped document collaboration](/airgap), or a [self-hosted Confluence alternative](/solutions/confluence-alternative). What an operator can check about control is on the [security page](/security).
 
 ## The short definition
 
@@ -128,7 +128,7 @@ ShimoDocs is built as a self-hosted suite: documents, writers, spreadsheets, pre
 
 Because the AI layer is configurable, the retrieval pipeline that feeds document context to a model stays inside your environment. You choose the model provider, and you can point it at something running on your own hardware.
 
-If you are evaluating the category, the next useful step is deciding which of the costs above you can actually carry. The [self-hosted collaboration guide](/blog/self-hosted-collaboration-guide) walks through that assessment, and [data sovereignty in document collaboration](/blog/data-sovereignty-document-collaboration) covers how the compliance argument is usually framed.
+If you are evaluating the category, the next useful step is deciding which of the costs above you can actually carry. The [on-premises page](/on-premises) is that deployment, and the [security page](/security) is where the control claims can be checked. A [self-hosted Atlassian alternative](/solutions/atlassian-alternative) is the same decision when the incumbent is Confluence or Jira rather than a public cloud suite.
 
 ## Questions to ask any vendor in this category
 
