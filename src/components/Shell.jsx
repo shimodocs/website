@@ -60,11 +60,10 @@ export default function Shell({ children }) {
         <nav className="nav-tabs" aria-label="Primary navigation">
           <span className="nav-indicator" aria-hidden="true" />
           <div className={solutionsActive ? 'nav-menu active' : 'nav-menu'}>
-            <input className="nav-toggle" id="nav-solutions" type="checkbox" />
-            <label htmlFor="nav-solutions">
+            <span className="nav-menu-label" tabIndex={0}>
               Solutions
               <span className="nav-caret" aria-hidden="true" />
-            </label>
+            </span>
             <div className="nav-panel">
               {SOLUTION_GROUPS.map(group => (
                 <div key={group.label}>
@@ -91,7 +90,7 @@ export default function Shell({ children }) {
   nav.dataset.ready='1';
   var indicator=nav.querySelector('.nav-indicator');
   function item(node){
-    var el=node&&node.closest?node.closest('a,label'):null;
+    var el=node&&node.closest?node.closest('a,.nav-menu-label'):null;
     if(!el||!nav.contains(el)||el.closest('.nav-panel'))return null;
     return el;
   }
@@ -106,12 +105,21 @@ export default function Shell({ children }) {
     indicator.style.opacity='1';
     if(!animate){indicator.offsetWidth;indicator.style.transition='';}
   }
-  function active(){return nav.querySelector(':scope > a.active, :scope > .nav-menu.active > label');}
+  function active(){return nav.querySelector(':scope > a.active, :scope > .nav-menu.active > .nav-menu-label');}
   function sync(animate){place(active(),animate);}
+  var menu=nav.querySelector('.nav-menu');
+  function closeMenu(){
+    var el=document.activeElement;
+    if(el&&menu&&menu.contains(el))el.blur();
+  }
   sync(false);
   window.addEventListener('resize',function(){sync(false);});
   nav.addEventListener('mouseover',function(event){var el=item(event.target);if(el)place(el,true);});
   nav.addEventListener('mouseleave',function(){sync(true);});
+  if(menu){
+    menu.addEventListener('mouseleave',closeMenu);
+    menu.addEventListener('click',function(event){if(event.target.closest('.nav-panel a'))closeMenu();});
+  }
   new MutationObserver(function(){sync(true);}).observe(nav,{attributes:true,subtree:true,attributeFilter:['class']});
 })();`,
             }}
