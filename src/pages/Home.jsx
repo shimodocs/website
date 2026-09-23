@@ -165,7 +165,7 @@ export default function Home() {
                 </button>
               ))}
             </div>
-            <div className="scene-screen">
+            <div className="scene-screen" key={scenes[scene][2]}>
               {/* The scene frame is the hero visual, so it stays eager and
                   decodes off the main thread rather than blocking paint. */}
               <img

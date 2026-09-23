@@ -59,7 +59,10 @@ export default function Shell({ children }) {
         </Link>
         <nav className="nav-tabs" aria-label="Primary navigation">
           <details className="nav-menu">
-            <summary className={solutionsActive ? 'active' : undefined}>Solutions</summary>
+            <summary className={solutionsActive ? 'active' : undefined}>
+              Solutions
+              <span className="nav-caret" aria-hidden="true" />
+            </summary>
             <div className="nav-panel">
               {SOLUTION_GROUPS.map(group => (
                 <div key={group.label}>
