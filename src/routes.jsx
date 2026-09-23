@@ -61,17 +61,51 @@ export const ROUTES = [
   { path: '/legal-page/terms-conditions', label: 'Terms & Conditions', Component: TermsConditions },
 ]
 
-// The header bar is deliberately a subset of ROUTES: the company, download and
-// legal pages are reached from the footer, from links inside the pages and from
-// the sitemap, not from the top navigation. Every entry must still resolve to a
-// declared route, so a rename cannot leave a dead nav label behind.
-const NAV_PATHS = ['/', '/ai-workspace', '/blog', '/help-center', '/pricing', '/contact-sales']
+// The header is a subset of ROUTES. Home is the logo, and contact is the
+// Get started button, so neither is a text tab. Help Center stays published
+// at its own URL and is linked from the footer; the header points at /docs.
+// Every entry must still resolve to a declared route.
+const NAV_ITEMS = [
+  ['/ai-workspace', 'AI Workspace'],
+  ['/docs', 'Docs'],
+  ['/blog', 'Blog'],
+  ['/pricing', 'Pricing'],
+]
 
-export const NAV_LINKS = NAV_PATHS.map(path => {
+export const NAV_LINKS = NAV_ITEMS.map(([path, label]) => {
   const route = ROUTES.find(candidate => candidate.path === path)
   if (!route) throw new Error(`NAV_LINKS references ${path}, which is not a declared route`)
-  return [route.path, route.label]
+  return [route.path, label]
 })
+
+// One top-level menu for the commercial hubs. The links are rendered in the
+// initial HTML, including on article pages that ship no client JavaScript.
+export const SOLUTION_GROUPS = [
+  {
+    label: 'Deploy',
+    links: [
+      ['/on-premises', 'On-premises'],
+      ['/airgap', 'Air-gapped'],
+      ['/security', 'Security'],
+    ],
+  },
+  {
+    label: 'Switch',
+    links: [
+      ['/migration', 'Migration'],
+      ['/solutions/atlassian-alternative', 'Atlassian alternative'],
+      ['/solutions/confluence-alternative', 'Confluence alternative'],
+    ],
+  },
+]
+
+for (const group of SOLUTION_GROUPS) {
+  for (const [path] of group.links) {
+    if (!ROUTES.some(candidate => candidate.path === path)) {
+      throw new Error(`SOLUTION_GROUPS references ${path}, which is not a declared route`)
+    }
+  }
+}
 
 // Guards the assumption the prerenderer and nginx both rely on: every router
 // path has SEO metadata, and every metadata entry has a router path.

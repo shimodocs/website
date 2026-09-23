@@ -18,8 +18,8 @@ const COLLECTIONS = [
     kicker: 'Deployment',
     title: 'Self-hosted deployment guides',
     body: 'Kubernetes, middleware, AI endpoint configuration, backups and the checks worth running before a rollout reaches real work.',
-    to: '/help-center',
-    action: 'Open the help center',
+    to: '/docs',
+    action: 'Open the docs',
   },
   {
     kicker: 'Comparisons',

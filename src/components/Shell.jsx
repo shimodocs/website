@@ -1,52 +1,53 @@
-import { Link, NavLink } from 'react-router-dom'
-import { DOWNLOADS, LICENSE_EMAIL, LICENSE_REQUEST_URL } from '../downloads'
-import { NAV_LINKS } from '../routes'
+import { Link, NavLink, useLocation } from 'react-router-dom'
+import { LICENSE_EMAIL, LICENSE_REQUEST_URL } from '../downloads'
+import { NAV_LINKS, SOLUTION_GROUPS } from '../routes'
 import { GITHUB_URL } from '../seo'
 import { FREE_TEAM_LIMIT } from '../pricing-facts.js'
 
-// Descriptive anchor text and a full site footer give crawlers an internal
-// link graph. The previous shell exposed only six nav labels and no footer
-// navigation at all.
+// The header links and the footer are both in the prerendered HTML. Article
+// and documentation pages ship no client JavaScript, so the Solutions menu is
+// a native details element rather than a click handler.
+const SOLUTION_PATHS = SOLUTION_GROUPS.flatMap(group => group.links.map(([path]) => path))
+
 const FOOTER_SECTIONS = [
   {
     heading: 'Product',
     links: [
-      ['/ai-workspace', 'AI Workspace for documents'],
-      [DOWNLOADS.latest, 'Download the self-hosted installer'],
-      [LICENSE_REQUEST_URL, 'Get a free perpetual license'],
-      ['/pricing', 'Pricing and plans'],
-      ['/contact-sales', 'Request a private cloud demo'],
+      ['/ai-workspace', 'AI Workspace'],
+      ['/pricing', 'Pricing'],
+      ['/download', 'Download'],
+      [LICENSE_REQUEST_URL, 'Free license'],
+      ['/contact-sales', 'Get started'],
     ],
   },
   {
-    heading: 'Resources',
+    heading: 'Solutions',
+    links: SOLUTION_GROUPS.flatMap(group => group.links),
+  },
+  {
+    heading: 'Learn',
     links: [
-      ['/docs', 'Documentation: deploy and operate the suite'],
-      ['/on-premises', 'On-premises document collaboration'],
-      ['/security', 'Security and data control'],
-      ['/airgap', 'Air-gapped and offline deployment'],
-      ['/solutions/atlassian-alternative', 'Replacing Atlassian on your own servers'],
-      ['/solutions/confluence-alternative', 'A Confluence alternative you can self-host'],
-      ['/migration', 'Planning a document platform migration'],
-      ['/resources', 'Guides, comparisons and downloads'],
-      ['/help-center', 'Self-hosted deployment guides'],
-      ['/blog', 'Private cloud collaboration blog'],
-      [GITHUB_URL, 'ShimoDocs on GitHub'],
+      ['/docs', 'Docs'],
+      ['/blog', 'Blog'],
+      ['/resources', 'Resources'],
+      ['/help-center', 'Help Center'],
     ],
   },
   {
-    // Company, comparison and legal pages are linked from here rather than the
-    // header bar, and every one of them is a path the previous site published.
     heading: 'Company',
     links: [
-      ['/about', 'About ShimoDocs'],
-      ['/comparison', 'Compare collaboration platforms'],
-      ['/download', 'Download packages and licences'],
+      ['/about', 'About'],
+      ['/comparison', 'Comparison'],
+      [GITHUB_URL, 'GitHub'],
+      ['/legal-page/privacy-policy', 'Privacy'],
+      ['/legal-page/terms-conditions', 'Terms'],
     ],
   },
 ]
 
 export default function Shell({ children }) {
+  const { pathname } = useLocation()
+  const solutionsActive = SOLUTION_PATHS.some(path => pathname === path)
   return (
     <div className="site-shell">
       <a className="skip-link" href="#main-content">
@@ -57,8 +58,23 @@ export default function Shell({ children }) {
           <img src="/assets/logo-shimodocs.svg" alt="ShimoDocs" width="500" height="110" />
         </Link>
         <nav className="nav-tabs" aria-label="Primary navigation">
+          <details className="nav-menu">
+            <summary className={solutionsActive ? 'active' : undefined}>Solutions</summary>
+            <div className="nav-panel">
+              {SOLUTION_GROUPS.map(group => (
+                <div key={group.label}>
+                  <b>{group.label}</b>
+                  {group.links.map(([to, label]) => (
+                    <Link key={to} to={to}>
+                      {label}
+                    </Link>
+                  ))}
+                </div>
+              ))}
+            </div>
+          </details>
           {NAV_LINKS.map(([to, label]) => (
-            <NavLink key={to} to={to} end={to === '/'} className={({ isActive }) => (isActive ? 'active' : '')}>
+            <NavLink key={to} to={to} className={({ isActive }) => (isActive ? 'active' : '')}>
               {label}
             </NavLink>
           ))}
