@@ -3,6 +3,46 @@
 
 export const BLOG_POSTS = [
   {
+    "slug": "sharepoint-server-after-support-ends",
+    "title": "SharePoint Server Is Out of Support. What You Replace.",
+    "description": "SharePoint Server 2016 and 2019 left extended support on 15 July 2026. Subscription Edition stays on-premises. Online does not. Which move are you making?",
+    "category": "comparisons",
+    "categoryLabel": "Comparisons",
+    "layout": "feature",
+    "figures": 3,
+    "date": "2026-09-24",
+    "updated": null,
+    "tags": [
+      "comparison",
+      "sharepoint",
+      "self-hosted",
+      "migration"
+    ],
+    "readingTime": 7,
+    "words": 1536,
+    "featured": false
+  },
+  {
+    "slug": "zero-knowledge-editor-vs-document-suite",
+    "title": "A Zero-Knowledge Editor Is Not a Document Suite",
+    "description": "A zero-knowledge editor keeps the server from reading the file. A suite you administer can audit, retain and restore it. Those requirements contradict.",
+    "category": "security",
+    "categoryLabel": "Security & compliance",
+    "layout": "briefing",
+    "figures": 2,
+    "date": "2026-09-24",
+    "updated": null,
+    "tags": [
+      "security",
+      "encryption",
+      "self-hosted",
+      "evaluation"
+    ],
+    "readingTime": 6,
+    "words": 1237,
+    "featured": false
+  },
+  {
     "slug": "self-hosted-office-suite-vs-wiki",
     "title": "Self-Hosted Office Suite vs Wiki: Which Shape of Work?",
     "description": "A wiki is pages, a tree and search. A suite is documents, sheets and slides. Outline and Docmost for handbooks; a suite for files people edit together.",
@@ -1173,7 +1213,7 @@ export const BLOG_CATEGORIES = [
     "label": "Comparisons",
     "heading": "Document collaboration comparisons",
     "description": "How ShimoDocs compares with Google Docs, Notion, Confluence and other collaboration tools.",
-    "count": 18
+    "count": 19
   },
   {
     "id": "self-hosting",
@@ -1187,7 +1227,7 @@ export const BLOG_CATEGORIES = [
     "label": "Security & compliance",
     "heading": "Document security and compliance",
     "description": "Data sovereignty, access control and the compliance questions teams ask before migrating.",
-    "count": 13
+    "count": 14
   },
   {
     "id": "ai",
@@ -1212,4 +1252,4 @@ export const BLOG_CATEGORIES = [
   }
 ]
 
-export const BLOG_UPDATED = "2026-09-23"
+export const BLOG_UPDATED = "2026-09-24"
