@@ -118,6 +118,12 @@ Replace the example with a new version each time. Pushing `main` runs build chec
 
 Each run creates a unique release directory, leaving previous versions available. The upload step refuses to activate a release that is missing `index.html`, `release.json`, `robots.txt`, `sitemap.xml`, `404.html`, or any of the prerendered subroutes `ai-workspace`, `blog`, `help-center`, `pricing`, `contact-sales`, `docs`, `de/docs` and `ja/docs`. That check runs **before** the symlink is swapped, so a truncated upload never reaches production. `/release.json` records the tag, commit, repository and release ID.
 
+The origin IP serves **two sites**. As of 2026-09-24, `http://43.172.115.22/` with no `Host` header returns the other site (the body was the Office SDK homepage), not ShimoDocs. ShimoDocs is selected only by `Host: shimodocs.com`. v1.9.23 was activated and then rolled back because the verify step fetched `http://$DEPLOY_HOST/release.json` without that header and tried to parse the other site's HTML. v1.9.24 sends `Host: shimodocs.com` on every origin HTTP check in `.github/workflows/deploy.yml`, including the rollback read of `/release.json`. Do not remove it, and do not add a new origin check that uses `fetch` against the bare IP: Node's `fetch` will not let the caller set `Host`. Use `node:http` or `curl -H 'Host: shimodocs.com'`.
+
+```bash
+curl -fsS -H 'Host: shimodocs.com' http://43.172.115.22/release.json
+```
+
 After activating the release, the workflow verifies against the live host:
 
 - Every marketing route returns `200` with prerendered markup, an `<h1>`, a canonical link and structured data, and all six titles are distinct.

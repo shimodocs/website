@@ -121,6 +121,11 @@ shell.
 
 ## Recently
 
+- The origin `43.172.115.22` serves two sites. A request with no `Host` header
+  is the other site, not ShimoDocs. Every origin check, including a manual
+  `curl` of `/release.json`, must send `Host: shimodocs.com`. The tagged
+  deploy already does this (`v1.9.24`). Do not add a `fetch()` against the bare
+  IP: Node will not let the caller set `Host`. See `deploy/README.md`.
 - `9bbdac4` committed a change that had been left in the working tree: pricing
   facts single-sourced, `check-pricing-facts.mjs` and `check-faq.mjs` added,
   sitemap `lastmod` moved to git history, `sitemap-core.xml` split out. If you
