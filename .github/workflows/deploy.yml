@@ -181,7 +181,11 @@ jobs:
           RELEASE_REPOSITORY: ${{ github.repository }}
           RELEASE_ID: ${{ github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
         run: |
-          curl --fail --silent --show-error --max-time 15 "http://$DEPLOY_HOST/release.json" -o live-release.json
+          # Host is required. This origin also answers for another site, and a
+          # request with no Host header is served that site's HTML, which is
+          # not release.json. Measured 2026-09-24: bare IP returned the other
+          # homepage and the check aborted before any ShimoDocs URL was read.
+          curl --fail --silent --show-error --max-time 15 -H 'Host: shimodocs.com' "http://$DEPLOY_HOST/release.json" -o live-release.json
           loc="$(curl -sI --max-time 15 -H 'Host: shimodocs.com' "http://$DEPLOY_HOST/blogs/secure-cloud-collaboration" | awk 'BEGIN{IGNORECASE=1} /^location:/{print $2}' | tr -d '\r')"
           echo "legacy /blogs redirect Location: ${loc:-<none>}"
           if [ -z "$loc" ]; then
@@ -195,6 +199,7 @@ jobs:
           node --input-type=module <<'NODE'
           import assert from 'node:assert/strict';
           import { readFileSync } from 'node:fs';
+          import http from 'node:http';
 
           const release = JSON.parse(readFileSync('live-release.json', 'utf8'));
           assert.equal(release.tag, process.env.RELEASE_TAG);
@@ -203,17 +208,31 @@ jobs:
           assert.equal(release.release, process.env.RELEASE_ID);
           console.log(`Release metadata OK: ${release.repository} ${release.tag} (${release.commit})`);
 
-          const origin = `http://${process.env.DEPLOY_HOST}`;
           const routes = ['/', '/ai-workspace', '/blog', '/help-center', '/pricing', '/contact-sales'];
 
-          const get = async path => {
-            const response = await fetch(origin + path);
-            return {
-              status: response.status,
-              type: response.headers.get('content-type') || '',
-              body: await response.text(),
-            };
-          };
+          // node:http, not fetch: undici will not let the caller set Host, and
+          // without it this IP serves a different site. See the curl above.
+          const get = path => new Promise((resolve, reject) => {
+            const req = http.request({
+              host: process.env.DEPLOY_HOST,
+              port: 80,
+              path,
+              method: 'GET',
+              headers: { Host: 'shimodocs.com', Connection: 'close' },
+            }, response => {
+              const chunks = [];
+              response.on('data', chunk => chunks.push(chunk));
+              response.on('end', () => {
+                resolve({
+                  status: response.statusCode,
+                  type: response.headers['content-type'] || '',
+                  body: Buffer.concat(chunks).toString('utf8'),
+                });
+              });
+            });
+            req.on('error', reject);
+            req.end();
+          });
 
           const titles = new Set();
           for (const route of routes) {
@@ -468,7 +487,7 @@ jobs:
           mv -Tf "$DEPLOY_PATH/.current-rollback" "$DEPLOY_PATH/current"
           printf 'production now serves %s\n' "$(readlink -f "$DEPLOY_PATH/current")"
           REMOTE
-          curl --fail --silent --show-error --max-time 15 "http://$DEPLOY_HOST/release.json" -o rolled-back.json
+          curl --fail --silent --show-error --max-time 15 -H 'Host: shimodocs.com' "http://$DEPLOY_HOST/release.json" -o rolled-back.json
           RELEASE_ID="$FAILED_RELEASE_ID" node --input-type=module <<'NODE'
           import assert from 'node:assert/strict';
           import { readFileSync } from 'node:fs';
