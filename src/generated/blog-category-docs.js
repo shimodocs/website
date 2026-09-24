@@ -24,6 +24,28 @@ export const CATEGORY_DOCS = {
       "description": "User management is used to view users in each tenant of ShimoDocs Suite and to enable or disable user accounts in bulk."
     }
   ],
+  "security": [
+    {
+      "url": "/docs/deployment/operations-platform/system-services/system-management/audit-logs",
+      "title": "Audit Log",
+      "description": "Operation logs are used to view and track user management operations in the system, helping with troubleshooting, security audits, and change tracking."
+    },
+    {
+      "url": "/docs/deployment/system-requirements",
+      "title": "System Requirements",
+      "description": "Supported server resources, network access and deployment prerequisites for installing ShimoDocs Suite in your own private cloud infrastructure."
+    },
+    {
+      "url": "/docs/deployment/troubleshooting/data-backup",
+      "title": "Data Backup",
+      "description": "Validate backup targets and back up the databases, object storage and configuration of a self-hosted ShimoDocs Suite deployment before you need a restore."
+    },
+    {
+      "url": "/docs/deployment/operations-platform/suite/user-management",
+      "title": "Suite User Management",
+      "description": "User management is used to view users in each tenant of ShimoDocs Suite and to enable or disable user accounts in bulk."
+    }
+  ],
   "guides": [
     {
       "url": "/docs/deployment/getting-started/quick-start",
@@ -88,28 +110,6 @@ export const CATEGORY_DOCS = {
       "url": "/docs/deployment/system-requirements",
       "title": "System Requirements",
       "description": "Supported server resources, network access and deployment prerequisites for installing ShimoDocs Suite in your own private cloud infrastructure."
-    }
-  ],
-  "security": [
-    {
-      "url": "/docs/deployment/system-requirements",
-      "title": "System Requirements",
-      "description": "Supported server resources, network access and deployment prerequisites for installing ShimoDocs Suite in your own private cloud infrastructure."
-    },
-    {
-      "url": "/docs/deployment/operations-platform/system-services/system-management/audit-logs",
-      "title": "Audit Log",
-      "description": "Operation logs are used to view and track user management operations in the system, helping with troubleshooting, security audits, and change tracking."
-    },
-    {
-      "url": "/docs/deployment/troubleshooting/data-backup",
-      "title": "Data Backup",
-      "description": "Validate backup targets and back up the databases, object storage and configuration of a self-hosted ShimoDocs Suite deployment before you need a restore."
-    },
-    {
-      "url": "/docs/deployment/operations-platform/suite/user-management",
-      "title": "Suite User Management",
-      "description": "User management is used to view users in each tenant of ShimoDocs Suite and to enable or disable user accounts in bulk."
     }
   ],
   "ai": [

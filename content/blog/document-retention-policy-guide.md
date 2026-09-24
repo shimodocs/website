@@ -134,3 +134,5 @@ Point five is the one with real consequences. Destroying records after a duty to
 Retention is one area where the difference between platforms is concrete rather than theoretical. The questions are whether retention is a first-class feature or a report, whether holds take precedence automatically, and whether deletion evidence is producible.
 
 Our [ISO 27001 article](/blog/iso27001-document-management) covers the control framework this maps onto, and [access control best practices](/blog/access-control-best-practices-documents) covers who should be able to change a retention rule in the first place.
+
+The [audit log guide](/docs/deployment/operations-platform/system-services/system-management/audit-logs) covers the evidence trail for configuration changes and administrative actions around that policy.

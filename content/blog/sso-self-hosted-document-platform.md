@@ -42,6 +42,8 @@ That asymmetry is the central point of this article. Authentication failures are
 
 Four pieces of information, in rough order of importance.
 
+The [Suite User Management guide](/docs/deployment/operations-platform/suite/user-management) is the first-party reference for the account state that the identity flow has to keep current.
+
 **A stable unique identifier.** Not an email address, which changes, and not a display name, which is not unique. A directory-assigned immutable identifier is what the platform should key on.
 
 **Group membership**, including nested groups resolved. This is what drives repository permissions in the model described in our [access control article](/blog/access-control-best-practices-documents).
@@ -49,6 +51,8 @@ Four pieces of information, in rough order of importance.
 **Account status.** Disabled, suspended or deleted. The platform has to learn about this, and it has to act on it without a human step.
 
 **Profile attributes** for display: name, email, and whatever the organisation uses for department or location, which is often useful for access review reporting.
+
+For platform administrators, the [platform user management guide](/docs/deployment/operations-platform/system-services/system-management/user-management) covers the separate operator-side account and role surface; it should not be confused with directory provisioning.
 
 The failure to avoid is a platform that resolves group membership only at sign-in. A user who signs in once and stays signed in keeps their group-derived permissions from the moment of that sign-in, and a transfer or a departure that happens afterwards is not reflected until the session ends.
 

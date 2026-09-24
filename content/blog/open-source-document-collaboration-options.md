@@ -116,6 +116,8 @@ There are three viable maintenance postures, and they have very different cost p
 
 A useful test is to ask what happens to a security patch. If the answer is "we upgrade", the project must ship security releases promptly. If the answer is "we patch and carry", you have accepted a fork by accident.
 
+The [resource planning guide](/docs/deployment/getting-started/resource-planning) is the first-party baseline for sizing that operational work, while the [quick-start guide](/docs/deployment/getting-started/quick-start) shows the smallest supported installation path to test before committing to a project.
+
 ## What to put in the evaluation record
 
 Whatever you decide, write down the basis for it. Open source decisions get revisited by people who were not in the room, and a record prevents the argument from restarting from first principles.

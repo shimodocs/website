@@ -461,7 +461,7 @@ export const BLOG_POSTS = [
       "operations"
     ],
     "readingTime": 7,
-    "words": 1456,
+    "words": 1485,
     "featured": false
   },
   {
@@ -502,7 +502,7 @@ export const BLOG_POSTS = [
       "oidc"
     ],
     "readingTime": 6,
-    "words": 1375,
+    "words": 1428,
     "featured": false
   },
   {
@@ -701,8 +701,8 @@ export const BLOG_POSTS = [
       "deletion",
       "records"
     ],
-    "readingTime": 5,
-    "words": 1209,
+    "readingTime": 6,
+    "words": 1230,
     "featured": false
   },
   {
@@ -842,7 +842,7 @@ export const BLOG_POSTS = [
       "evaluation"
     ],
     "readingTime": 6,
-    "words": 1227,
+    "words": 1263,
     "featured": false
   },
   {
@@ -1022,7 +1022,7 @@ export const BLOG_POSTS = [
       "audit"
     ],
     "readingTime": 5,
-    "words": 1024,
+    "words": 1053,
     "featured": false
   },
   {
@@ -1042,7 +1042,7 @@ export const BLOG_POSTS = [
       "high availability"
     ],
     "readingTime": 5,
-    "words": 1006,
+    "words": 1032,
     "featured": false
   },
   {
@@ -1062,7 +1062,7 @@ export const BLOG_POSTS = [
       "governance"
     ],
     "readingTime": 5,
-    "words": 1067,
+    "words": 1117,
     "featured": true
   },
   {

@@ -71,6 +71,8 @@ Not just role definitions. The ability to answer, for a specific document and a 
 
 Practical requirements: group-based roles mapped from your directory, per-document sharing with revocation, and an access log retained for the period your record-keeping policy specifies.
 
+The [audit log guide](/docs/deployment/operations-platform/system-services/system-management/audit-logs) is the first-party reference for checking who changed configuration and when, which is the evidence an examiner can actually review.
+
 ### Retention and legal hold
 
 Retention rules vary by record type and jurisdiction. A document suite needs the ability to place a hold that survives user deletion and normal retention expiry.

@@ -53,6 +53,8 @@ Restoring the data is necessary and not sufficient. A working service needs six 
 
 **Network and DNS.** The recovery site needs to be reachable at the address clients expect, which usually means a DNS change with a time-to-live that determines how fast clients follow.
 
+The [incident response runbook](/docs/deployment/troubleshooting/incident-response-sop) gives the operational sequence to follow while the recovery team is deciding whether the event is a service failure or a site failure.
+
 **The search index**, rebuilt rather than restored, and large enough to take meaningful time at scale. It belongs in the recovery timeline rather than after it.
 
 The DNS time-to-live is worth a specific mention because it is a configuration value that silently sets a floor on recovery time. A record with an hour-long time-to-live means an hour of recovery that no amount of engineering removes, and it is a one-line change to fix in advance.

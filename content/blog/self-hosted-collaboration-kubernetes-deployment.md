@@ -84,6 +84,8 @@ Rough starting points for a mid-size deployment:
 - **Search and AI add their own footprints.** An AI retrieval path reads and chunks documents, which is I/O and memory you should measure separately.
 - **Object storage grows monotonically.** Version history accumulates. Decide a retention policy before the bill decides it for you.
 
+The [high-availability Kubernetes guide](/docs/deployment/getting-started/high-availability-kubernetes) is the first-party topology and verification reference once the measured workload justifies moving beyond a single node.
+
 Measure before you scale. The vendor's [resource planning guide](https://github.com/shimodocs/shimodocs/blob/main/docs/deployment/getting-started/resource-planning.md) documents the baseline; your own numbers are the ones that matter.
 
 ## High availability: what actually improves

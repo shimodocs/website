@@ -198,6 +198,10 @@ export const ARTICLE_DOCS = {
     'deployment/getting-started/quick-start',
     'deployment/operations-platform/suite/user-management',
   ],
+  'sharepoint-server-after-support-ends': [
+    'deployment/operations-platform/suite/configuration/editor-configuration',
+    'deployment/operations-platform/suite/configuration/system-configuration',
+  ],
   'shimodocs-vs-coda': [
     'deployment/getting-started/quick-start',
     'deployment/system-requirements',
@@ -243,5 +247,9 @@ export const ARTICLE_DOCS = {
     'deployment/getting-started/quick-start',
     'deployment/system-requirements',
     'deployment',
+  ],
+  'zero-knowledge-editor-vs-document-suite': [
+    'deployment/operations-platform/suite/user-management',
+    'deployment/operations-platform/system-services/system-management/audit-logs',
   ],
 }

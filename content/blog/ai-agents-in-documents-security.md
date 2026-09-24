@@ -51,6 +51,8 @@ Options in ascending order of control:
 
 A suite with a configurable endpoint lets you move along this table without changing products. That is worth more than any single model's benchmark score.
 
+The [AI configuration guide](/docs/deployment/operations-platform/suite/ai-configuration) is the first-party reference for the endpoint and feature settings that determine this egress path.
+
 ### Make permission checks part of retrieval
 
 The assistant's search must run with the requesting user's permissions, not the service account's. Ask the vendor directly: does retrieval filter by document ACL, or does it search everything and rely on the model to be discreet?
@@ -77,6 +79,8 @@ Logging prompts is useful for debugging and dangerous for confidentiality. Loggi
 - Can a user see the context that was sent on their behalf?
 
 A defensible default is to log metadata always — who invoked what, on which document, when — and to log content only in a debugging mode that is off by default and time-limited.
+
+The deployment boundary and its supported resources are documented in the [system requirements guide](/docs/deployment/system-requirements); use it before treating a local model endpoint as an operationally complete control.
 
 ## The audit trail is the product
 
