@@ -42,8 +42,8 @@ export default function Pricing() {
             <li>✓ AI workspace preview</li>
             <li>✓ Version history</li>
           </ul>
-          <Link to="/contact-sales" className="text-link">
-            Get started ↗
+          <Link to="/download" className="text-link">
+            Download ↗
           </Link>
         </article>
         <article className="featured">
@@ -60,7 +60,7 @@ export default function Pricing() {
             <li>✓ AI assistance across your workspace</li>
           </ul>
           <Link to="/contact-sales" className="button">
-            Talk to sales
+            Contact sales
           </Link>
         </article>
       </section>

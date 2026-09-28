@@ -160,7 +160,7 @@ export default function Download() {
             Deployment guides
           </Link>
           <Link className="text-link" to="/contact-sales">
-            Talk to the team ↗
+            Contact sales ↗
           </Link>
         </div>
       </section>

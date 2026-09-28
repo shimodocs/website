@@ -106,7 +106,7 @@ const EN = {
   ctaBody:
     'Self-host the suite in your own Kubernetes cluster, or ask the team for a guided private cloud deployment.',
   ctaDownload: 'Download the installer',
-  ctaContact: 'Talk to us',
+  ctaContact: 'Contact sales',
   indexEyebrow: 'Documentation',
   indexQuickStart: 'Start with the quick start',
   indexRequirements: 'Check system requirements',
@@ -148,7 +148,7 @@ const TRANSLATIONS = {
     ctaBody:
       'Betreiben Sie die Suite in Ihrem eigenen Kubernetes-Cluster oder lassen Sie sich vom Team bei der Bereitstellung in Ihrer privaten Cloud begleiten.',
     ctaDownload: 'Installer herunterladen',
-    ctaContact: 'Kontakt aufnehmen',
+    ctaContact: 'Vertrieb kontaktieren',
     indexEyebrow: 'Dokumentation',
     indexQuickStart: 'Mit dem Schnellstart beginnen',
     indexRequirements: 'Systemanforderungen prüfen',
@@ -266,7 +266,7 @@ const TRANSLATIONS = {
     ctaBody:
       '自社の Kubernetes クラスタにセルフホストするか、チームによるプライベートクラウド構築の支援をご依頼ください。',
     ctaDownload: 'インストーラーをダウンロード',
-    ctaContact: 'お問い合わせ',
+    ctaContact: '営業に問い合わせ',
     indexEyebrow: 'ドキュメント',
     indexQuickStart: 'クイックスタートを始める',
     indexRequirements: 'システム要件を確認する',

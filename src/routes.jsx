@@ -61,9 +61,10 @@ export const ROUTES = [
   { path: '/legal-page/terms-conditions', label: 'Terms & Conditions', Component: TermsConditions },
 ]
 
-// The header is a subset of ROUTES. Home is the logo, and contact is the
-// Get started button, so neither is a text tab. Help Center stays published
-// at its own URL and is linked from the footer; the header points at /docs.
+// The header is a subset of ROUTES. Home is the logo. Download is the filled
+// button and contact sales is the text link beside it, so neither is a text
+// tab. Help Center stays published at its own URL and is linked from the
+// footer; the header points at /docs.
 // Every entry must still resolve to a declared route.
 const NAV_ITEMS = [
   ['/ai-workspace', 'AI Workspace'],

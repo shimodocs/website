@@ -154,7 +154,7 @@ export default function BlogCategory() {
             Download the installer
           </a>
           <a className="button outline" href="/contact-sales">
-            Talk to us
+            Contact sales
           </a>
         </div>
       </aside>

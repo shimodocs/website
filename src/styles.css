@@ -116,6 +116,7 @@
   --ease-smooth-out:cubic-bezier(0.22,1,0.36,1);
 }
 .nav-tabs a,
+.nav-contact,
 .nav-cta,
 .button,
 .scene-pills button,
@@ -142,6 +143,8 @@
 /* Solutions is a plain hover target. A closed <details> element hides its
    contents, which is why the caret turned and the menu never appeared. */
 .site-nav{position:relative;z-index:40}
+.nav-contact{color:#ddd8ed;font-size:14px;font-weight:500;text-decoration:none;white-space:nowrap}
+.nav-contact:hover{color:#fff}
 .nav-tabs{position:relative}
 .nav-tabs>a,.nav-menu-label{position:relative;z-index:1;font-size:15px;padding:10px 15px}
 .nav-indicator{position:absolute;left:0;top:0;z-index:0;border-radius:999px;background:#ffffff1f;pointer-events:none;opacity:0;transition:transform var(--duration-fast) var(--ease-smooth-out),width var(--duration-fast) var(--ease-smooth-out),height var(--duration-fast) var(--ease-smooth-out),opacity var(--duration-quick) linear}
