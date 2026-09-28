@@ -261,6 +261,8 @@ for (const [language, languageDocs] of docsByLanguage) {
   }
 
   for (const doc of ordered) {
+    // Match the visible date and structured data to this guide's sitemap date.
+    doc.updated = docLastmod(doc)
     const groupId = doc.id.split('/').slice(0, 2).join('/')
     const index = groupIndex.get(groupId)
     const trail = doc.id && index && index.id !== doc.id ? [{ name: index.title, url: index.url }] : []

@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import { ProductFacts } from '../components/ProductFacts'
-import { Eyebrow } from '../components/Section'
+import { Eyebrow, PageUpdated } from '../components/Section'
+import { ROUTE_UPDATED } from '../seo'
 import { TEAM_PRICE_PER_USER } from '../pricing-facts.js'
 
 // The comparison hub the previous site published at /comparison. The matrix
@@ -10,31 +11,25 @@ const PRODUCTS = ['ShimoDocs', 'Google Docs', 'Microsoft 365', 'Nextcloud', 'ONL
 
 const MATRIX = [
   ['Real-time collaboration', '✓', '✓', '✓', '✓', '✓', '✓'],
-  ['Private deployment', '✓', '—', 'Limited', '✓', '✓', '—'],
-  ['Full data ownership', '✓', '—', 'Limited', '✓', '✓', '—'],
-  ['Native browser editor', '✓', '✓', '—', '—', '✓', '—'],
-  ['Enterprise permissions', '✓', '✓', '✓', '✓', '✓', 'Limited'],
-  ['Audit logs', '✓', '✓', '✓', '✓', '✓', 'Enterprise only'],
-  ['SSO', '✓', '✓', '✓', '✓', '✓', 'Enterprise only'],
-  ['Open API', '✓', '✓', '✓', '✓', '✓', '✓'],
-  ['Web · desktop · mobile', '✓', '✓', '✓', '✓', '✓', '✓'],
+  ['Self-hosted deployment option', '✓', '—', '—', '✓', '✓', '—'],
+  ['Data stored in infrastructure you control', '✓', '—', '—', '✓', '✓', '—'],
   [
     'Starting price',
     `$${TEAM_PRICE_PER_USER} / user / month`,
-    '$6 / user / month',
-    '$6 / user / month',
-    'Server cost',
-    'Server cost',
-    '$10+ / user / month',
+    'See current vendor pricing',
+    'See current vendor pricing',
+    'Software and infrastructure vary',
+    'Software and infrastructure vary',
+    'See current vendor pricing',
   ],
 ]
 
 const REASONS = [
   ['Familiar experience', 'Google Docs-style editing that your team can adopt in minutes.'],
   ['Private and secure', 'Deploy in your own environment and keep full control of your data.'],
-  ['Enterprise control', 'Advanced permissions, audit logs, SSO and compliance-ready controls.'],
-  ['More affordable', 'Simple pricing that costs less without compromising on security.'],
-  ['Open and extensible', 'An open API and flexible architecture that grows with your business.'],
+  ['Enterprise control', 'Review permissions, audit and identity controls against your deployment requirements.'],
+  ['A clearer boundary', 'Keep the document workload in infrastructure your organisation controls.'],
+  ['Open and extensible', 'Assess the integration surface and operating work against your own environment.'],
 ]
 
 const DEEP_DIVES = [
@@ -62,10 +57,26 @@ export default function Comparison() {
           How ShimoDocs compares with Google Docs, Microsoft 365, Nextcloud, ONLYOFFICE and Notion on private
           deployment, data ownership, editing experience, permissions and price.
         </p>
+        <PageUpdated date={ROUTE_UPDATED['/comparison']} />
       </section>
 
       <section className="section">
         <ProductFacts />
+      </section>
+
+      <section className="section">
+        <Eyebrow>How to use the matrix</Eyebrow>
+        <h2>
+          Compare the boundary,
+          <br />
+          <span className="gradient">then the features.</span>
+        </h2>
+        <ol className="comparison-steps">
+          <li>Write down where documents, metadata and AI context are allowed to live.</li>
+          <li>Mark the permissions, audit and identity controls your review requires.</li>
+          <li>Test the hardest real document and the migration path before scoring features.</li>
+          <li>Compare the ongoing operating work alongside the licence price.</li>
+        </ol>
       </section>
 
       <section className="section">
@@ -76,12 +87,10 @@ export default function Comparison() {
           <span className="gradient">six platforms.</span>
         </h2>
         <p className="section-lead">
-          Ticks mark capabilities available on the platform&apos;s own terms. &ldquo;Limited&rdquo; and &ldquo;Enterprise
-          only&rdquo; mark capabilities that exist but are restricted or gated. &ldquo;Native browser editor&rdquo;
-          marks an editor built for the web, as opposed to a browser version of a desktop suite or an editor supplied by
-          an integrated third party — which is the distinction those cells draw, not whether documents can be edited
-          together. Prices are list prices per user per month when billed annually, last reviewed in September 2026;
-          self-hosted options are shown as infrastructure cost because you supply the servers.
+          Ticks mark the broad capability or deployment shape the product publishes. The table keeps the comparison
+          at the level that can be checked from each vendor&apos;s current documentation. Prices change by plan, region,
+          currency and billing term, so competitor cells should be checked against current vendor pricing rather than
+          repeating volatile numbers; self-hosted options also carry infrastructure and operating costs.
         </p>
         <div className="post-body">
           <table>

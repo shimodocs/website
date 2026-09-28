@@ -90,11 +90,15 @@ export default function Doc({ doc, nav, previous = null, next = null, alternates
             <h1>{doc.title}</h1>
             <p className="doc-meta">
               {ui.minRead(doc.readingTime)}
+              {doc.updated ? (
+                <>
+                  {' · '}{ui.lastUpdated || docsUi().lastUpdated}{' '}
+                  <time dateTime={doc.updated}>{doc.updated}</time>
+                </>
+              ) : null}
               {' · '}
               <a
-                href={`https://github.com/shimodocs/shimodocs/blob/main/${
-                  doc.language === DOCS_DEFAULT_LANGUAGE ? 'docs' : `docs/${doc.language}`
-                }/${doc.id ? `${doc.id}.md` : 'README.md'}`}
+                href={`https://github.com/shimodocs/shimodocs/blob/main/${doc.file.replace(/^content\//, '')}`}
                 target="_blank"
                 rel="noreferrer"
               >

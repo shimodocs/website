@@ -274,7 +274,7 @@ export const ROUTE_SEO = {
       {
         question: 'Does ShimoDocs send document content to an AI provider?',
         answer:
-          'Only to endpoints you configure. The AI capabilities — a base model, an image model, embeddings and an optional online search service — are connected in the operations platform, so a deployment can point them at a model inside its own network and keep content there. Online search is a separate, optional service: leave it unconfigured and no outbound retrieval happens.',
+          'AI services use the endpoints you configure: a base model, an image model, embeddings and optional online search. Hosted endpoints may receive document context. To keep processing inside your network, use internal endpoints for every enabled capability and verify their traffic. Leaving online search unconfigured disables that connection, but does not block external model or embedding calls.',
       },
       {
         question: 'Where is ShimoDocs data stored?',
@@ -306,7 +306,7 @@ export const ROUTE_SEO = {
       {
         question: 'How does AI work in an air-gapped deployment?',
         answer:
-          'The AI configuration layer points at a model endpoint you choose. In an isolated network that means a model served inside the boundary, so no prompt or document context leaves the enclave. If no model is available, the collaboration features work without it.',
+          'Configure internal endpoints for every AI capability you enable, including models and embeddings, and leave internet-dependent search disabled. Verify the configuration with outbound access denied. If no compatible model is available inside the boundary, use the collaboration features without AI.',
       },
       {
         question: 'What has to be transferred across the air gap?',
@@ -578,7 +578,7 @@ export const ROUTE_SEO = {
 // or an unusable one.
 export const ROUTE_UPDATED = {
   '/': '2026-09-15',
-  '/ai-workspace': '2026-09-15',
+  '/ai-workspace': '2026-09-28',
   '/blog': '2026-09-17',
   '/blog/category/comparisons': '2026-09-17',
   '/blog/category/self-hosting': '2026-09-17',
@@ -588,21 +588,41 @@ export const ROUTE_UPDATED = {
   '/blog/category/guides': '2026-09-17',
   '/help-center': '2026-09-15',
   '/docs': '2026-09-15',
-  '/on-premises': '2026-09-15',
-  '/airgap': '2026-09-15',
-  '/security': '2026-09-15',
+  '/on-premises': '2026-09-28',
+  '/airgap': '2026-09-28',
+  '/security': '2026-09-28',
   '/solutions/atlassian-alternative': '2026-09-15',
   '/solutions/confluence-alternative': '2026-09-15',
   '/migration': '2026-09-15',
-  '/pricing': '2026-09-15',
-  '/contact-sales': '2026-09-11',
+  '/pricing': '2026-09-28',
+  '/contact-sales': '2026-09-28',
   '/about': '2026-09-14',
-  '/comparison': '2026-09-15',
+  '/comparison': '2026-09-28',
   '/download': '2026-09-15',
   '/resources': '2026-09-14',
   '/legal-page/privacy-policy': '2026-09-14',
   '/legal-page/terms-conditions': '2026-09-14',
 }
+
+// These routes render PageUpdated in their visible body. Keep dateModified off
+// index, archive and legal surfaces that do not print a corresponding date.
+const VISIBLE_ROUTE_DATES = new Set([
+  '/ai-workspace',
+  '/help-center',
+  '/docs',
+  '/on-premises',
+  '/airgap',
+  '/security',
+  '/solutions/atlassian-alternative',
+  '/solutions/confluence-alternative',
+  '/migration',
+  '/pricing',
+  '/contact-sales',
+  '/about',
+  '/comparison',
+  '/download',
+  '/resources',
+])
 
 export const ROUTE_PATHS = Object.keys(ROUTE_SEO)
 
@@ -701,6 +721,8 @@ function breadcrumbLabel(pathname) {
     '/docs': 'Documentation',
     '/on-premises': 'On-Premises Deployment',
     '/airgap': 'Air-Gapped Deployment',
+    '/security': 'Security',
+    '/migration': 'Migration',
     '/solutions/atlassian-alternative': 'Atlassian Alternative',
     '/solutions/confluence-alternative': 'Confluence Alternative',
     '/pricing': 'Pricing',
@@ -805,6 +827,7 @@ export function jsonLdFor(pathname) {
       url: meta.canonical,
       name: meta.title,
       description: meta.description,
+      ...(VISIBLE_ROUTE_DATES.has(clean) && ROUTE_UPDATED[clean] ? { dateModified: ROUTE_UPDATED[clean] } : {}),
       isPartOf: { '@id': WEBSITE_ID },
       about: { '@id': ORGANIZATION_ID },
       inLanguage: 'en',
@@ -1308,6 +1331,7 @@ export function docJsonLd(doc, trail = []) {
         url: canonical,
         name: doc.seoTitle,
         description: doc.description,
+        ...(doc.updated ? { dateModified: doc.updated } : {}),
         isPartOf: { '@id': WEBSITE_ID },
         breadcrumb: { '@id': breadcrumbId },
         inLanguage: language,
@@ -1317,6 +1341,7 @@ export function docJsonLd(doc, trail = []) {
         '@id': articleId,
         headline: doc.title,
         description: doc.description,
+        ...(doc.updated ? { dateModified: doc.updated } : {}),
         url: canonical,
         mainEntityOfPage: { '@id': pageId },
         author: { '@type': 'Organization', name: SITE_NAME, url: canonicalFor('/') },

@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
-import { Eyebrow } from '../components/Section'
+import { Eyebrow, PageUpdated } from '../components/Section'
+import { ROUTE_UPDATED } from '../seo'
 import { FREE_TEAM_LIMIT_WORD } from '../pricing-facts.js'
 
 // The previous site published this hub at /resources and listed it nowhere, so
@@ -60,6 +61,7 @@ export default function Resources() {
           Everything we publish about secure document collaboration and private cloud deployment, collected in one
           place: the journal, the deployment guides, the platform comparisons and the installers.
         </p>
+        <PageUpdated date={ROUTE_UPDATED['/resources']} />
       </section>
 
       <section className="section">

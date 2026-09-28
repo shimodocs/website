@@ -44,6 +44,16 @@ export const HUBS = {
           'An integrated single-node environment deploys the whole stack onto one prepared machine. It is the right shape for an evaluation, a pilot, or a small team that values simplicity over redundancy, and it produces the acceptance materials a handover or an audit will ask for.',
           'A high-availability cluster is the production shape: three or more master nodes with worker capacity, so losing a node does not take collaboration down. The recommended starting topology is three masters with additional workers added later as load grows. Both shapes install from the same package; the difference is the topology you prepare, not the software you run.',
         ],
+        table: {
+          head: ['Resource', 'Single-node evaluation', 'High-availability cluster'],
+          rows: [
+            ['Servers', '1', '3 or more'],
+            ['CPU and memory per server', '16+ cores, 32+ GB RAM', '16+ cores, 32+ GB RAM'],
+            ['System disk per server', '100+ GB', '100+ GB'],
+            ['Separate data disk per server', '300+ GB at /data', '300+ GB at /data'],
+          ],
+          caption: 'Baseline requirements from the deployment guide; size storage and worker capacity for your workload.',
+        },
         links: [
           ['/docs/deployment/getting-started/single-node-kubernetes', 'Single-node Kubernetes deployment guide'],
           ['/docs/deployment/getting-started/high-availability-kubernetes', 'High-availability deployment guide'],
@@ -88,7 +98,7 @@ export const HUBS = {
     checklist: {
       heading: 'What to have ready before you start',
       items: [
-        'Three or more servers with synchronised clocks and SSH between them',
+        'One server for evaluation, or three or more for high availability; synchronise clocks and prepare SSH access',
         'A data disk mounted at /data on every node, 300 GB or more',
         'A decision on bundled versus external MySQL, Redis, MongoDB and Kafka',
         'An S3-compatible object storage endpoint for document files',
@@ -103,12 +113,12 @@ export const HUBS = {
     eyebrow: 'Air-gapped deployment',
     h1: ['Document collaboration inside', 'an isolated network.'],
     lead:
-      'Real-time editing, comments, version history and search do not need the internet. They need a network. ShimoDocs runs the full collaboration surface inside an air-gapped enclave, installed from offline packages and with nothing calling out.',
+      'Air-gapped document collaboration runs inside an isolated network using offline installation packages and internal services. ShimoDocs supports this deployment path; confirm the configured storage, identity and AI endpoints stay inside your boundary before acceptance.',
     sections: [
       {
         heading: 'Why an air gap changes the design, not the features',
         body: [
-          'Most collaboration platforms assume three outbound dependencies: licence validation, update checks, and a hosted AI endpoint. Any one of them turns an isolated network into a broken deployment. Removing them is an installation-time property, not something you configure afterwards.',
+          'An offline deployment needs a plan for installation, licence activation, upgrades and optional AI services. Identify these dependencies before installation, then validate the configured system with outbound access denied.',
           'ShimoDocs installs from offline image packages and the deployment guide documents the isolated path explicitly, alongside the online one. The installer accepts an external middleware address instead of bundling its own, so the suite can be pointed at infrastructure that already exists on the isolated side.',
         ],
         links: [
@@ -134,7 +144,7 @@ export const HUBS = {
         heading: 'AI without outbound access',
         body: [
           'The usual casualty of an air gap is AI assistance, because hosted model APIs are unreachable by definition. The AI configuration layer in ShimoDocs points at an endpoint you specify, which on an isolated network means a model served inside the enclave.',
-          'That turns prompt and document context into internal traffic that your existing network controls already cover. If no model is available in the enclave, the collaboration features are unaffected — AI is an addition to the suite, not a dependency of it.',
+          'Review all configured services: base model, image model, embeddings and online search. Each enabled endpoint must be reachable inside the enclave; leave online search unconfigured when no internal service is available. Disabling search alone does not stop a hosted model or embedding endpoint from receiving context. If no model is available in the enclave, use the collaboration features without AI.',
         ],
         links: [
           ['/docs/deployment/operations-platform/suite/ai-configuration', 'AI configuration reference'],
@@ -153,6 +163,21 @@ export const HUBS = {
         ],
         note:
           'Everything in the collaboration core — real-time co-editing, comments and suggestions, version history, document-level permissions, audit logs, forms, spreadsheets, presentations and search — is internal traffic and works normally.',
+      },
+      {
+        heading: 'Validate an isolated deployment',
+        body: ['Use a representative workspace and record the results before accepting the environment.'],
+        steps: [
+          'Prepare the installer, offline images, licence file and middleware through your approved transfer process.',
+          'Install the suite and verify the licence in the operations platform before publishing the configuration.',
+          'With internet egress denied, have two internal users edit a document, comment, reopen it and check version history.',
+          'Test each enabled AI capability and inspect network logs for attempted external connections; correct or disable any external endpoint.',
+          'Rehearse a backup restore and an offline upgrade in a test environment, and keep the acceptance record with the runbook.',
+        ],
+        links: [
+          ['/docs/deployment/operations-platform/suite/license-management', 'Licence verification and activation'],
+          ['/docs/deployment/troubleshooting/data-backup', 'Backup and restore procedure'],
+        ],
       },
       {
         heading: 'Keeping an isolated deployment maintainable',
@@ -218,7 +243,7 @@ export const HUBS = {
         heading: 'What leaves your network',
         body: [
           'AI is the part of a modern suite that usually means sending content to a vendor. Here the capabilities are endpoints you connect: a base model, an image model, embeddings, and optionally an online search service. Point them at a model inside your own boundary and the content stays there; point them at a provider you have approved and the data flow becomes a decision you made and can document.',
-          'Online search is a separate service and is not required. Left unconfigured, no outbound retrieval happens at all.',
+          'Online search is a separate, optional service. Leaving it unconfigured disables that search connection; it does not prevent a configured model or embedding endpoint from receiving content. Review every enabled endpoint and validate its traffic against your egress policy.',
         ],
         note:
           'One network fact worth designing around rather than discovering: browsers read and write document content directly against the object storage endpoint, so that endpoint has to be reachable from the client network. Plan the path deliberately instead of exposing it by accident.',
@@ -231,7 +256,7 @@ export const HUBS = {
       {
         heading: 'Backups, retention and legal hold',
         body: [
-          'Backups belong to the operator, and the runbook says which databases, buckets and configuration to capture — and which directories to leave alone. Retention and hold are workspace policy decisions that the deployment can enforce, rather than promises a vendor makes about data it holds.',
+          'Backups belong to the operator, and the runbook says which databases, buckets and configuration to capture — and which directories to leave alone. Define retention periods and legal-hold requirements with your records owner, then verify the required enforcement in your deployment. Self-hosting and backups alone do not establish a legal-hold control.',
         ],
         links: [
           ['/docs/deployment/troubleshooting/data-backup', 'Data backup runbook'],
@@ -255,6 +280,17 @@ export const HUBS = {
           ['/docs/deployment/middleware/mysql/deployment', 'Bringing your own MySQL 8'],
           ['/docs/deployment/middleware/redis/deployment', 'Bringing your own Redis'],
           ['/docs/deployment/middleware/dameng/requirements', 'Dameng V8 requirements'],
+        ],
+      },
+      {
+        heading: 'Run a security acceptance review',
+        body: ['Use these checks to turn the deployment boundary into evidence your reviewers can inspect.'],
+        steps: [
+          'Map document, database, object storage and AI endpoints, including the browser-to-storage path.',
+          'Test access with an administrator and a restricted user; verify the relevant operation log entries.',
+          'Exercise enabled AI services and compare observed connections with the approved endpoint list.',
+          'Restore a representative backup in a test environment and record the recovery result.',
+          'Assign owners for patching, account reviews, backups and retention; attach the test results to the security review.',
         ],
       },
       {

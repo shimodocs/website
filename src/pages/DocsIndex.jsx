@@ -5,7 +5,8 @@
 // on a sitemap alone for discovery.
 import { DOC_NAV } from '../generated/docs-nav'
 import { FREE_TEAM_LIMIT_WORD } from '../pricing-facts.js'
-import { Eyebrow } from '../components/Section'
+import { Eyebrow, PageUpdated } from '../components/Section'
+import { ROUTE_UPDATED } from '../seo'
 
 const TOTAL = DOC_NAV.reduce(
   (sum, group) => sum + group.docs.length + group.subgroups.reduce((inner, subgroup) => inner + subgroup.docs.length, 0),
@@ -36,6 +37,7 @@ export default function DocsIndex() {
           operations, AI configuration, backup and incident response — written for the people who run the suite, not
           for a sales conversation.
         </p>
+        <PageUpdated date={ROUTE_UPDATED['/docs']} />
         <div className="docs-hero-actions">
           <a className="button" href="/docs/deployment/getting-started/quick-start">
             Start with the quick start

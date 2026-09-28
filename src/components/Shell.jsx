@@ -1,7 +1,7 @@
 import { Link, NavLink, useLocation } from 'react-router-dom'
 import { LICENSE_EMAIL, LICENSE_REQUEST_URL } from '../downloads'
 import { NAV_LINKS, SOLUTION_GROUPS } from '../routes'
-import { GITHUB_URL } from '../seo'
+import { GITHUB_URL, breadcrumbFor } from '../seo'
 import { FREE_TEAM_LIMIT } from '../pricing-facts.js'
 
 // The header links and the footer are both in the prerendered HTML. Article
@@ -44,6 +44,26 @@ const FOOTER_SECTIONS = [
     ],
   },
 ]
+
+function RouteBreadcrumb({ pathname }) {
+  if (pathname === '/' || pathname.startsWith('/blog/') || pathname.startsWith('/docs/')) return null
+  const items = breadcrumbFor(pathname)
+  if (items.length < 2) return null
+  return (
+    <nav className="breadcrumb page shell-breadcrumb" aria-label="Breadcrumb">
+      {items.map((item, index) => (
+        <span key={item.url}>
+          {index ? <span aria-hidden="true">/</span> : null}
+          {index === items.length - 1 ? (
+            <span className="breadcrumb-current" aria-current="page">{item.name}</span>
+          ) : (
+            <a href={new URL(item.url).pathname}>{item.name}</a>
+          )}
+        </span>
+      ))}
+    </nav>
+  )
+}
 
 export default function Shell({ children }) {
   const { pathname } = useLocation()
@@ -142,7 +162,10 @@ export default function Shell({ children }) {
           </Link>
         </div>
       </header>
-      <main id="main-content">{children}</main>
+      <main id="main-content">
+        <RouteBreadcrumb pathname={pathname} />
+        {children}
+      </main>
       <footer className="site-footer">
         <div className="footer-brand">
           <span className="footer-logo">

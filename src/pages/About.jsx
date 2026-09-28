@@ -1,7 +1,8 @@
 import { Link } from 'react-router-dom'
 import { ProductFacts } from '../components/ProductFacts'
 import { PRODUCT_DEFINITION } from '../product-facts.js'
-import { Eyebrow } from '../components/Section'
+import { Eyebrow, PageUpdated } from '../components/Section'
+import { ROUTE_UPDATED } from '../seo'
 
 // The company page the previous site published at /about. The URL is kept
 // exactly so the page Google already indexed keeps its address and ranking
@@ -30,6 +31,7 @@ export default function About() {
           <span className="gradient">under your control.</span>
         </h1>
         <p>{PRODUCT_DEFINITION}</p>
+        <PageUpdated date={ROUTE_UPDATED['/about']} />
         <div className="hero-actions">
           <Link className="button" to="/contact-sales">
             Contact Sales

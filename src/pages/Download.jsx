@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import { ProductFacts } from '../components/ProductFacts'
-import { Eyebrow } from '../components/Section'
+import { Eyebrow, PageUpdated } from '../components/Section'
+import { ROUTE_UPDATED } from '../seo'
 import { FREE_TEAM_LIMIT_WORD } from '../pricing-facts.js'
 import { DOWNLOADS, LICENSE_EMAIL, LICENSE_REQUEST_URL } from '../downloads'
 
@@ -36,6 +37,7 @@ export default function Download() {
           Self-hosted installers for Linux, built from the open release channel. Version {DOWNLOADS.version}, published
           as a zip archive with the deployment assets inside.
         </p>
+        <PageUpdated date={ROUTE_UPDATED['/download']} />
         <div className="hero-actions">
           <a
             className="button download-cta"

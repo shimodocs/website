@@ -8,10 +8,10 @@
 // the same string by construction.
 import { useLocation } from 'react-router-dom'
 import { ProductFacts } from '../components/ProductFacts'
-import { Eyebrow } from '../components/Section'
+import { Eyebrow, PageUpdated } from '../components/Section'
 import { FREE_TEAM_LIMIT_WORD } from '../pricing-facts.js'
 import { HUBS } from '../hubs'
-import { ROUTE_SEO, normalisePath } from '../seo'
+import { ROUTE_SEO, ROUTE_UPDATED, normalisePath } from '../seo'
 import { DOWNLOADS, LICENSE_REQUEST_URL } from '../downloads'
 
 function HubLinks({ links }) {
@@ -86,6 +86,7 @@ export default function Hub() {
           <span className="gradient">{hub.h1[1]}</span>
         </h1>
         <p>{hub.lead}</p>
+        <PageUpdated date={ROUTE_UPDATED[path]} />
         <div className="hub-actions">
           <a className="button" href={DOWNLOADS.amd64.url}>
             Download for Linux · amd64
@@ -115,6 +116,11 @@ export default function Hub() {
                 <li key={item.slice(0, 40)}>{item}</li>
               ))}
             </ul>
+          ) : null}
+          {section.steps ? (
+            <ol className="hub-list">
+              {section.steps.map(item => <li key={item}>{item}</li>)}
+            </ol>
           ) : null}
           {section.note ? <p className="hub-note">{section.note}</p> : null}
           <HubTable table={section.table} />

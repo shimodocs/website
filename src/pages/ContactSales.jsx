@@ -1,6 +1,7 @@
 import { useRef, useState } from 'react'
 import { useLocation } from 'react-router-dom'
-import { Eyebrow } from '../components/Section'
+import { Eyebrow, PageUpdated } from '../components/Section'
+import { ROUTE_UPDATED } from '../seo'
 import { CONTACT_FALLBACK_EMAIL, submitInquiry } from '../contact'
 import { trackEvent } from '../analytics'
 
@@ -88,6 +89,11 @@ export default function ContactSales() {
           <Eyebrow>Contact Sales</Eyebrow>
           <h1>Bring your<br /><span className="gradient">real workflow.</span></h1>
           <p>Tell us what your team is building, and we’ll map the right ShimoDocs setup for your people, files and AI habits.</p>
+          <p className="contact-guidance">
+            Share your current tools, approximate team size, deployment boundary and the question you need answered.
+            One sentence is enough to start the conversation.
+          </p>
+          <PageUpdated date={ROUTE_UPDATED['/contact-sales']} />
           <div className="contact-points">
             <span><b>01</b> Workspace design</span>
             <span><b>02</b> AI rollout</span>
